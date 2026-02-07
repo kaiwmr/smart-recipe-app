@@ -1,0 +1,52 @@
+.addRecipe__inputWrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid #ccc; /* Der Rahmen kommt jetzt um den Wrapper */
+    border-radius: 2rem;
+    padding: 0 12px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    background-color: white;
+    height: 2.5rem; /* Fixe Höhe für saubere vertikale Zentrierung */
+}
+
+.addRecipe__icon {
+    color: #6b7280; /* Ein Grau-Ton passend zum Placeholder */
+    margin-right: 8px;
+}
+
+/* Wir müssen die Styles aus Popup.module.css überschreiben */
+.addRecipe__inputWrapper input {
+    border: none;      /* Rahmen weg */
+    outline: none;     /* Fokus-Rahmen weg */
+    background: transparent;
+    padding: 0;        /* Padding weg, damit Text mittig sitzt */
+    margin: 0;
+    flex: 1;           /* Füllt den restlichen Platz */
+    height: 100%;      /* Füllt die Höhe des Wrappers */
+}
+
+.addRecipe__subtitle {
+    text-align: center;
+    font-size: 0.75rem;
+    color: gray;
+}
+
+.addRecipe__btnAdd {
+    text-align: center;
+    background-color: rgb(20, 20, 20);
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    border: none;
+    height: 2.5rem;
+    width: 100%;
+    border-radius: 2rem;     /* Abgerundete Ecken */
+    cursor: pointer;
+}
+
+.addRecipe__btnAdd.loading {
+    background-color: rgb(97, 97, 97); /* Farbe im Ladezustand */
+    cursor: not-allowed;
+}

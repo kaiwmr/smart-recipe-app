@@ -1,0 +1,65 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fafafa;
+  color: #333;
+}
+
+/* Entfernt die Standard-Abstände von Überschriften, die das Layout verzerren */
+h1, h2, h3 {
+  margin: 0.25rem;
+}
+
+/* Haupt-App-Container */
+.app {
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;        /* 👈 Zentraler Abstand für alle Elemente (ca. 24px) */
+}
+
+/* Container: sorgt für Abstand zu allen Seiten und zentriert Toasts */
+.Toastify__toast-container {
+  padding: 1rem;           /* Abstand zu Bildschirmrändern */
+  width: 100%;              /* ganze Breite verfügbar */
+  display: flex;
+  justify-content: center;  /* Toasts horizontal zentrieren */
+  box-sizing: border-box;
+}
+
+/* Das eigentliche Toast */
+.app__toast {
+  background: black;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;       /* komplett abgerundet */
+  font-size: 0.9rem;
+  min-width: 20px;
+  max-width: 95%;            /* passt sich mobil an */
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  animation: fadeInOut 2.5s ease forwards;
+  width: fit-content;        /* Toast passt sich Inhalt an */
+}
+
+/* Smooth fade-in/fade-out */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}

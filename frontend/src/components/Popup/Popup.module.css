@@ -1,0 +1,65 @@
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out; /* Hintergrund blendet sanft ein */
+}
+
+.popup__modal {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 1rem;
+    width: 90%;
+    box-sizing: border-box; /* WICHTIG: Padding wird jetzt IN die 90% eingerechnet */
+    max-width: 35rem; /* Wird auf dem PC nicht breiter als ca. 400px */
+    animation: popIn 0.3s; /* Fenster ploppt leicht auf */
+}
+
+.popup__btnClose {
+    cursor: pointer;
+    transition: transform 0.5s;
+    color: rgb(97, 97, 97);
+}
+
+.popup__btnClose:hover {
+  transform: scale(1.1);  /* leichtes Vergrößern beim Hover */
+}
+
+.popup__header {
+  display: flex;           /* macht eine Reihe */
+  align-items: center;     /* vertikal zentrieren */
+  justify-content: space-between; /* Text links, Icon rechts */
+  gap: 1rem;               /* optional: Abstand zwischen Text und Icon */
+}
+
+.popup__header h2 {
+    margin: 0;
+}
+
+.popup__form {
+    margin-top: 2rem; /* Abstand zur Überschrift */
+}
+
+/* Definition der Animationen */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

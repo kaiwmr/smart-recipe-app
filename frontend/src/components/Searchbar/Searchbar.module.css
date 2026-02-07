@@ -1,0 +1,57 @@
+/* Der Hauptcontainer bleibt gleich */
+.search {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+/* Gemeinsame Basis */
+.search__inputWrapper, 
+.search__btnAdd {
+    height: 3rem; 
+    border-radius: 1rem;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center; /* Vertikale Zentrierung */
+}
+
+.search__inputWrapper {
+    flex: 1;
+    background-color: #ececec;
+    padding: 0 1rem; 
+}
+
+/* Das Eingabefeld (Input) */
+.search__input {
+    flex: 1;
+    height: 100%;
+    background: transparent; /* !important falls nötig gegen index.css */
+    border: none;           /* Entfernt den 1px Rahmen aus index.css */
+    outline: none;
+    font-size: 1rem;
+    color: #374151;
+}
+
+/* Der Button */
+.search__btnAdd {
+    background-color: rgb(20, 20, 20);
+    color: #ffffff;
+    border: none; /* Entfernt Rahmen */
+    padding: 0 1.25rem; /* Überschreibt die 10px aus index.css */
+    font-size: 1rem;
+    font-weight: 1000;
+    white-space: nowrap;
+    justify-content: center;
+    line-height: 1; 
+    cursor: pointer;
+}
+
+/* Icon-Ausrichtung */
+.search__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    margin-right: 0.75rem;
+}

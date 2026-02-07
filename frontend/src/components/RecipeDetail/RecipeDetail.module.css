@@ -1,0 +1,339 @@
+/* Bild im Header / Hero */
+.detail__pictureWrapper {
+  position: relative; /* wichtig für absolute Positionierung des Buttons */
+  width: 100%;
+  height: 18rem;
+}
+
+.detail__picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+}
+
+/* Container für Buttons oben rechts auf dem Bild */
+.detail__actions {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* Gemeinsames Button-Styling */
+.detail__btnBack {
+  position: absolute;    /* über das Bild legen */
+  top: 1rem;             /* Abstand vom oberen Rand */
+  left: 1rem;            /* Abstand vom linken Rand */
+  display: flex;
+  background-color: rgb(5, 5, 5);
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.detail__btnDelete {
+  display: flex;
+  background-color: #9e0303;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+/* Edit Mode Buttons */
+.btn__edit, .btn__save, .btn__cancel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn__edit { background: white; color: #333; }
+.btn__save { background: #0a8537; color: white; }
+.btn__cancel { background: #9e0303; color: white; }
+
+.edit__controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Rezepttitel & Edit-Input */
+.titleContainer {
+    margin: 1rem 0;
+    margin-top: 0.5rem;
+}
+
+.detail__title {
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.edit__inputTitle {
+    font-size: 2.5rem;
+    font-weight: bold;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #ddd;
+    outline: none;
+    font-family: inherit;
+    background: transparent;
+    padding-bottom: 5px;
+}
+
+.edit__inputTitle:focus {
+    border-bottom-color: #272727;
+}
+
+/* Zutatenüberschrift */
+.detail__ingredientsTitle {
+    margin: 0;
+    margin-bottom: 0.5rem;
+    padding: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Zutatenliste */
+.detail__ingredientsList {
+    list-style: none;   /* Entfernt Bulletpoints / Zahlen */
+    margin: 0;
+    padding-left: 0;    /* Entfernt Einzug */
+}
+
+.detail__ingredientsItem {
+  display: flex;
+  column-gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgb(233, 233, 233);
+  font-size: 1rem;
+}
+
+.detail__ingredientsItem:last-child {
+    border-bottom: none;
+}
+
+.detail__ingredientsBox {
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.5rem;
+  background-color: #ececec;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  font-weight: bold;
+  width: 5rem;             /* Feste Breite (ca. 80px) */
+  display: flex;           /* Ermöglicht Zentrierung */
+  justify-content: center; /* Text horizontal zentrieren */
+  flex-shrink: 0;          /* Verhindert das Schrumpfen der Box */
+  margin: 0;               /* Browser-Margin entfernen */  
+}
+
+/* Edit Mode Zutaten-Inputs */
+.edit__ingredientsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.edit__ingredientRow {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.25rem;
+    align-items: center;
+}
+
+.edit__ingInputAmount { width: 4rem; }
+.edit__ingInputUnit { width: 4rem; }
+.edit__ingInputName { flex: 1; min-width: 0; } /* Wichtig: Erlaubt dem Feld, bei wenig Platz zu schrumpfen */
+
+.edit__ingInputAmount, 
+.edit__ingInputUnit, 
+.edit__ingInputName {
+    padding: 0.4rem;
+    border: 1px solid #ddd;
+    border-radius: 0.4rem;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.edit__ingInputAmount:focus, 
+.edit__ingInputUnit:focus, 
+.edit__ingInputName:focus {
+    border-color: #272727;
+    background-color: #fcfcfc;
+}
+
+.btn__deleteSmall {
+    background: transparent;
+    border: none;
+    color: #9e0303;
+    cursor: pointer;
+    padding: 0.2rem;
+    display: flex;
+    align-items: center;
+}
+
+/* NEU: Gemeinsamer Style für "Zutat hinzufügen" und "Step hinzufügen" 
+   um das gewünschte stimmige Bild zu erzeugen.
+*/
+.btn__addIngredient,
+.btn__addStep {
+    margin-top: 0.5rem;
+    background: transparent;
+    border: 2px dashed #ddd;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%; /* Steps und Zutaten Button nehmen volle Breite */
+    transition: all 0.2s ease;
+}
+
+.btn__addIngredient:hover,
+.btn__addStep:hover {
+    border-color: #aaa;
+    color: #333;
+    background-color: #fafafa;
+}
+
+
+/* Zubereitung - Container für Zeilen */
+.stepsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+}
+
+/* Eine Zeile: Nummer + Text/Textarea */
+.stepRow {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start; /* Nummer bleibt oben am Textanfang */
+    width: 100%;
+}
+
+/* Die perfekt zentrierten Kreise */
+.stepNumber {
+    background: #333;
+    color: white;
+    width: 26px;      
+    height: 26px;
+    border-radius: 50%;
+    
+    /* Perfekte Zentrierung der Zahl */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    font-size: 0.75rem;
+    font-weight: bold;
+    line-height: 0;      /* Verhindert den Versatz nach unten */
+    flex-shrink: 0;      /* Kreis bleibt rund */
+    
+    padding-bottom: 1px; /* Optischer Fix für vertikale Mitte */
+    padding-right: 1px;
+    margin-top: 0px;     /* Ausrichtung an der ersten Textzeile */
+}
+
+/* View Mode Text */
+.detail__stepsItemText {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #333;
+}
+
+/* NEU: Wrapper für Textarea und Delete Button im Edit Mode 
+   damit sie nebeneinander stehen und gut aussehen 
+*/
+.stepEditWrapper {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    align-items: flex-start;
+}
+
+/* Edit Mode Textarea */
+.edit__textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    min-height: 5rem;
+}
+
+.edit__textarea:focus {
+    border-color: #272727;
+    background-color: #fcfcfc;
+}
+
+/* Layout-Gruppierung */
+.section--ingredients {
+    flex: 3; 
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+    box-sizing: border-box;
+}
+
+.section--steps {
+    flex: 7; 
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+    box-sizing: border-box;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    gap: 2rem;
+}
+
+.detail__link {
+    display: inline-block;
+    margin-top: 2rem;
+    color: #666;
+    text-decoration: underline;
+}
+
+@media (max-width:768px){
+    .wrapper {
+        flex-direction: column;
+    }
+}
+
+/* Globale Listen-Resets */
+ul, ol {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}

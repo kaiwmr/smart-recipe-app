@@ -1,0 +1,117 @@
+/* Der Container für das Gitter */
+.dashboard__grid {
+  display: grid;
+  /* Die Magie: Erstelle so viele Spalten wie passen, aber jede mind. 300px breit */
+  grid-template-columns: repeat(auto-fill, minmax(max(300px, 16.7%), 1fr));
+  gap: 1.75rem; /* Abstand zwischen den Kacheln */
+}
+
+@media (max-width: 764px){
+  .dashboard__grid {
+    display: grid;
+    /* Die Magie: Erstelle so viele Spalten wie passen, aber jede mind. 150px breit */
+    grid-template-columns: repeat(auto-fill, minmax(max(150px, 16.7%), 1fr));
+    gap: 1.75rem; /* Abstand zwischen den Kacheln */
+  }
+}
+
+/* Die einzelne Rezept-Karte */
+.dashboard__card {
+  background: white;
+  border-radius: 1rem; /* Abgerundete Ecken */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Leichter Schatten für 3D-Effekt */
+  transition: transform 0.2s; /* Animation bei Hover */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  cursor: pointer;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+}
+
+/* Kleiner Hover-Effekt: Karte hebt sich */
+.dashboard__card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.dashboard__card h3 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+/* Container für die Buttons unten in der Karte */
+.dashboard__actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Spezielle Buttons */
+.dashboard__btnDelete {
+  background-color: #e74c3c; /* Rot */
+}
+.dashboard__btnDelete:hover {
+  background-color: #c0392b;
+}
+
+/* Kochzeit-Box */
+.dashboard__cookingTimeBox {
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+  display: inline-flex;      /* nur so breit wie Inhalt */
+  align-items: center;       /* vertikal zentriert */
+  justify-content: center;   /* optional, Text zentrieren horizontal */
+  gap: 0.4rem;
+
+  border-radius: 1rem;
+  border: 1px solid black;
+  padding: 0.25rem 0.5rem;
+  color: white;
+  background-color: rgb(20, 20, 20);
+
+  box-sizing: border-box;
+  line-height: 1;            /* verhindert Verschiebung */
+  font-size: 0.8rem;         /* optional, Textgröße setzen */
+}
+
+/* Bild der Karte */
+.dashboard__picture {
+  border-radius: 1rem;
+}
+
+@media (max-width: 764px){
+  .dashboard__picture {
+    border-radius: 1rem;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;  /* Wichtig */
+  }
+}
+
+/* Inhalt der Karte */
+.dashboard__cardContent {
+  padding: 0.5rem;
+  margin: 0px;
+}
+
+/* Spinner.css */
+.dashboard__loadingIcon {
+  border: 4px solid rgba(0, 0, 0, 0.1); /* Hintergrundring */
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  animation: spin 1s linear infinite;   /* Rotation */
+  margin: auto;
+  justify-content: center;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Kein Ergebnis gefunden */
+.dashboard__nothingFound {
+  display: flex;
+  justify-content: center;
+  font-size: 1rem;
+}
