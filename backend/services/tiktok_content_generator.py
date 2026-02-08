@@ -1,10 +1,13 @@
-import whisper
+import os
+from openai import OpenAI
 import yt_dlp
 import tempfile
 import requests
 import services.ai_content_normalizer as ai_content_normalizer
+from dotenv import load_dotenv
 
-model = whisper.load_model("small")
+load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def transcribe_and_generate(url: str) -> dict:
 
@@ -23,14 +26,14 @@ def transcribe_and_generate(url: str) -> dict:
             info = ydl.extract_info(url, download=True)
             audio_path = ydl.prepare_filename(info)  
 
-        audio_data = model.transcribe(audio_path)
-        audio_transcript = audio_data["text"]
+        with open(audio_path, "rb") as audio_file:
+            transcription = client.audio.transcriptions.create(
+                model="gpt-4o-transcribe", 
+                file=audio_file
+            )
+        audio_transcript = transcription.text
 
     video_data = f"Videobeschreibung: {video_description} | Audio: {audio_transcript}"
     
     recipe_data = ai_content_normalizer.call_gemini(video_data)
     return recipe_data
-
-
-
-
