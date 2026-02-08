@@ -27,7 +27,7 @@ export default function Login() {
 
         try {
             // Nutzt dynamisch den Hostname (localhost oder Netzwerk-IP)
-            const response = await axios.post("http://127.0.0.1:8000/token", formData);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/token`, formData);
 
             const token = response.data.access_token;
             localStorage.setItem("BiteWiseToken", token)

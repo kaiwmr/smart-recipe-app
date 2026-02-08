@@ -17,7 +17,7 @@ export default function AddRecipe({ onRecipeAdded }) {
 
     try {
       await axios.post(
-        "http://127.0.0.1:8000/recipes/from-url",
+        `${import.meta.env.VITE_API_URL}/recipes/from-url`,
         null,
         {
           params: { url: url },

@@ -21,7 +21,7 @@ export default function RecipeDetail() {
             // 2. Request mit Authorization Header senden
             // axios.get(url, config)
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/recipes/${id}`, {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/recipes/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}` // WICHTIG: Das Leerzeichen nach Bearer!
                     }
@@ -53,7 +53,7 @@ export default function RecipeDetail() {
             }
 
             const response = await axios.put(
-                `http://127.0.0.1:8000/recipes/${id}`, 
+                `${import.meta.env.VITE_API_URL}/recipes/${id}`, 
                 payload, 
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -151,7 +151,7 @@ export default function RecipeDetail() {
         if (!window.confirm("Wirklich löschen?")) return;
         const token = localStorage.getItem("BiteWiseToken");
         try {
-            await axios.delete(`http://127.0.0.1:8000/recipes/${recipeId}`, {
+            await axios.delete(`${import.meta.env.VITE_API_URL}/recipes/${recipeId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             toast.success("Rezept gelöscht");

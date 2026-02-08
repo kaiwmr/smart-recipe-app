@@ -20,7 +20,7 @@ export default function Dashboard() {
             
         // 2. Request mit Authorization Header senden
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/recipes/`, {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/recipes/`, {
                 headers: { Authorization: `Bearer ${token}` } // WICHTIG: Das Leerzeichen nach Bearer!
             });
             // 3. Die geladenen Rezepte in den State packen
