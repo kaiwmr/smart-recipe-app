@@ -20,6 +20,7 @@ load_dotenv()
 origins = [
     "http://localhost:3000", # React Standard
     "http://localhost:5173", # Vite Standard (modernes React)
+    "https://smart-recipe-frontend-hwxe.onrender.com"
 ]
 
 
