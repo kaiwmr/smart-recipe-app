@@ -52,7 +52,7 @@ export default function Login() {
         };
 
         try {
-            await axios.post("http://127.0.0.1:8000/users/", userData);
+            await axios.post(`${import.meta.env.VITE_API_URL}/users/`, userData);
             toast.success("User erstellt - Du kannst dich nun anmelden");
             
         } catch (error) {
