@@ -13,10 +13,11 @@ def generate_image(client, recipe: dict) -> bytes:
     Erstelle ein Bild im identischen Studio-Stil wie das Referenzbild und beachte das Essen passend zum Rezept darzustellen.
     Behalte denselben Hintergrund (gleicher Tisch, gleiche Oberfläche, gleiche Farbe und Textur) bei.
     Die Beleuchtung, Kameraposition, Perspektive und Bildstimmung sollen wirken, als wäre das Foto im selben Studio und in derselben Fotosession aufgenommen worden.
-    Behalte den Hauptteller, so wie bei dem Referenzbild, stets mittig vom Bild.
+    Behalte den Hauptteller, so wie bei dem Referenzbild, stets mittig an exakt der gleichen Position vom Bild.
+    Halte auch Format und Auflösung exakt identisch.
 
     Die Teller dürfen anders angeordnet sein oder es dürfen zusätzliche Teller hinzugefügt werden (oder entfernt werden),
-    sofern sie stilistisch zur gleichen Geschirrserie gehören.
+    sofern sie stilistisch zur gleichen Geschirrserie gehören. Der Hauptteller muss immer exakt an der gleichen Position stehen, so wie im Referenzbild.
 
     Der Fokus liegt auf einem anderen Gericht.
     Hintergrund, Lichtstil und Gesamtästhetik sollen konsistent bleiben.
