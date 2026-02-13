@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, ForeignKey, JSON, Float
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -24,7 +24,22 @@ class Recipe(Base):
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="recipes")
     image = Column(String)
+    nutrients = Column(JSON)
 
+
+class IngredientNutrients(Base):
+
+    __tablename__ = "ingredient_nutrients"
+
+    id_slug = Column(String, primary_key=True, index=True)
+    kcal = Column(Float)
+    protein = Column(Float)
+    fat = Column(Float)
+    saturated_fat = Column(Float)
+    carbs = Column(Float)
+    sugar = Column(Float)
+    fiber = Column(Float)
+    salt = Column(Float)
 
 
 class InviteCode(Base):

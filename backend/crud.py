@@ -121,4 +121,23 @@ def update_recipe(updates: schemas.RecipeUpdate, db:Session, recipe_id: int, use
     db.commit()
     db.refresh(db_recipe)
     return db_recipe
+
+
+def get_nutrients_by_id(id_slug: str, db:Session) -> Optional[models.IngredientNutrients]:
+
+    db_nutrients = db.query(models.IngredientNutrients).filter(models.IngredientNutrients.id_slug == id_slug).first()
+
+    if not db_nutrients:
+        return None
     
+    return db_nutrients
+
+
+def create_nutrients(db: Session, id_slug: str, nutrients: dict) -> models.IngredientNutrients:
+    db_nutrients = models.IngredientNutrients(id_slug=id_slug, **nutrients)
+
+    db.add(db_nutrients)
+    db.commit()
+    db.refresh(db_nutrients)
+
+    return db_nutrients

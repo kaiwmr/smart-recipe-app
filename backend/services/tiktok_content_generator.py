@@ -1,18 +1,22 @@
 import os
-from openai import OpenAI
-import yt_dlp
+from openai import AsyncOpenAI
 import tempfile
-import requests
 import services.ai_content_normalizer as ai_content_normalizer
 from dotenv import load_dotenv
+import httpx
+import yt_dlp
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def transcribe_and_generate(url: str) -> dict:
+async def transcribe_and_generate(url: str) -> dict:
 
     oembed_url = f"https://www.tiktok.com/oembed?url={url}"
-    oembed_data = requests.get(oembed_url).json()
+
+    async with httpx.AsyncClient() as http_client:
+        response = await http_client.get(oembed_url)
+        oembed_data = response.json()
+
     video_description = oembed_data["title"]
 
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -27,7 +31,7 @@ def transcribe_and_generate(url: str) -> dict:
             audio_path = ydl.prepare_filename(info)  
 
         with open(audio_path, "rb") as audio_file:
-            transcription = client.audio.transcriptions.create(
+            transcription = await openai_client.audio.transcriptions.create(
                 model="gpt-4o-transcribe", 
                 file=audio_file
             )
@@ -35,5 +39,5 @@ def transcribe_and_generate(url: str) -> dict:
 
     video_data = f"Videobeschreibung: {video_description} | Audio: {audio_transcript}"
     
-    recipe_data = ai_content_normalizer.call_gemini(video_data)
+    recipe_data = await ai_content_normalizer.call_gemini(video_data)
     return recipe_data

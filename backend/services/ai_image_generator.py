@@ -1,4 +1,3 @@
-from google import genai
 from google.genai import types
 import os
 from dotenv import load_dotenv
@@ -7,7 +6,7 @@ import base64
 load_dotenv()
 
 
-def generate_image(client, recipe: dict) -> bytes:
+async def generate_image(client, recipe: dict) -> bytes:
 
     prompt = f"""Rezept: Titel {recipe["title"]} Zutaten: {recipe["content"]["ingredients"]} Schritte: {recipe["content"]["steps"]}
     Erstelle ein Bild im identischen Studio-Stil wie das Referenzbild und beachte das Essen passend zum Rezept darzustellen.
@@ -33,7 +32,7 @@ def generate_image(client, recipe: dict) -> bytes:
             )
         )
 
-    response = client.models.generate_content(
+    response = await client.aio.models.generate_content(
         model="gemini-2.5-flash-image",
         contents=[
             prompt,

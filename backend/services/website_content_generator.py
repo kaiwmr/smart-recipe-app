@@ -1,17 +1,18 @@
-import requests
+import httpx
 from bs4 import BeautifulSoup
 import services.ai_content_normalizer as ai_content_normalizer
 
 
-def scrape_and_generate(url: str) -> dict:
+async def scrape_and_generate(url: str) -> dict:
     
     headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
 
-    response = requests.get(url, headers=headers)
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers=headers)
 
-    html_content = response.text   
+    html_content = response.text
 
     soup = BeautifulSoup(html_content, "html.parser")
 
@@ -30,5 +31,5 @@ def scrape_and_generate(url: str) -> dict:
     clean_html = "\n".join(schemas) + str(soup)
     clean_html = " ".join(clean_html.split())
 
-    recipe_data = ai_content_normalizer.call_gemini(clean_html)
+    recipe_data = await ai_content_normalizer.call_gemini(clean_html)
     return recipe_data

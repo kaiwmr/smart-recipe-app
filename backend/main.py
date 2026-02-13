@@ -141,22 +141,24 @@ def get_recipe_by_id(recipe_id: int, current_user: models.User = Depends(get_cur
 
 #neu
 @app.post("/recipes/from-url", response_model=schemas.Recipe)
-def create_recipe_from_url(url: str, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+async def create_recipe_from_url(url: str, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
 
     
     # 1. Daten asynchron laden (await statt asyncio.run)
     if "tiktok.com" in url:
-        data = tiktok_content_generator.transcribe_and_generate(url)
+        data = await tiktok_content_generator.transcribe_and_generate(url)
     else:
-        data = website_content_generator.scrape_and_generate(url)
-    
+        data = await website_content_generator.scrape_and_generate(url)
+
     # 2. In Pydantic-Schema umwandeln
     # WICHTIG: 'content' im Schema erwartet ein Dictionary/Objekt, keinen String!
     # Wir nutzen data.get("content", data), falls Gemini die Struktur flach oder verschachtelt liefert.
-    recipe_content = data.get("content", data)
+    recipe_title = data.get("title", "Unbekannt")
+    recipe_content = data.get("content")
     recipe_image = data.get("image")
+
     
-    recipe_in = schemas.RecipeCreate(title=data.get("title", "Unbekannt"), content=recipe_content, url=url, image=recipe_image)
+    recipe_in = schemas.RecipeCreate(title=recipe_title, content=recipe_content, url=url, image=recipe_image)
 
     # 3. In DB speichern (user_id korrekt übergeben)
     return crud.create_recipe(db=db, item=recipe_in, user_id=current_user.id)
