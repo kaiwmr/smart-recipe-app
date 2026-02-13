@@ -12,7 +12,9 @@ export default function Dashboard() {
     const [search, setSearch] = useState("");
     const [showPopup, setShowPopup] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [selected, setSelected] = useState([])
     const navigate = useNavigate();
+    const tags = ["high protein", "< 30min", "vegetarisch", "vegan", "Hauptspeise", "Dessert", "Frühstück", "Backen"];
 
     const fetchRecipes = async () => {
         // 1. Token aus dem Speicher holen
@@ -42,11 +44,39 @@ export default function Dashboard() {
         navigate("/login");
     };
 
+    const toggleFilter = (filter) => {
+    selected.includes(filter)
+        ? setSelected(selected.filter(f => f !== filter))
+        : setSelected([...selected, filter]);
+    };
+
+
     return (
         <div>
             <Header handleLogout={handleLogout}></Header>
             <div className='app'>
                 <Searchbar search={search} setSearch={setSearch} showPopup={showPopup} setShowPopup={setShowPopup}></Searchbar>
+                <div className={styles.dashboard__filterWrapper}>
+                {tags.map(tag => {
+                    // Prüfen, ob der Tag aktiv ist
+                    const isActive = selected.includes(tag);
+                    
+                    return (
+                        <button
+                            key={tag}
+                            value={tag}
+                            onClick={() => toggleFilter(tag)}
+                            className={`
+                                ${styles.dashboard__btnFilter} 
+                                ${isActive ? styles.dashboard__btnFilterActive : ''}
+                            `}
+                        >
+                            {tag}
+                        </button>
+                    );
+                })}
+            </div>
+
                 <Popup showPopup={showPopup} setShowPopup={setShowPopup} onRecipeAdded={fetchRecipes}></Popup>
                 
                 {isLoading 
@@ -59,7 +89,7 @@ export default function Dashboard() {
                 {/* Das Gitter für die Karten */}
                 <div className={styles.dashboard__grid}>
                     {recipes
-                        .filter(item => item.title.toLowerCase().includes(search.toLowerCase()))
+                        .filter(item => item.title.toLowerCase().includes(search.toLowerCase()) && selected.every(tag => item.content.tags.includes(tag)))
                         .map(recipe => (
                         <div key={recipe.id} className={styles.dashboard__card} onClick={() => navigate(`/recipe/${recipe.id}`)}> 
                             <img className={styles.dashboard__picture} src={`data:image/png;base64,${recipe.image}`} alt={recipe.title} loading="lazy"

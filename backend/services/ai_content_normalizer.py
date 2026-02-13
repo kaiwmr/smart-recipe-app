@@ -6,15 +6,13 @@ from dotenv import load_dotenv
 from services.ai_image_generator import generate_image
 from services.nutrients_calculator import calculate_nutrients
 import asyncio
-import time
 
 load_dotenv()
 
 api_key = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
 
-# --- SYSTEM INSTRUCTION (Die festen Regeln) ---
-# Hier landet alles, was Gemini als "Gesetz" für die Verarbeitung wissen muss.
+# --- SYSTEM INSTRUCTION ---
 SYSTEM_INSTRUCTION = """
     ROLLE:
     Du bist ein professioneller Rezept-Redakteur für eine Koch-App.
@@ -121,10 +119,7 @@ conf = types.GenerateContentConfig(
 )
 
 async def call_gemini(content: str) -> dict:
-    start = time.time()
 
-    # In contents übergeben wir jetzt nur noch die eigentlichen Daten
-    # Gemini verknüpft dies automatisch mit der System Instruction oben.
     user_prompt = f"""
     INPUT HTML oder VIDEO DATEN (Beschreibung + Audiotranskript) oder benutzerdefinierte Eingaben:
 
@@ -149,6 +144,13 @@ async def call_gemini(content: str) -> dict:
     image_and_nutrients = await asyncio.gather(*tasks)
 
     data["image"] = image_and_nutrients[0]
-    data["content"]["nutrients"] = image_and_nutrients[1]
+    data["content"]["nutrients"] = image_and_nutrients[1].model_dump()
+
+    nutrients = data["content"]["nutrients"]
+    if nutrients["kcal"] > 0 and (nutrients["protein"] / nutrients["kcal"] * 100) > 7:
+        data["content"]["tags"].append("high protein")
+
+    if data["content"].get("cooking_time", 999) <= 30: 
+        data["content"]["tags"].append("< 30min")
 
     return data
