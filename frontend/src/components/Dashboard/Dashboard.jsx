@@ -92,8 +92,7 @@ export default function Dashboard() {
                         .filter(item => item.title.toLowerCase().includes(search.toLowerCase()) && selected.every(tag => item.content.tags.includes(tag)))
                         .map(recipe => (
                         <div key={recipe.id} className={styles.dashboard__card} onClick={() => navigate(`/recipe/${recipe.id}`)}> 
-                            <img className={styles.dashboard__picture} src={`data:image/png;base64,${recipe.image}`} alt={recipe.title} loading="lazy"
-></img>
+                            <img className={styles.dashboard__picture} src={`data:image/png;base64,${recipe.image}`} alt={recipe.title} loading="lazy"></img>
                             <div className={styles.dashboard__cardContent}>
                                 <h3>{recipe.title}</h3>
                                 <div className={styles.dashboard__cardContentDetailsWrapper}>
