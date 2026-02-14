@@ -1,18 +1,52 @@
-/* Bild im Header / Hero */
+/* =========================================
+   1. GLOBALE RESETS & GRUNDLAYOUT
+   ========================================= */
+ul, ol {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.detail__wrapper {
+    display: flex;
+    width: 100%;
+    gap: 1.5rem;
+}
+
+.detail__leftWrapper {
+    display: flex;
+    flex: 3;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+
+/* =========================================
+   2. HEADER & BILD (HERO)
+   ========================================= */
 .detail__pictureWrapper {
-  position: relative; /* wichtig für absolute Positionierung des Buttons */
-  width: 100%;
-  height: 18rem;
+    position: relative;
+    width: 100%;
+    height: 22rem; 
+}
+
+.detail__pictureWrapper::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 100%);
+    pointer-events: none; 
 }
 
 .detail__picture {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
 }
 
-/* Container für Buttons oben rechts auf dem Bild */
 .detail__actions {
     position: absolute;
     top: 1rem;
@@ -20,105 +54,214 @@
     display: flex;
     gap: 0.75rem;
     align-items: center;
+    z-index: 10;
 }
 
-/* Gemeinsames Button-Styling */
-.detail__btnBack {
-  position: absolute;    /* über das Bild legen */
-  top: 1rem;             /* Abstand vom oberen Rand */
-  left: 1rem;            /* Abstand vom linken Rand */
-  display: flex;
-  background-color: rgb(5, 5, 5);
-  color: white;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  cursor: pointer;
-  z-index: 10;
-}
 
-.detail__btnDelete {
-  display: flex;
-  background-color: #9e0303;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  cursor: pointer;
-}
-
-/* Edit Mode Buttons */
-.btn__edit, .btn__save, .btn__cancel {
+/* =========================================
+   3. BUTTONS
+   ========================================= */
+/* Gemeinsame Basis für alle Overlay-Buttons */
+.detail__btnBack,
+.detail__btnEdit,
+.detail__btnDelete,
+.detail__btnSave,
+.detail__btnCancel {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
+    justify-content: center;
+    width: 2.5rem;  
+    height: 2.5rem; 
+    border-radius: 1rem; 
     border: none;
-    font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 10;
 }
 
-.btn__edit { background: white; color: #333; }
-.btn__save { background: #0a8537; color: white; }
-.btn__cancel { background: #9e0303; color: white; }
+/* Spezifische Button-Farben */
+.detail__btnBack {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background-color: rgb(0, 0, 0); 
+    color: white;
+}
 
-.edit__controls {
+.detail__btnEdit { background-color: rgba(255, 255, 255, 0.9); color: #333; }
+.detail__btnDelete { background-color: rgba(158, 3, 3, 0.85); color: white; }
+.detail__btnSave { background-color: #0a8537; color: white; }
+.detail__btnCancel { background-color: rgba(158, 3, 3, 0.85); color: white; }
+
+.detail__editControls {
     display: flex;
     gap: 0.5rem;
 }
 
-/* Rezepttitel & Edit-Input */
-.titleContainer {
-    margin: 1rem 0;
-    margin-top: 0.5rem;
+
+/* =========================================
+   4. TITEL
+   ========================================= */
+.detail__titleContainer {
+    margin: 0.5rem 0 1.5rem 0; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 1rem;
 }
 
 .detail__title {
     font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #1a1a1a;
+    letter-spacing: -0.5px; 
     margin: 0;
 }
 
-.edit__inputTitle {
+/* Akzent-Strich unter dem Titel */
+.detail__titleAccent {
+    width: 3rem;
+    height: 4px;
+    background-color: #5f5f5f; 
+    border-radius: 2px;
+    margin-top: 1rem;
+}
+
+/* Editierbares Input-Feld */
+.detail__editInputTitle {
     font-size: 2.5rem;
-    font-weight: bold;
+    font-weight: 800;
     width: 100%;
+    text-align: center;
     border: none;
-    border-bottom: 2px solid #ddd;
+    border-bottom: 2px dashed #ccc;
     outline: none;
     font-family: inherit;
     background: transparent;
     padding-bottom: 5px;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
 }
 
-.edit__inputTitle:focus {
+.detail__editInputTitle:focus {
     border-bottom-color: #272727;
 }
 
-/* Zutatenüberschrift */
+
+/* =========================================
+   5. GEMEINSAME SECTION-STYLES (KARTEN)
+   ========================================= */
+.detail__section--nutrients,
+.detail__section--ingredients {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+    box-sizing: border-box;
+}
+
+.detail__section--steps {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+    box-sizing: border-box;
+}
+
+
+/* =========================================
+   6. NÄHRWERTE 
+   ========================================= */
+.detail__nutrientsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+}
+
+.detail__nutrientsProPortion {
+    font-size: 0.85rem;
+    color: #888;
+    font-weight: 500;
+}
+
+.detail__nutrientsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+.detail__nutrientsCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 0.2rem;
+    border-radius: 0.75rem;
+    text-align: center;
+}
+
+.detail__nutrientsData {
+    display: flex;
+    align-items: baseline;
+    gap: 0.15rem;
+}
+
+.detail__nutrientsValue {
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.detail__nutrientsUnit {
+    font-size: 0.75rem;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.detail__nutrientsLabel {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-top: 0.25rem; 
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.detail__nutrientsCard--cal { background-color: #fff0f0; color: #d32f2f; }
+.detail__nutrientsCard--protein { background-color: #f0f8ff; color: #1976d2; }
+.detail__nutrientsCard--carbs { background-color: #f1f8e9; color: #388e3c; }
+.detail__nutrientsCard--fat { background-color: #fcf9d9; color: #f57f17; }
+
+
+/* =========================================
+   7. ZUTATEN
+   ========================================= */
 .detail__ingredientsTitle {
     margin: 0;
-    margin-bottom: 0.5rem;
     padding: 0;
     font-size: 1.5rem;
     font-weight: bold;
 }
 
-/* Zutatenliste */
-.detail__ingredientsList {
-    list-style: none;   /* Entfernt Bulletpoints / Zahlen */
-    margin: 0;
-    padding-left: 0;    /* Entfernt Einzug */
-}
-
 .detail__ingredientsItem {
-  display: flex;
-  column-gap: 0.5rem;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgb(233, 233, 233);
-  font-size: 1rem;
+    display: flex;
+    column-gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgb(233, 233, 233);
+    font-size: 1rem;
 }
 
 .detail__ingredientsItem:last-child {
@@ -126,40 +269,40 @@
 }
 
 .detail__ingredientsBox {
-  border-radius: 0.5rem;
-  padding: 0.3rem 0.5rem;
-  background-color: #ececec;
-  color: rgb(0, 0, 0);
-  text-align: center;
-  font-weight: bold;
-  width: 5rem;             /* Feste Breite (ca. 80px) */
-  display: flex;           /* Ermöglicht Zentrierung */
-  justify-content: center; /* Text horizontal zentrieren */
-  flex-shrink: 0;          /* Verhindert das Schrumpfen der Box */
-  margin: 0;               /* Browser-Margin entfernen */  
+    border-radius: 0.5rem;
+    padding: 0.3rem 0.5rem;
+    background-color: #ececec;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    font-weight: bold;
+    width: 5rem;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+    margin: 0;
 }
 
 /* Edit Mode Zutaten-Inputs */
-.edit__ingredientsContainer {
+.detail__editIngredientsContainer {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.edit__ingredientRow {
+.detail__editIngredientRow {
     display: flex;
     gap: 0.4rem;
     margin-bottom: 0.25rem;
     align-items: center;
 }
 
-.edit__ingInputAmount { width: 4rem; }
-.edit__ingInputUnit { width: 4rem; }
-.edit__ingInputName { flex: 1; min-width: 0; } /* Wichtig: Erlaubt dem Feld, bei wenig Platz zu schrumpfen */
+.detail__editIngInputAmount { width: 4rem; }
+.detail__editIngInputUnit { width: 4rem; }
+.detail__editIngInputName { flex: 1; min-width: 0; }
 
-.edit__ingInputAmount, 
-.edit__ingInputUnit, 
-.edit__ingInputName {
+.detail__editIngInputAmount, 
+.detail__editIngInputUnit, 
+.detail__editIngInputName {
     padding: 0.4rem;
     border: 1px solid #ddd;
     border-radius: 0.4rem;
@@ -167,89 +310,49 @@
     outline: none;
 }
 
-.edit__ingInputAmount:focus, 
-.edit__ingInputUnit:focus, 
-.edit__ingInputName:focus {
+.detail__editIngInputAmount:focus, 
+.detail__editIngInputUnit:focus, 
+.detail__editIngInputName:focus {
     border-color: #272727;
     background-color: #fcfcfc;
 }
 
-.btn__deleteSmall {
-    background: transparent;
-    border: none;
-    color: #9e0303;
-    cursor: pointer;
-    padding: 0.2rem;
-    display: flex;
-    align-items: center;
-}
 
-/* NEU: Gemeinsamer Style für "Zutat hinzufügen" und "Step hinzufügen" 
-   um das gewünschte stimmige Bild zu erzeugen.
-*/
-.btn__addIngredient,
-.btn__addStep {
-    margin-top: 0.5rem;
-    background: transparent;
-    border: 2px dashed #ddd;
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    color: #666;
-    font-size: 0.85rem;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%; /* Steps und Zutaten Button nehmen volle Breite */
-    transition: all 0.2s ease;
-}
-
-.btn__addIngredient:hover,
-.btn__addStep:hover {
-    border-color: #aaa;
-    color: #333;
-    background-color: #fafafa;
-}
-
-
-/* Zubereitung - Container für Zeilen */
-.stepsContainer {
+/* =========================================
+   8. ZUBEREITUNG 
+   ========================================= */
+.detail__stepsContainer {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
     margin-top: 0.5rem;
 }
 
-/* Eine Zeile: Nummer + Text/Textarea */
-.stepRow {
+.detail__stepRow {
     display: flex;
     gap: 1rem;
-    align-items: flex-start; /* Nummer bleibt oben am Textanfang */
+    align-items: flex-start;
     width: 100%;
 }
 
-/* Die perfekt zentrierten Kreise */
-.stepNumber {
+.detail__stepNumber {
     background: #333;
     color: white;
     width: 26px;      
     height: 26px;
     border-radius: 50%;
-    
-    /* Perfekte Zentrierung der Zahl */
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    
     font-size: 0.75rem;
     font-weight: bold;
-    line-height: 0;      /* Verhindert den Versatz nach unten */
-    flex-shrink: 0;      /* Kreis bleibt rund */
-    
-    padding-bottom: 1px; /* Optischer Fix für vertikale Mitte */
+    line-height: 0;
+    flex-shrink: 0;
+    padding-bottom: 1px;
     padding-right: 1px;
-    margin-top: 0px;     /* Ausrichtung an der ersten Textzeile */
+    margin-top: 0px;
 }
 
-/* View Mode Text */
 .detail__stepsItemText {
     margin: 0;
     font-size: 1rem;
@@ -257,18 +360,14 @@
     color: #333;
 }
 
-/* NEU: Wrapper für Textarea und Delete Button im Edit Mode 
-   damit sie nebeneinander stehen und gut aussehen 
-*/
-.stepEditWrapper {
+.detail__stepEditWrapper {
     display: flex;
     gap: 0.5rem;
     width: 100%;
     align-items: flex-start;
 }
 
-/* Edit Mode Textarea */
-.edit__textarea {
+.detail__editTextarea {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ddd;
@@ -278,62 +377,137 @@
     line-height: 1.5;
     resize: vertical;
     outline: none;
-    transition: border-color 0.2s;
     min-height: 5rem;
 }
 
-.edit__textarea:focus {
+.detail__editTextarea:focus {
     border-color: #272727;
     background-color: #fcfcfc;
 }
 
-/* Layout-Gruppierung */
-.section--ingredients {
-    flex: 3; 
+
+/* =========================================
+   9. HILFSKLASSEN (LÖSCHEN / HINZUFÜGEN)
+   ========================================= */
+.detail__btnDeleteSmall {
+    background: transparent;
+    border: none;
+    color: #9e0303;
+    cursor: pointer;
+    padding: 0.2rem;
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    background-color: white;
-    border-radius: 1rem;
-    padding: 1rem;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
-    box-sizing: border-box;
+    align-items: center;
 }
 
-.section--steps {
-    flex: 7; 
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    background-color: white;
-    border-radius: 1rem;
-    padding: 1rem;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
-    box-sizing: border-box;
-}
-
-.wrapper {
-    display: flex;
-    width: 100%;
-    gap: 2rem;
-}
-
-.detail__link {
-    display: inline-block;
-    margin-top: 2rem;
+.detail__btnAddIngredient,
+.detail__btnAddStep {
+    margin-top: 0.5rem;
+    background: transparent;
+    border: 2px dashed #ddd;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
     color: #666;
-    text-decoration: underline;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
 }
 
-@media (max-width:768px){
-    .wrapper {
+.detail__btnAddIngredient:hover,
+.detail__btnAddStep:hover {
+    border-color: #aaa;
+    color: #333;
+    background-color: #fafafa;
+}
+
+
+/* =========================================
+   10. ORIGINAL-LINK (QUELLE)
+   ========================================= */
+.detail__sourceContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem; 
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.detail__btnSource {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center; 
+    gap: 0.5rem;
+    padding: 0.8rem 1.75rem;
+    background-color: #f8f9fa; 
+    color: #333;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border-radius: 2rem; 
+    border: 1px solid #c9c9c9;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    box-sizing: border-box; 
+}
+
+/* Hover-Effekt */
+.detail__btnSource:hover {
+    background-color: #000000; 
+    color: white;
+    border-color: #1f1f1f;
+}
+
+.detail__sourceArrow {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* =========================================
+   11. Loading Icon
+   ========================================= */
+.detail__loadingIcon {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* =========================================
+   12. MOBILE ANPASSUNGEN
+   ========================================= */
+@media (max-width: 768px) {
+    .detail__wrapper {
         flex-direction: column;
     }
-}
 
-/* Globale Listen-Resets */
-ul, ol {
-    margin: 0;
-    padding-left: 0;
-    list-style: none;
+    .detail__nutrientsGrid {
+        gap: 0.25rem;
+    }
+
+    .detail__nutrientsCard {
+        padding: 0.4rem 0.1rem;
+    }
+
+    .detail__nutrientsValue {
+        font-size: 0.95rem;
+    }
+
+    .detail__nutrientsUnit {
+        font-size: 0.65rem;
+    }
+
+    .detail__nutrientsLabel {
+        font-size: 0.55rem;
+        letter-spacing: -0.2px;
+    }
+
+    .detail__btnSource {
+        width: 100%;
+        border-radius: 1rem; 
+    }
 }
