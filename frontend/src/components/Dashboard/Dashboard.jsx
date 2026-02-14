@@ -4,7 +4,7 @@ import styles from './Dashboard.module.css';
 import Searchbar from '../Searchbar/Searchbar';
 import Popup from '../Popup/Popup';
 import Header from '../Header/Header';
-import { Clock, Loader2 } from "lucide-react"
+import { Clock, Loader2, Leaf } from "lucide-react"
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
@@ -96,13 +96,20 @@ export default function Dashboard() {
 ></img>
                             <div className={styles.dashboard__cardContent}>
                                 <h3>{recipe.title}</h3>
-                                <div className={styles.dashboard__cookingTimeBox}>
-                                    <Clock size={15}></Clock>
-                                    <span>
-                                        {recipe.content.cooking_time >= 60
-                                            ? `${Math.round(recipe.content.cooking_time / 30) / 2} std`
-                                            : `${recipe.content.cooking_time} min`}
-                                    </span>
+                                <div className={styles.dashboard__cardContentDetailsWrapper}>
+                                    <div className={styles.dashboard__cookingTimeBox}>
+                                        <Clock size={14}></Clock>
+                                        <span>
+                                            {recipe.content.cooking_time >= 60
+                                                ? `${Math.round(recipe.content.cooking_time / 30) / 2} std`
+                                                : `${recipe.content.cooking_time} min`}
+                                        </span>
+                                    </div>
+                                    {recipe.content.tags.some(tag => ["vegan", "vegetarisch"].includes(tag)) && (
+                                    <div className={styles.dashboard__veganBox}>
+                                        <Leaf size={13} strokeWidth={2.5} />
+                                    </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

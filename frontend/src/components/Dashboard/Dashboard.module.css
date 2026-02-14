@@ -49,19 +49,21 @@
 
 /* Kochzeit-Box */
 .dashboard__cookingTimeBox {
-  margin-top: 0.5rem;
-  margin-bottom: 0.25rem;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center;      
+  justify-content: center;   
   gap: 0.4rem;
-  border-radius: 1rem;
+  
+  height: 1.3rem;         
+  padding: 0 0.5rem;       
+  border-radius: 2rem;
+  
   border: 1px solid black;
-  padding: 0.25rem 0.5rem;
   color: white;
   background-color: rgb(20, 20, 20);
-  line-height: 1;
-  font-size: 0.8rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  line-height: 1;           
 }
 
 .dashboard__picture {
@@ -123,7 +125,7 @@
 .dashboard__btnFilter {
   padding: 0.6rem 1.2rem;
   border-radius: 2rem;
-  background-color: #f3f4f6;
+  background-color: rgb(244, 244, 244);
   color: #4b5563;
   font-size: 0.9rem;
   font-weight: 600;
@@ -145,20 +147,35 @@
 
 /* Normaler Hover-Effekt (nur wenn NICHT aktiv) */
 .dashboard__btnFilter:hover {
-  background-color: #e5e7eb;
-  color: #1f2937;
   transform: translateY(-1px);
 }
 
 /* Der AKTIVE Zustand */
 .dashboard__btnFilterActive {
   background-color: rgb(20, 20, 20);
-  color: white; /* Schrift ist weiß */
+  color: white; 
   transform: translateY(-1px);
 }
 
-/* Hover-Effekt wenn er AKTIV ist */
-.dashboard__btnFilterActive:hover {
-  background-color: rgb(50, 50, 50); 
-  color: white; 
+.dashboard__cardContentDetailsWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
 }
+
+.dashboard__veganBox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  height: 1.3rem;          
+  width: 1.3rem;           
+  border-radius: 50%;       
+  
+  border: 1px solid rgb(35, 156, 35);
+  background-color: rgb(33, 138, 38);
+  color: white;
+}
+
