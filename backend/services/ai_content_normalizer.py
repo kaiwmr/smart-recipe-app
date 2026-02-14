@@ -39,11 +39,11 @@ SYSTEM_INSTRUCTION = """
     - Schätze wie viele Minuten die Zubereitung in Minuten braucht (5er Schritte).
     - Erzeuge einen "search_term" für jede Zutat (einfacher, generischer, englischer Begriff für Datenbankabgleiche).
     - Liefere geschätzte Nährwerte "per_100g" für jede Zutat (Ausgangszustand/unverarbeitet) als Fallback (Details siehe Output Format).
-    - Wähle für jedes Rezept alle passenden Tags aus. Die möglichen Tags sind ausschließlich: vegan, vegetarisch, Hauptspeise, Frühstück, Dessert, Backen
+    - Wähle für jedes Rezept alle passenden Tags aus. Die möglichen Tags sind ausschließlich (wenn ein Rezept vegan ist, es natürlich auch vegetarisch): vegan, vegetarisch, Hauptspeise, Frühstück, Dessert, Backen
     - Schätze eine sinnvolle Anzahl an Portionen (servings) für das Gericht, basierend auf den Zutatenmengen für durchschnittliche Erwachsene. Übernehme, wenn vorhanden, NICHT blind die Angabe von der Quelle.
 
     4. TITEL REGELN:
-    - Gib dem Rezept einen sachlichen, neutralen Titel, der den Gerichtstyp beschreibt.
+    - Gib dem Rezept einen sachlichen, neutralen Titel, der den Gerichtstyp beschreibt und möglichst kurz ist.
     - Entferne Adjektive wie "Omas Lieblings", "super lecker", "bestes", "traditionell".
     - Behalte bekannte Eigennamen nur, wenn sie relevant sind (z.B. „Spaghetti alla Carbonara“).
 
