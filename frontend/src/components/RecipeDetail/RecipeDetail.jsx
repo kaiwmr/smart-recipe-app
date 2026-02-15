@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import styles from './RecipeDetail.module.css';
-import { ChevronLeft, Trash2, Edit2, Save, X, Loader2, Minus, Plus } from 'lucide-react';
+import { ChevronLeft, Trash2, Edit2, Save, X, Loader2, Minus, Plus, Clock } from 'lucide-react';
 
 export default function RecipeDetail() {
     const { id } = useParams();
@@ -50,6 +50,54 @@ export default function RecipeDetail() {
     };
 
     const handleSave = async () => {
+        // 1. Validierungsprozess
+        if (!editedRecipe.title.trim()) {
+            toast.error("Das Rezept braucht einen Titel.");
+            return;
+        }
+
+        if (editedRecipe.content.ingredients.length === 0) {
+            toast.error("Das Rezept muss Zutaten beinhalten.");
+            return;
+        }
+
+        if (editedRecipe.content.steps.length === 0) {
+            toast.error("Das Rezept muss Zubereitungsschritte beinhalten.");
+            return;
+        }
+
+        const hasInvalidIngredient = editedRecipe.content.ingredients.some(ing => !ing.name.trim());
+        if (hasInvalidIngredient) {
+            toast.error("Alle Zutaten müssen einen Namen haben.");
+            return;
+        }
+
+        const cookingTime = parseInt(editedRecipe.content.cooking_time);
+        if (isNaN(cookingTime) || cookingTime <= 0) {
+            toast.error("Ungültige Zubereitungszeit.");
+            return;
+        }
+
+        for (const key in editedRecipe.content.nutrients) {
+            const value = editedRecipe.content.nutrients[key];
+            const parsedValue = parseInt(value);
+
+            if (value === "" || isNaN(parsedValue)) {
+                toast.error(`Bitte gib einen Wert für ${key} ein.`);
+                return;
+            }
+            if (parsedValue < 0) {
+                toast.error(`${key} darf nicht negativ sein.`);
+                return;
+            }
+        }
+
+        const servings = parseInt(editedRecipe.content.servings);
+        if (isNaN(servings) || servings <= 0) {
+            toast.error("Ungültige Portionsanzahl.");
+            return;
+        }
+        // 2. Speicherprozess
         const token = localStorage.getItem("BiteWiseToken");
         try {
             const payload = {
@@ -76,9 +124,17 @@ export default function RecipeDetail() {
     };
 
     // --- Servings Logic ---
-    const updateServings = (newVal) => {
-        const val = parseInt(newVal);
-        if (isNaN(val) || val < 1) return; // Schutz vor ungültigen Eingaben
+    const updateServings = (value) => {
+        if (value === "") {
+            setEditedRecipe({
+                ...editedRecipe, 
+                content: { ...editedRecipe.content, servings: "" }
+            });
+            return;
+        }
+
+        const val = parseInt(value);
+        if (isNaN(val) || val < 1) return; 
         setCurrentServings(val);
         
         if(isEditing) {
@@ -89,9 +145,66 @@ export default function RecipeDetail() {
         }
     };
 
+    const updateCookingTime = (value) => {
+        if (value === "") {
+            setEditedRecipe({
+                ...editedRecipe, 
+                content: { ...editedRecipe.content, cooking_time: "" }
+            });
+            return;
+        }
+
+        const val = parseInt(value);
+        if (isNaN(val) || val < 0) return;
+
+        setEditedRecipe({
+            ...editedRecipe,
+            content: { ...editedRecipe.content, cooking_time: val }
+        });
+    };
+
+    const updateNutrients = (value, field) => {
+        if (value === "") {
+            setEditedRecipe({
+                ...editedRecipe,
+                content: { 
+                    ...editedRecipe.content,
+                    nutrients: {
+                        ...editedRecipe.content.nutrients, 
+                        [field]: "" 
+                    } 
+                }
+            });
+            return;
+        }
+
+        const val = parseInt(value);
+        if (isNaN(val) || val < 0) return;
+
+        setEditedRecipe({
+            ...editedRecipe,
+            content: { 
+                ...editedRecipe.content,
+                nutrients: {
+                    ...editedRecipe.content.nutrients, 
+                    [field]: val 
+                } 
+            }
+        });
+    };
+
     const handleIngredientChange = (index, field, value) => {
         const newIngredients = [...editedRecipe.content.ingredients];
-        newIngredients[index] = { ...newIngredients[index], [field]: value };
+        
+        let finalValue = value;
+        
+        if (field === "amount") {
+            const parsed = parseFloat(value);
+            if (value !== "" && (isNaN(parsed) || parsed < 0)) return;
+            finalValue = value === "" ? "" : parsed;
+        }
+
+        newIngredients[index] = { ...newIngredients[index], [field]: finalValue };
         setEditedRecipe({
             ...editedRecipe,
             content: { ...editedRecipe.content, ingredients: newIngredients }
@@ -99,6 +212,8 @@ export default function RecipeDetail() {
     };
     
     const handleStepChange = (index, newText) => {
+        if (newText.length > 2000) return; 
+
         const newSteps = [...editedRecipe.content.steps];
         newSteps[index] = newText;
         setEditedRecipe({ ...editedRecipe, content: { ...editedRecipe.content, steps: newSteps } });
@@ -218,6 +333,7 @@ export default function RecipeDetail() {
 
                 <div className={styles.detail__wrapper}>
                     <div className={styles.detail__leftWrapper}>
+                        
                         {/* Nährwerte */}
                         <div className={styles["detail__section--nutrients"]}>
                             <div className={styles.detail__nutrientsHeader}>
@@ -229,9 +345,18 @@ export default function RecipeDetail() {
                                 {/* Kalorien */}
                                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--cal"]}`}>
                                     <div className={styles.detail__nutrientsData}>
-                                        <span className={styles.detail__nutrientsValue}>
-                                            {Math.floor(recipe.content.nutrients.kcal / (recipe.content.servings || 1))}
-                                        </span>
+                                        {isEditing ? (
+                                            <input 
+                                                type="number"
+                                                value={editedRecipe.content.nutrients.kcal}
+                                                onChange={(e) => updateNutrients(e.target.value, "kcal")}
+                                                className={styles.detail__nutrientsInput}
+                                            />
+                                        ) : (
+                                            <span className={styles.detail__nutrientsValue}>
+                                                {Math.floor(recipe.content.nutrients.kcal / (recipe.content.servings || 1))}
+                                            </span>
+                                        )}
                                         <span className={styles.detail__nutrientsUnit}>kcal</span>
                                     </div>
                                     <span className={styles.detail__nutrientsLabel}>Kalorien</span>
@@ -239,9 +364,18 @@ export default function RecipeDetail() {
                                 {/* Protein */}
                                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--protein"]}`}>
                                     <div className={styles.detail__nutrientsData}>
-                                        <span className={styles.detail__nutrientsValue}>
-                                            {Math.floor(recipe.content.nutrients.protein / (recipe.content.servings || 1))}
-                                        </span>
+                                        {isEditing ? (
+                                            <input 
+                                                type="number"
+                                                value={editedRecipe.content.nutrients.protein}
+                                                onChange={(e) => updateNutrients(e.target.value, "protein")}
+                                                className={styles.detail__nutrientsInput}
+                                            />
+                                        ) : (
+                                            <span className={styles.detail__nutrientsValue}>
+                                                {Math.floor(recipe.content.nutrients.protein / (recipe.content.servings || 1))}
+                                            </span>
+                                        )}
                                         <span className={styles.detail__nutrientsUnit}>g</span>
                                     </div>
                                     <span className={styles.detail__nutrientsLabel}>Protein</span>
@@ -249,9 +383,18 @@ export default function RecipeDetail() {
                                 {/* Carbs */}
                                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--carbs"]}`}>
                                     <div className={styles.detail__nutrientsData}>
-                                        <span className={styles.detail__nutrientsValue}>
-                                            {Math.floor(recipe.content.nutrients.carbs / (recipe.content.servings || 1))}
-                                        </span>
+                                        {isEditing ? (
+                                            <input 
+                                                type="number"
+                                                value={editedRecipe.content.nutrients.carbs}
+                                                onChange={(e) => updateNutrients(e.target.value, "carbs")}
+                                                className={styles.detail__nutrientsInput}
+                                            />
+                                        ) : (
+                                            <span className={styles.detail__nutrientsValue}>
+                                                {Math.floor(recipe.content.nutrients.carbs / (recipe.content.servings || 1))}
+                                            </span>
+                                        )}
                                         <span className={styles.detail__nutrientsUnit}>g</span>
                                     </div>
                                     <span className={styles.detail__nutrientsLabel}>Carbs</span>
@@ -259,9 +402,18 @@ export default function RecipeDetail() {
                                 {/* Fett */}
                                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--fat"]}`}>
                                     <div className={styles.detail__nutrientsData}>
-                                        <span className={styles.detail__nutrientsValue}>
-                                            {Math.floor(recipe.content.nutrients.fat / (recipe.content.servings || 1))}
-                                        </span>
+                                        {isEditing ? (
+                                            <input 
+                                                type="number"
+                                                value={editedRecipe.content.nutrients.fat}
+                                                onChange={(e) => updateNutrients(e.target.value, "fat")}
+                                                className={styles.detail__nutrientsInput}
+                                            />
+                                        ) : (
+                                            <span className={styles.detail__nutrientsValue}>
+                                                {Math.floor(recipe.content.nutrients.fat / (recipe.content.servings || 1))}
+                                            </span>
+                                        )}
                                         <span className={styles.detail__nutrientsUnit}>g</span>
                                     </div>
                                     <span className={styles.detail__nutrientsLabel}>Fett</span>
@@ -363,7 +515,32 @@ export default function RecipeDetail() {
 
                     {/* Zubereitung */}
                     <div className={styles["detail__section--steps"]}>
-                        <h3 className={styles.detail__ingredientsTitle}>Zubereitung</h3> 
+                        <div className={styles.detail__ingredientsHeaderRow}>
+                            <h3 className={styles.detail__ingredientsTitle}>Zubereitung</h3>
+                             
+                            {/* Zubereitungszeit */}
+                            <div className={styles.detail__timeWrapper}>
+                                <Clock size={16} className={styles.detail__timeIcon} />
+                                {isEditing ? (
+                                    <div className={styles.detail__timeEditMode}>
+                                        <input 
+                                            type="number" 
+                                            value={editedRecipe.content.cooking_time}
+                                            onChange={(e) => updateCookingTime(e.target.value)}
+                                            className={styles.detail__timeInput}
+                                            min="1"
+                                        />
+                                        <span className={styles.detail__timeText}>Minuten</span>
+                                    </div>
+                                ) : (
+                                    <span className={styles.detail__timeText}>
+                                        {recipe.content.cooking_time >= 60
+                                                ? (<><strong> {Math.round(recipe.content.cooking_time / 30) / 2} </strong> Stunden</>)
+                                                : <><strong>{recipe.content.cooking_time}</strong> Minuten </>}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
                         
                         <div className={styles.detail__stepsContainer}>
                             {(isEditing ? editedRecipe.content.steps : recipe.content.steps).map((step, index) => (

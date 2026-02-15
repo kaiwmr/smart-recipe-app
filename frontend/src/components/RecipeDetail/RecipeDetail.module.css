@@ -11,6 +11,7 @@ ul, ol {
     display: flex;
     width: 100%;
     gap: 1.5rem;
+    align-items: stretch; 
 }
 
 .detail__leftWrapper {
@@ -99,7 +100,7 @@ ul, ol {
 
 
 /* =========================================
-   4. TITEL
+   4. TITEL & KOCHZEIT
    ========================================= */
 .detail__titleContainer {
     margin: 0.5rem 0 1.5rem 0; 
@@ -148,11 +149,71 @@ ul, ol {
     border-bottom-color: #272727;
 }
 
+/* Kochzeit */
+.detail__timeWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background-color: #f5f5f5;
+    padding: 0.35rem 0.75rem;
+    border-radius: 2rem;
+}
+
+.detail__timeIcon {
+    color: #555;
+}
+
+.detail__timeText {
+    font-size: 0.9rem;
+    color: #444;
+    user-select: none;
+}
+
+.detail__timeText strong {
+    font-weight: 800;
+    color: #000;
+    font-size: 1rem;
+}
+
+.detail__timeEditMode {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.detail__timeInput {
+    width: 3rem;
+    padding: 0.3rem;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 0.4rem;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.detail__timeInput:focus {
+    border-color: #272727;
+    background-color: #fff;
+}
+
 
 /* =========================================
    5. GEMEINSAME SECTION-STYLES (KARTEN)
    ========================================= */
-.detail__section--nutrients,
+.detail__section--nutrients {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+    box-sizing: border-box;
+    flex: 0 0 auto; /* Nicht wachsen, nicht schrumpfen */
+}
+
 .detail__section--ingredients {
     display: flex;
     flex-direction: column;
@@ -162,6 +223,7 @@ ul, ol {
     padding: 1.25rem;
     box-shadow: 0 5px 20px rgba(0,0,0,0.10);
     box-sizing: border-box;
+    flex: 1; /* Füllt den gesamten restlichen Raum nach unten aus */
 }
 
 .detail__section--steps {
@@ -236,6 +298,34 @@ ul, ol {
     margin-top: 0.25rem; 
     word-break: break-word;
     hyphens: auto;
+}
+
+/* Nährwerte Edit Input */
+.detail__nutrientsInput {
+    width: 2.5rem;
+    padding: 0.1rem;
+    text-align: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    border: 1px dashed rgba(0,0,0,0.2);
+    border-radius: 0.25rem;
+    background-color: rgba(255,255,255,0.6);
+    color: inherit; 
+    outline: none;
+    font-family: inherit;
+    appearance: textfield; 
+}
+
+/* Versteckt Input-Pfeile in Chrome/Safari */
+.detail__nutrientsInput::-webkit-outer-spin-button,
+.detail__nutrientsInput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.detail__nutrientsInput:focus {
+    background-color: white;
+    border-style: solid;
 }
 
 .detail__nutrientsCard--cal { background-color: #fff0f0; color: #d32f2f; }
