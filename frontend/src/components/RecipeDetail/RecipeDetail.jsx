@@ -2,36 +2,35 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import styles from './RecipeDetail.module.css'
-import { ChevronLeft, Trash2, Edit2, Save, X, Loader2 } from 'lucide-react'
+import styles from './RecipeDetail.module.css';
+import { ChevronLeft, Trash2, Edit2, Save, X, Loader2, Minus, Plus } from 'lucide-react';
 
 export default function RecipeDetail() {
-    const { id } = useParams(); // Holt die "5" aus der URL /recipe/5
+    const { id } = useParams();
     const navigate = useNavigate();
+    
     const [recipe, setRecipe] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [editedRecipe, setEditedRecipe] = useState(null);
+    const [currentServings, setCurrentServings] = useState(1); 
 
     useEffect(() => {
         const fetchRecipe = async () => {
-            // 1. Token aus dem Speicher holen
             const token = localStorage.getItem("BiteWiseToken");
-            
-            // 2. Request mit Authorization Header senden
-            // axios.get(url, config)
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_URL}/recipes/${id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}` // WICHTIG: Das Leerzeichen nach Bearer!
-                    }
+                    headers: { Authorization: `Bearer ${token}` }
                 });
-                // 3. Die geladenen Rezepte in den State packen
-                setRecipe(response.data);
-                setEditedRecipe(response.data)
+                
+                const data = response.data;
+                setRecipe(data);
+                setEditedRecipe(data);
+                setCurrentServings(data.content.servings || 1); 
+
             } catch (error) {
                 console.error("Fehler:", error);
-                alert("Rezept nicht gefunden?");
+                toast.error("Rezept konnte nicht geladen werden.");
                 navigate("/dashboard");
             } finally {
                 setIsLoading(false);
@@ -41,25 +40,34 @@ export default function RecipeDetail() {
         fetchRecipe();
     }, [id, navigate]);
 
+    const calculateAmount = (baseAmount) => {
+        if (!baseAmount) return "";
+        const baseServings = recipe.content.servings || 1; // Schutz vor Division durch 0
+        const result = (baseAmount / baseServings) * currentServings;
+        
+        // Runden auf max 2 Stellen
+        return parseFloat(result.toFixed(2));
+    };
+
     const handleSave = async () => {
         const token = localStorage.getItem("BiteWiseToken");
-
-        try{
+        try {
             const payload = {
-                title: editedRecipe.title, 
-                content: editedRecipe.content, 
+                title: editedRecipe.title,
+                content: editedRecipe.content,
                 url: editedRecipe.url,
                 image: editedRecipe.image
-            }
+            };
 
             const response = await axios.put(
-                `${import.meta.env.VITE_API_URL}/recipes/${id}`, 
-                payload, 
+                `${import.meta.env.VITE_API_URL}/recipes/${id}`,
+                payload,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            
-            setRecipe(response.data); // Das echte Rezept mit den neuen Daten vom Server updaten
-            setIsEditing(false);      
+
+            setRecipe(response.data);
+            setCurrentServings(response.data.content.servings || 1);
+            setIsEditing(false);
             toast.success("Gespeichert!");
         } catch (error) {
             console.error("Fehler beim Speichern:", error);
@@ -67,81 +75,62 @@ export default function RecipeDetail() {
         }
     };
 
-    // Funktion, um einen einzelnen Schritt zu ändern
-    const handleStepChange = (index, newText) => {
-        // 1. Kopie des Steps Arrays
-        const newSteps = [...editedRecipe.content.steps];
-        // 2. Wert an der stelle "index" ändern
-        newSteps[index] = newText;
+    // --- Servings Logic ---
+    const updateServings = (newVal) => {
+        const val = parseInt(newVal);
+        if (isNaN(val) || val < 1) return; // Schutz vor ungültigen Eingaben
+        setCurrentServings(val);
         
-        // 3. State neu setzen.
-        setEditedRecipe({
-            ...editedRecipe, // Behalte Titel, URL etc.
-            content: {
-                ...editedRecipe.content, // Behalte Ingredients
-                steps: newSteps // Überschreibe Steps mit der neuen Liste
-            }
-        });
-    };
-
-    const deleteStep = (indexToDelete) => {
-        // alle Zutaten behalten, deren Index nicht der zu löschende ist
-        const newSteps = editedRecipe.content.steps.filter((_, index) => index !== indexToDelete);
-
-        setEditedRecipe({
-            ...editedRecipe,
-            content: {...editedRecipe.content, steps: newSteps }
-        });
-    };
-
-    const addStep = () => {
-        const newStep = "";
-        
-        // Alte Liste nehmen + neues Element
-        const newSteps = [...editedRecipe.content.steps, newStep];
-
-        setEditedRecipe({
-            ...editedRecipe,
-            content: { ...editedRecipe.content, steps: newSteps }
-        });
+        if(isEditing) {
+            setEditedRecipe({
+                ...editedRecipe,
+                content: { ...editedRecipe.content, servings: val }
+            });
+        }
     };
 
     const handleIngredientChange = (index, field, value) => {
-        // 1. Kopie des Zutaten Arrays
         const newIngredients = [...editedRecipe.content.ingredients];
-        
-        // 2. Objekt kopieren und das eine Feld ändern
-        newIngredients[index] = { 
-            ...newIngredients[index], 
-            [field]: value 
-        };
-
-        // 3. State updaten
+        newIngredients[index] = { ...newIngredients[index], [field]: value };
         setEditedRecipe({
             ...editedRecipe,
-            content: {...editedRecipe.content, ingredients: newIngredients}
+            content: { ...editedRecipe.content, ingredients: newIngredients }
+        });
+    };
+    
+    const handleStepChange = (index, newText) => {
+        const newSteps = [...editedRecipe.content.steps];
+        newSteps[index] = newText;
+        setEditedRecipe({ ...editedRecipe, content: { ...editedRecipe.content, steps: newSteps } });
+    };
+
+    const deleteStep = (indexToDelete) => {
+        const newSteps = editedRecipe.content.steps.filter((_, index) => index !== indexToDelete);
+        setEditedRecipe({ ...editedRecipe, content: { ...editedRecipe.content, steps: newSteps } });
+    };
+
+    const addStep = () => {
+        setEditedRecipe({
+            ...editedRecipe,
+            content: { ...editedRecipe.content, steps: [...editedRecipe.content.steps, ""] }
         });
     };
 
     const deleteIngredient = (indexToDelete) => {
-        // alle Zutaten behalten, deren Index nicht der zu löschende ist
         const newIngredients = editedRecipe.content.ingredients.filter((_, index) => index !== indexToDelete);
-
         setEditedRecipe({
             ...editedRecipe,
-            content: {...editedRecipe.content, ingredients: newIngredients }
+            content: { ...editedRecipe.content, ingredients: newIngredients }
         });
     };
 
     const addIngredient = () => {
-        const newIngredient = { name: "", amount: 1, unit: "" };
-        
-        // Alte Liste nehmen + neues Element
-        const newIngredients = [...editedRecipe.content.ingredients, newIngredient];
-
         setEditedRecipe({
             ...editedRecipe,
-            content: { ...editedRecipe.content, ingredients: newIngredients }
+            content: { 
+                ...editedRecipe.content, 
+                ingredients: [...editedRecipe.content.ingredients, { name: "", amount: 1, unit: "" }] 
+            }
         });
     };
 
@@ -155,14 +144,22 @@ export default function RecipeDetail() {
             toast.success("Rezept gelöscht");
             navigate("/dashboard");
         } catch (error) {
-            console.error("Fehler beim Löschen: ", error);
             toast.error("Fehler aufgetreten");
         }
     };
 
-    if (isLoading || !recipe) return <Loader2 className={styles.detail__loadingIcon}></Loader2>; 
-    if (!recipe || !editedRecipe) return <Loader2 className={styles.detail__loadingIcon}></Loader2>; 
-    
+    const toggleEditMode = (status) => {
+        if (status === true) {
+            setEditedRecipe({
+                ...recipe,
+                content: { ...recipe.content, servings: currentServings }
+            });
+        }
+        setIsEditing(status);
+    };
+
+
+    if (isLoading || !recipe) return <Loader2 className={styles.detail__loadingIcon}></Loader2>;
 
     return (
         <div>
@@ -173,16 +170,14 @@ export default function RecipeDetail() {
                     alt={recipe.title}
                 />
                 
-                {/* Zurück Button */}
                 <button className={styles.detail__btnBack} onClick={() => navigate("/dashboard")}>
                     <ChevronLeft size={24} />
                 </button>
 
-                {/* Steuerungselemente oben rechts */}
                 <div className={styles.detail__actions}>
                     {!isEditing ? (
                         <>
-                            <button className={styles.detail__btnEdit} onClick={() => setIsEditing(true)}>
+                            <button className={styles.detail__btnEdit} onClick={() => toggleEditMode(true)}>
                                 <Edit2 size={20} />
                             </button>
                             <button className={styles.detail__btnDelete} onClick={() => deleteRecipe(recipe.id)}>
@@ -194,13 +189,13 @@ export default function RecipeDetail() {
                             <button className={styles.detail__btnSave} onClick={handleSave}>
                                 <Save size={20} />
                             </button>
-                            <button className={styles.detail__btnCancel} onClick={() => setIsEditing(false)}>
+                            <button className={styles.detail__btnCancel} onClick={() => toggleEditMode(false)}>
                                 <X size={20} />
                             </button>
                         </div>
                     )}
                 </div>
-            </div> 
+            </div>
 
             <div className="app">
                 {/* Titel-Sektion */}
@@ -221,9 +216,9 @@ export default function RecipeDetail() {
                     )}
                 </div>
 
-                {/* Hauptinhalt Wrapper */}
                 <div className={styles.detail__wrapper}>
                     <div className={styles.detail__leftWrapper}>
+                        {/* Nährwerte */}
                         <div className={styles["detail__section--nutrients"]}>
                             <div className={styles.detail__nutrientsHeader}>
                                 <h3 className={styles.detail__ingredientsTitle}>Nährwerte</h3>
@@ -231,7 +226,6 @@ export default function RecipeDetail() {
                             </div>
                             
                             <div className={styles.detail__nutrientsGrid}>
-                                
                                 {/* Kalorien */}
                                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--cal"]}`}>
                                     <div className={styles.detail__nutrientsData}>
@@ -242,7 +236,6 @@ export default function RecipeDetail() {
                                     </div>
                                     <span className={styles.detail__nutrientsLabel}>Kalorien</span>
                                 </div>
-
                                 {/* Protein */}
                                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--protein"]}`}>
                                     <div className={styles.detail__nutrientsData}>
@@ -253,8 +246,7 @@ export default function RecipeDetail() {
                                     </div>
                                     <span className={styles.detail__nutrientsLabel}>Protein</span>
                                 </div>
-
-                                {/* Kohlenhydrate (Carbs) */}
+                                {/* Carbs */}
                                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--carbs"]}`}>
                                     <div className={styles.detail__nutrientsData}>
                                         <span className={styles.detail__nutrientsValue}>
@@ -264,7 +256,6 @@ export default function RecipeDetail() {
                                     </div>
                                     <span className={styles.detail__nutrientsLabel}>Carbs</span>
                                 </div>
-
                                 {/* Fett */}
                                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--fat"]}`}>
                                     <div className={styles.detail__nutrientsData}>
@@ -275,19 +266,58 @@ export default function RecipeDetail() {
                                     </div>
                                     <span className={styles.detail__nutrientsLabel}>Fett</span>
                                 </div>
-
                             </div>
                         </div>
                         
-                        {/* Zutaten */}
+                        {/* Zutaten & Portionen */}
                         <div className={styles["detail__section--ingredients"]}>
-                            <h3 className={styles.detail__ingredientsTitle}>Zutaten</h3>
+                            
+                            {/* Header Zeile: Titel Links, Portionen Rechts */}
+                            <div className={styles.detail__ingredientsHeaderRow}>
+                                <h3 className={styles.detail__ingredientsTitle}>Zutaten</h3>
+                                
+                                {/* Portionen Steuerung */}
+                                <div className={styles.detail__servingsWrapper}>
+                                    {!isEditing ? (
+                                        <div className={styles.detail__servingsControl}>
+                                            <button 
+                                                className={styles.detail__btnServing} 
+                                                onClick={() => updateServings(currentServings - 1)}
+                                                disabled={currentServings <= 1}
+                                            >
+                                                <Minus size={14} />
+                                            </button>
+                                            <span className={styles.detail__servingsText}>
+                                                <strong>{currentServings}</strong> Portionen
+                                            </span>
+                                            <button 
+                                                className={styles.detail__btnServing} 
+                                                onClick={() => updateServings(currentServings + 1)}
+                                            >
+                                                <Plus size={14} />
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className={styles.detail__servingsEdit}>
+                                            <input
+                                                type='number'
+                                                className={styles.detail__inputServings}
+                                                value={editedRecipe.content.servings}
+                                                onChange={(e) => updateServings(e.target.value)}
+                                                min="1"
+                                            />
+                                            <span className={styles.detail__servingsLabel}>Portionen</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
                             {!isEditing ? (
                                 <ul className={styles.detail__ingredientsList}>
                                     {recipe.content.ingredients.map((ing, index) => (
                                         <li className={styles.detail__ingredientsItem} key={index}>
                                             <p className={styles.detail__ingredientsBox}>
-                                                {ing.amount || ing.unit ? ing.amount : "-"} {ing.unit ? ing.unit : ""}
+                                                {ing.amount ? `${calculateAmount(ing.amount)} ${ing.unit}` : (ing.unit || "-")}
                                             </p>
                                             <span>{ing.name}</span>
                                         </li>
@@ -338,7 +368,6 @@ export default function RecipeDetail() {
                         <div className={styles.detail__stepsContainer}>
                             {(isEditing ? editedRecipe.content.steps : recipe.content.steps).map((step, index) => (
                                 <div key={index} className={styles.detail__stepRow}>
-                                    {/* Der Kreis mit der Nummer für beide Modi */}
                                     <span className={styles.detail__stepNumber}>{index + 1}</span>
                                     
                                     {isEditing ? (
@@ -358,16 +387,15 @@ export default function RecipeDetail() {
                                     )}
                                 </div>
                             ))}
-                            {isEditing ? (
+                            {isEditing && (
                                 <button className={styles.detail__btnAddStep} onClick={addStep}>
                                     + Schritt hinzufügen
                                 </button>
-                            ) : <></>}
+                            )}
                         </div>
                     </div>
                 </div>
 
-                {/* Original-Link */}
                 {recipe.url && (
                     <div className={styles.detail__sourceContainer}>
                         <a href={recipe.url} target="_blank" rel="noreferrer" className={styles.detail__btnSource}>

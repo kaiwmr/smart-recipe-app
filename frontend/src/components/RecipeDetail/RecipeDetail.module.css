@@ -245,23 +245,114 @@ ul, ol {
 
 
 /* =========================================
-   7. ZUTATEN
+   7. ZUTATEN & SERVINGS (PORTIONEN)
    ========================================= */
+
+/* Header Zeile: Zutaten links, Steuerung rechts */
+.detail__ingredientsHeaderRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
 .detail__ingredientsTitle {
     margin: 0;
     padding: 0;
     font-size: 1.5rem;
     font-weight: bold;
+    color: #1a1a1a;
+}
+
+/* Container für die Steuerung (+/- Buttons) */
+.detail__servingsControl {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #f5f5f5;
+    padding: 0.25rem 0.5rem;
+    border-radius: 2rem; 
+}
+
+.detail__btnServing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    border: none;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+.detail__btnServing:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.detail__servingsText {
+    font-size: 0.9rem;
+    color: #444;
+    min-width: 5rem;
+    text-align: center;
+    user-select: none;
+}
+
+.detail__servingsText strong {
+    font-weight: 800;
+    color: #000;
+    font-size: 1rem;
+}
+
+/* Edit Mode Servings */
+.detail__servingsEdit {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.detail__inputServings {
+    width: 3.5rem;
+    padding: 0.4rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1rem;
+    outline: none;
+}
+
+.detail__inputServings:focus {
+    border-color: #272727;
+    background-color: #fcfcfc;
+}
+
+.detail__servingsLabel {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Liste der Zutaten */
+.detail__ingredientsList {
+    display: flex;
+    flex-direction: column;
 }
 
 .detail__ingredientsItem {
     display: flex;
-    column-gap: 0.5rem;
+    column-gap: 1rem; 
     align-items: center;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgb(233, 233, 233);
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgb(245, 245, 245);
     font-size: 1rem;
+    line-height: 1.4;
 }
 
 .detail__ingredientsItem:last-child {
@@ -270,17 +361,17 @@ ul, ol {
 
 .detail__ingredientsBox {
     border-radius: 0.5rem;
-    padding: 0.3rem 0.5rem;
-    background-color: #ececec;
-    color: rgb(0, 0, 0);
+    padding: 0.4rem 0.5rem;
+    background-color: #f0f0f0; 
+    color: #111;
     text-align: center;
-    font-weight: bold;
-    width: 5rem;
-    display: flex;
-    justify-content: center;
-    flex-shrink: 0;
+    font-weight: 700;
+    min-width: 4.5rem; 
+    display: inline-block; 
     margin: 0;
+    font-size: 0.95rem;
 }
+
 
 /* Edit Mode Zutaten-Inputs */
 .detail__editIngredientsContainer {
@@ -509,5 +600,21 @@ ul, ol {
     .detail__btnSource {
         width: 100%;
         border-radius: 1rem; 
+    }
+}
+
+@media (max-width: 480px) {
+    .detail__ingredientsHeaderRow {
+        flex-direction: row; 
+    }
+    
+    .detail__ingredientsTitle {
+        font-size: 1.25rem;
+    }
+    
+    .detail__servingsText {
+        font-size: 0.8rem;
+        min-width: auto;
+        padding: 0 0.5rem;
     }
 }
