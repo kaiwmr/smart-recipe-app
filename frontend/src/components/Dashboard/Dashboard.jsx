@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import styles from './Dashboard.module.css';
 import Searchbar from '../Searchbar/Searchbar';
 import Popup from '../Popup/Popup';
 import Header from '../Header/Header';
 import { Clock, Loader2, Leaf } from "lucide-react"
 import { useNavigate } from 'react-router-dom';
+import api from '../../api/api';
+import { logout } from '../../utils/auth';
 
 export default function Dashboard() {
     const [recipes, setRecipes] = useState([]);
@@ -17,15 +18,9 @@ export default function Dashboard() {
     const tags = ["high protein", "< 30min", "vegetarisch", "vegan", "Hauptspeise", "Dessert", "Frühstück", "Backen"];
 
     const fetchRecipes = async () => {
-        // 1. Token aus dem Speicher holen
-        const token = localStorage.getItem("BiteWiseToken");
             
-        // 2. Request mit Authorization Header senden
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/recipes/`, {
-                headers: { Authorization: `Bearer ${token}` } // WICHTIG: Das Leerzeichen nach Bearer!
-            });
-            // 3. Die geladenen Rezepte in den State packen
+            const response = await api.get("/recipes/");
             setRecipes(response.data);
         } catch (error) {
             console.error("Fehler beim Laden:", error);
@@ -39,11 +34,6 @@ export default function Dashboard() {
     // Dieser Effekt läuft genau 1x beim Start (wegen dem leeren Array [] am Ende)
     useEffect(() => { fetchRecipes() }, []); // <--- Das leere Array ist wichtig!
 
-    const handleLogout = () => {
-        localStorage.removeItem("BiteWiseToken");
-        navigate("/login");
-    };
-
     const toggleFilter = (filter) => {
     selected.includes(filter)
         ? setSelected(selected.filter(f => f !== filter))
@@ -53,7 +43,7 @@ export default function Dashboard() {
 
     return (
         <div>
-            <Header handleLogout={handleLogout}></Header>
+            <Header handleLogout={logout}></Header>
             <div className='app'>
                 <Searchbar search={search} setSearch={setSearch} showPopup={showPopup} setShowPopup={setShowPopup}></Searchbar>
                 <div className={styles.dashboard__filterWrapper}>

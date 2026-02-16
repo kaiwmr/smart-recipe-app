@@ -1,8 +1,8 @@
 import { useState } from "react";
-import axios from "axios";
 import { Link } from 'lucide-react';
 import styles from './AddRecipe.module.css';
 import { toast } from "react-toastify";
+import api from "../../api/api";
 
 export default function AddRecipe({ onRecipeAdded }) {
   const [url, setUrl] = useState("");
@@ -13,19 +13,8 @@ export default function AddRecipe({ onRecipeAdded }) {
 
     setIsLoading(true);
 
-    const token = localStorage.getItem("BiteWiseToken");
-
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/recipes/from-url`,
-        null,
-        {
-          params: { url: url },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.post("/recipes/from-url", null, { params: { url: url }});
 
       toast.success("Rezept erstellt");
       setUrl("");

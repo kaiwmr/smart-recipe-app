@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import styles from './RecipeDetail.module.css';
 import { ChevronLeft, Trash2, Edit2, Save, X, Loader2, Minus, Plus, Clock } from 'lucide-react';
+import api from '../../api/api';
 
 export default function RecipeDetail() {
     const { id } = useParams();
@@ -17,11 +17,8 @@ export default function RecipeDetail() {
 
     useEffect(() => {
         const fetchRecipe = async () => {
-            const token = localStorage.getItem("BiteWiseToken");
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/recipes/${id}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const response = await api.get(`recipes/${id}`);
                 
                 const data = response.data;
                 setRecipe(data);
@@ -97,8 +94,6 @@ export default function RecipeDetail() {
             toast.error("Ungültige Portionsanzahl.");
             return;
         }
-        // 2. Speicherprozess
-        const token = localStorage.getItem("BiteWiseToken");
         try {
             const payload = {
                 title: editedRecipe.title,
@@ -107,11 +102,7 @@ export default function RecipeDetail() {
                 image: editedRecipe.image
             };
 
-            const response = await axios.put(
-                `${import.meta.env.VITE_API_URL}/recipes/${id}`,
-                payload,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            const response = await api.put(`/recipes/${id}`,payload);
 
             setRecipe(response.data);
             setCurrentServings(response.data.content.servings || 1);
@@ -251,11 +242,8 @@ export default function RecipeDetail() {
 
     const deleteRecipe = async (recipeId) => {
         if (!window.confirm("Wirklich löschen?")) return;
-        const token = localStorage.getItem("BiteWiseToken");
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL}/recipes/${recipeId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.delete(`/recipes/${recipeId}`);
             toast.success("Rezept gelöscht");
             navigate("/dashboard");
         } catch (error) {

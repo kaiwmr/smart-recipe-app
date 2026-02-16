@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import axios from 'axios';
 import styles from './Login.module.css'
 import logo from "../../assets/BiteWiseLogo.svg";
 import { Eye, EyeOff } from 'lucide-react';
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom';
-
+import api from '../../api/api';
 
 // Diese Komponente empfängt eine Funktion "onLoginSuccess" von der App,
 // die sie aufruft, wenn alles geklappt hat.
@@ -26,8 +25,7 @@ export default function Login() {
         formData.append("password", password);
 
         try {
-            // Nutzt dynamisch den Hostname (localhost oder Netzwerk-IP)
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/token`, formData);
+            const response = await api.post("/token", formData);
 
             const token = response.data.access_token;
             localStorage.setItem("BiteWiseToken", token)
@@ -52,7 +50,7 @@ export default function Login() {
         };
 
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/users/`, userData);
+            await api.post("/users/", userData);
             toast.success("User erstellt - Du kannst dich nun anmelden");
             
         } catch (error) {
