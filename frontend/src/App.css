@@ -34,34 +34,15 @@ h1, h2, h3 {
   background: black;
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 2rem;       /* komplett abgerundet */
+  border-radius: 2rem;
   font-size: 0.9rem;
   min-width: 20px;
-  max-width: 95%;            /* passt sich mobil an */
+  max-width: 95%;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  animation: fadeInOut 2.5s ease forwards;
-  width: fit-content;        /* Toast passt sich Inhalt an */
-}
-
-/* Smooth fade-in/fade-out */
-@keyframes fadeInOut {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  10% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  90% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
+  pointer-events: auto;
+  justify-content: center;
+  width: auto;
 }
 
 button {
