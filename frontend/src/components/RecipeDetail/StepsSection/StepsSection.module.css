@@ -1,0 +1,176 @@
+/* =========================================
+   STEPS-SECTION
+   ========================================= */
+.detail__section--steps {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+    box-sizing: border-box;
+}
+
+/* --- WICHTIG: Die wiederverwendeten Header-Klassen --- */
+.detail__ingredientsHeaderRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f0f0f0; /* Das ist der fehlende Strich! */
+}
+
+.detail__ingredientsTitle {
+    margin: 0;
+    padding: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1a1a1a;
+}
+
+/* --- KOCHZEIT --- */
+.detail__timeWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background-color: #f5f5f5;
+    padding: 0.35rem 0.75rem;
+    border-radius: 2rem;
+}
+
+.detail__timeIcon {
+    color: #555;
+}
+
+.detail__timeText {
+    font-size: 0.9rem;
+    color: #444;
+    user-select: none;
+}
+
+.detail__timeText strong {
+    font-weight: 800;
+    color: #000;
+    font-size: 1rem;
+}
+
+.detail__timeEditMode {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.detail__timeInput {
+    width: 3rem;
+    padding: 0.3rem;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 0.4rem;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.detail__timeInput:focus {
+    border-color: #272727;
+    background-color: #fff;
+}
+
+/* --- ZUBEREITUNGSSCHRITTE LISTE --- */
+.detail__stepsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+}
+
+.detail__stepRow {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.detail__stepNumber {
+    background: #333;
+    color: white;
+    width: 26px;      
+    height: 26px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    line-height: 0;
+    flex-shrink: 0;
+    padding-bottom: 1px;
+    padding-right: 1px;
+    margin-top: 0px;
+}
+
+.detail__stepsItemText {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #333;
+}
+
+/* --- EDIT MODE --- */
+.detail__stepEditWrapper {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.detail__editTextarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+    resize: vertical;
+    outline: none;
+    min-height: 5rem;
+}
+
+.detail__editTextarea:focus {
+    border-color: #272727;
+    background-color: #fcfcfc;
+}
+
+.detail__btnDeleteSmall {
+    background: transparent;
+    border: none;
+    color: #9e0303;
+    cursor: pointer;
+    padding: 0.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.detail__btnAddStep {
+    margin-top: 0.5rem;
+    background: transparent;
+    border: 2px dashed #ddd;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+}
+
+.detail__btnAddStep:hover {
+    border-color: #aaa;
+    color: #333;
+    background-color: #fafafa;
+}

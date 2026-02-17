@@ -1,0 +1,131 @@
+/* =========================================
+   INGREDIENTS-SECTION
+   ========================================= */
+.detail__section--ingredients {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+    box-sizing: border-box;
+    flex: 1; /* Füllt den Raum im leftWrapper aus */
+}
+
+/* Header Zeile: Zutaten links, Steuerung rechts */
+.detail__ingredientsHeaderRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detail__ingredientsTitle {
+    margin: 0;
+    padding: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1a1a1a;
+}
+
+/* Portionen Steuerung */
+.detail__servingsControl {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #f5f5f5;
+    padding: 0.25rem 0.5rem;
+    border-radius: 2rem; 
+}
+
+.detail__btnServing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    border: none;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+.detail__btnServing:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.detail__servingsText {
+    font-size: 0.9rem;
+    color: #444;
+    min-width: 5rem;
+    text-align: center;
+    user-select: none;
+}
+
+.detail__servingsText strong {
+    font-weight: 800;
+    color: #000;
+    font-size: 1rem;
+}
+
+.detail__ingredientsList {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.detail__ingredientsItem {
+    display: flex;
+    column-gap: 1rem; 
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgb(245, 245, 245);
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.detail__ingredientsItem:last-child {
+    border-bottom: none;
+}
+
+.detail__ingredientsBox {
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.5rem;
+    background-color: #f0f0f0; 
+    color: #111;
+    text-align: center;
+    font-weight: 700;
+    min-width: 4.5rem; 
+    display: inline-block; 
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Hinzufügen Button */
+.detail__btnAddIngredient {
+    margin-top: 0.5rem;
+    background: transparent;
+    border: 2px dashed #ddd;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+}
+
+.detail__btnAddIngredient:hover {
+    border-color: #aaa;
+    color: #333;
+    background-color: #fafafa;
+}

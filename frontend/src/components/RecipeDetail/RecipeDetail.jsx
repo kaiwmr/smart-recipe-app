@@ -2,8 +2,13 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from './RecipeDetail.module.css';
-import { ChevronLeft, Trash2, Edit2, Save, X, Loader2, Minus, Plus, Clock } from 'lucide-react';
+import { X, Loader2, Minus, Plus, Clock } from 'lucide-react';
 import api from '../../api/api';
+import ImageSection from './ImageSection/ImageSection';
+import TitleSection from './TitleSection/TitleSection';
+import NutrientsSection from './NutrientsSection/NutrientsSection';
+import IngredientsSection from './IngredientsSection/IngredientsSection';
+import StepsSection from './StepsSection/StepsSection';
 
 export default function RecipeDetail() {
     const { id } = useParams();
@@ -265,300 +270,60 @@ export default function RecipeDetail() {
     if (isLoading || !recipe) return <Loader2 className={styles.detail__loadingIcon}></Loader2>;
 
     return (
-        <div>
-            <div className={styles.detail__pictureWrapper}>
-                <img
-                    className={styles.detail__picture}
-                    src={`data:image/png;base64,${recipe.image}`}
-                    alt={recipe.title}
-                />
-                
-                <button className={styles.detail__btnBack} onClick={() => navigate("/dashboard")}>
-                    <ChevronLeft size={24} />
-                </button>
-
-                <div className={styles.detail__actions}>
-                    {!isEditing ? (
-                        <>
-                            <button className={styles.detail__btnEdit} onClick={() => toggleEditMode(true)}>
-                                <Edit2 size={20} />
-                            </button>
-                            <button className={styles.detail__btnDelete} onClick={() => deleteRecipe(recipe.id)}>
-                                <Trash2 size={20} />
-                            </button>
-                        </>
-                    ) : (
-                        <div className={styles.detail__editControls}>
-                            <button className={styles.detail__btnSave} onClick={handleSave}>
-                                <Save size={20} />
-                            </button>
-                            <button className={styles.detail__btnCancel} onClick={() => toggleEditMode(false)}>
-                                <X size={20} />
-                            </button>
-                        </div>
-                    )}
-                </div>
-            </div>
+        <div >
+            <ImageSection
+            recipe={recipe}
+            toggleEditMode={toggleEditMode}
+            deleteRecipe={deleteRecipe}
+            isEditing={isEditing}
+            handleSave={handleSave}
+            ></ImageSection>
 
             <div className="app">
-                {/* Titel-Sektion */}
-                <div className={styles.detail__titleContainer}>
-                    {isEditing ? (
-                        <input 
-                            type="text" 
-                            value={editedRecipe.title} 
-                            onChange={(e) => setEditedRecipe({...editedRecipe, title: e.target.value})}
-                            className={styles.detail__editInputTitle}
-                            autoFocus
-                        />
-                    ) : (
-                        <>
-                            <h2 className={styles.detail__title}>{recipe.title}</h2>
-                            <div className={styles.detail__titleAccent}></div>
-                        </>
-                    )}
-                </div>
+                <TitleSection
+                recipe={recipe}
+                isEditing={isEditing}
+                editedRecipe={editedRecipe}
+                setEditedRecipe={setEditedRecipe}
+                ></TitleSection>
 
                 <div className={styles.detail__wrapper}>
                     <div className={styles.detail__leftWrapper}>
                         
                         {/* Nährwerte */}
-                        <div className={styles["detail__section--nutrients"]}>
-                            <div className={styles.detail__nutrientsHeader}>
-                                <h3 className={styles.detail__ingredientsTitle}>Nährwerte</h3>
-                                <span className={styles.detail__nutrientsProPortion}>pro Portion</span>
-                            </div>
-                            
-                            <div className={styles.detail__nutrientsGrid}>
-                                {/* Kalorien */}
-                                <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--cal"]}`}>
-                                    <div className={styles.detail__nutrientsData}>
-                                        {isEditing ? (
-                                            <input 
-                                                type="number"
-                                                value={editedRecipe.content.nutrients.kcal}
-                                                onChange={(e) => updateNutrients(e.target.value, "kcal")}
-                                                className={styles.detail__nutrientsInput}
-                                            />
-                                        ) : (
-                                            <span className={styles.detail__nutrientsValue}>
-                                                {Math.floor(recipe.content.nutrients.kcal / (recipe.content.servings || 1))}
-                                            </span>
-                                        )}
-                                        <span className={styles.detail__nutrientsUnit}>kcal</span>
-                                    </div>
-                                    <span className={styles.detail__nutrientsLabel}>Kalorien</span>
-                                </div>
-                                {/* Protein */}
-                                <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--protein"]}`}>
-                                    <div className={styles.detail__nutrientsData}>
-                                        {isEditing ? (
-                                            <input 
-                                                type="number"
-                                                value={editedRecipe.content.nutrients.protein}
-                                                onChange={(e) => updateNutrients(e.target.value, "protein")}
-                                                className={styles.detail__nutrientsInput}
-                                            />
-                                        ) : (
-                                            <span className={styles.detail__nutrientsValue}>
-                                                {Math.floor(recipe.content.nutrients.protein / (recipe.content.servings || 1))}
-                                            </span>
-                                        )}
-                                        <span className={styles.detail__nutrientsUnit}>g</span>
-                                    </div>
-                                    <span className={styles.detail__nutrientsLabel}>Protein</span>
-                                </div>
-                                {/* Carbs */}
-                                <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--carbs"]}`}>
-                                    <div className={styles.detail__nutrientsData}>
-                                        {isEditing ? (
-                                            <input 
-                                                type="number"
-                                                value={editedRecipe.content.nutrients.carbs}
-                                                onChange={(e) => updateNutrients(e.target.value, "carbs")}
-                                                className={styles.detail__nutrientsInput}
-                                            />
-                                        ) : (
-                                            <span className={styles.detail__nutrientsValue}>
-                                                {Math.floor(recipe.content.nutrients.carbs / (recipe.content.servings || 1))}
-                                            </span>
-                                        )}
-                                        <span className={styles.detail__nutrientsUnit}>g</span>
-                                    </div>
-                                    <span className={styles.detail__nutrientsLabel}>Carbs</span>
-                                </div>
-                                {/* Fett */}
-                                <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--fat"]}`}>
-                                    <div className={styles.detail__nutrientsData}>
-                                        {isEditing ? (
-                                            <input 
-                                                type="number"
-                                                value={editedRecipe.content.nutrients.fat}
-                                                onChange={(e) => updateNutrients(e.target.value, "fat")}
-                                                className={styles.detail__nutrientsInput}
-                                            />
-                                        ) : (
-                                            <span className={styles.detail__nutrientsValue}>
-                                                {Math.floor(recipe.content.nutrients.fat / (recipe.content.servings || 1))}
-                                            </span>
-                                        )}
-                                        <span className={styles.detail__nutrientsUnit}>g</span>
-                                    </div>
-                                    <span className={styles.detail__nutrientsLabel}>Fett</span>
-                                </div>
-                            </div>
-                        </div>
+                        <NutrientsSection
+                        editedRecipe={editedRecipe}
+                        isEditing={isEditing}
+                        recipe={recipe}
+                        updateNutrients={updateNutrients}>
+                        </NutrientsSection>
                         
                         {/* Zutaten & Portionen */}
-                        <div className={styles["detail__section--ingredients"]}>
-                            
-                            {/* Header Zeile: Titel Links, Portionen Rechts */}
-                            <div className={styles.detail__ingredientsHeaderRow}>
-                                <h3 className={styles.detail__ingredientsTitle}>Zutaten</h3>
-                                
-                                {/* Portionen Steuerung */}
-                                <div className={styles.detail__servingsWrapper}>
-                                    {!isEditing ? (
-                                        <div className={styles.detail__servingsControl}>
-                                            <button 
-                                                className={styles.detail__btnServing} 
-                                                onClick={() => updateServings(currentServings - 1)}
-                                                disabled={currentServings <= 1}
-                                            >
-                                                <Minus size={14} />
-                                            </button>
-                                            <span className={styles.detail__servingsText}>
-                                                <strong>{currentServings}</strong> Portionen
-                                            </span>
-                                            <button 
-                                                className={styles.detail__btnServing} 
-                                                onClick={() => updateServings(currentServings + 1)}
-                                            >
-                                                <Plus size={14} />
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <div className={styles.detail__servingsEdit}>
-                                            <input
-                                                type='number'
-                                                className={styles.detail__inputServings}
-                                                value={editedRecipe.content.servings}
-                                                onChange={(e) => updateServings(e.target.value)}
-                                                min="1"
-                                            />
-                                            <span className={styles.detail__servingsLabel}>Portionen</span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
+                        <IngredientsSection
+                        recipe={recipe}
+                        isEditing={isEditing}
+                        editedRecipe={editedRecipe}
+                        updateServings={updateServings}
+                        calculateAmount={calculateAmount}
+                        handleIngredientChange={handleIngredientChange}
+                        deleteIngredient={deleteIngredient}
+                        currentServings={currentServings}
+                        addIngredient={addIngredient}>
+                        </IngredientsSection>
 
-                            {!isEditing ? (
-                                <ul className={styles.detail__ingredientsList}>
-                                    {recipe.content.ingredients.map((ing, index) => (
-                                        <li className={styles.detail__ingredientsItem} key={index}>
-                                            <p className={styles.detail__ingredientsBox}>
-                                                {ing.amount ? `${calculateAmount(ing.amount)} ${ing.unit}` : (ing.unit || "-")}
-                                            </p>
-                                            <span>{ing.name}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                ) : (
-                                    <div className={styles.detail__editIngredientsContainer}>
-                                        {editedRecipe.content.ingredients.map((ing, index) => (
-                                            <div key={index} className={styles.detail__editIngredientRow}>
-                                                <input
-                                                    type='number'
-                                                    placeholder="Menge"
-                                                    className={styles.detail__editIngInputAmount}
-                                                    value={ing.amount || ""}
-                                                    onChange={(e) => handleIngredientChange(index, "amount", e.target.value)}
-                                                />
-                                                <input
-                                                    type='text'
-                                                    placeholder="Einh."
-                                                    className={styles.detail__editIngInputUnit}
-                                                    value={ing.unit}
-                                                    onChange={(e) => handleIngredientChange(index, "unit", e.target.value)}
-                                                />
-                                                <input
-                                                    type='text'
-                                                    placeholder="Zutat"
-                                                    className={styles.detail__editIngInputName}
-                                                    value={ing.name}
-                                                    onChange={(e) => handleIngredientChange(index, "name", e.target.value)}
-                                                />
-                                                <button className={styles.detail__btnDeleteSmall} onClick={() => deleteIngredient(index)}>
-                                                    <X size={16} />
-                                                </button>
-                                            </div>
-                                        ))}
-                                        <button className={styles.detail__btnAddIngredient} onClick={addIngredient}>
-                                            + Zutat hinzufügen
-                                        </button>
-                                    </div>
-                                )}
-                        </div>
                     </div>
 
                     {/* Zubereitung */}
-                    <div className={styles["detail__section--steps"]}>
-                        <div className={styles.detail__ingredientsHeaderRow}>
-                            <h3 className={styles.detail__ingredientsTitle}>Zubereitung</h3>
-                             
-                            {/* Zubereitungszeit */}
-                            <div className={styles.detail__timeWrapper}>
-                                <Clock size={16} className={styles.detail__timeIcon} />
-                                {isEditing ? (
-                                    <div className={styles.detail__timeEditMode}>
-                                        <input 
-                                            type="number" 
-                                            value={editedRecipe.content.cooking_time}
-                                            onChange={(e) => updateCookingTime(e.target.value)}
-                                            className={styles.detail__timeInput}
-                                            min="1"
-                                        />
-                                        <span className={styles.detail__timeText}>Minuten</span>
-                                    </div>
-                                ) : (
-                                    <span className={styles.detail__timeText}>
-                                        {recipe.content.cooking_time >= 60
-                                                ? (<><strong> {Math.round(recipe.content.cooking_time / 30) / 2} </strong> Stunden</>)
-                                                : <><strong>{recipe.content.cooking_time}</strong> Minuten </>}
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                        
-                        <div className={styles.detail__stepsContainer}>
-                            {(isEditing ? editedRecipe.content.steps : recipe.content.steps).map((step, index) => (
-                                <div key={index} className={styles.detail__stepRow}>
-                                    <span className={styles.detail__stepNumber}>{index + 1}</span>
-                                    
-                                    {isEditing ? (
-                                        <div className={styles.detail__stepEditWrapper}>
-                                            <textarea 
-                                                value={step}
-                                                onChange={(e) => handleStepChange(index, e.target.value)}
-                                                rows={3}
-                                                className={styles.detail__editTextarea}
-                                            />
-                                            <button className={styles.detail__btnDeleteSmall} onClick={() => deleteStep(index)}>
-                                                <X size={16} />
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <p className={styles.detail__stepsItemText}>{step}</p>
-                                    )}
-                                </div>
-                            ))}
-                            {isEditing && (
-                                <button className={styles.detail__btnAddStep} onClick={addStep}>
-                                    + Schritt hinzufügen
-                                </button>
-                            )}
-                        </div>
-                    </div>
+                    <StepsSection
+                    isEditing={isEditing}
+                    recipe={recipe}
+                    editedRecipe={editedRecipe}
+                    updateCookingTime={updateCookingTime}
+                    handleStepChange={handleStepChange}
+                    deleteStep={deleteStep}
+                    addStep={addStep}>
+                    </StepsSection>
+    
                 </div>
 
                 {recipe.url && (

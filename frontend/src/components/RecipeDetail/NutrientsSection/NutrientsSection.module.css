@@ -1,0 +1,78 @@
+/* =========================================
+   NUTRIENTS-SECTION
+   ========================================= */
+.detail__section--nutrients {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+.detail__nutrientsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+}
+
+.detail__nutrientsProPortion {
+    font-size: 0.85rem;
+    color: #888;
+    font-weight: 500;
+}
+
+.detail__nutrientsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+.detail__nutrientsCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 0.2rem;
+    border-radius: 0.75rem;
+    text-align: center;
+}
+
+.detail__nutrientsValue {
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.detail__nutrientsLabel {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-top: 0.25rem; 
+}
+
+.detail__nutrientsInput {
+    width: 2.5rem;
+    padding: 0.1rem;
+    text-align: center;
+    font-weight: 800;
+    border: 1px dashed rgba(0,0,0,0.2);
+    border-radius: 0.25rem;
+    outline: none;
+    appearance: textfield; 
+}
+
+.detail__nutrientsCard--cal { background-color: #fff0f0; color: #d32f2f; }
+.detail__nutrientsCard--protein { background-color: #f0f8ff; color: #1976d2; }
+.detail__nutrientsCard--carbs { background-color: #f1f8e9; color: #388e3c; }
+.detail__nutrientsCard--fat { background-color: #fcf9d9; color: #f57f17; }
+
+@media (max-width: 768px) {
+    .detail__nutrientsGrid { gap: 0.25rem; }
+    .detail__nutrientsValue { font-size: 0.95rem; }
+}

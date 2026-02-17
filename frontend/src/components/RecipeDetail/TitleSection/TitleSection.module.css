@@ -1,0 +1,47 @@
+/* =========================================
+   TITLE-SECTION
+   ========================================= */
+.detail__titleContainer {
+    margin: 0.5rem 0 1.5rem 0; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 1rem;
+}
+
+.detail__title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #1a1a1a;
+    letter-spacing: -0.5px; 
+    margin: 0;
+}
+
+.detail__titleAccent {
+    width: 3rem;
+    height: 4px;
+    background-color: #5f5f5f; 
+    border-radius: 2px;
+    margin-top: 1rem;
+}
+
+.detail__editInputTitle {
+    font-size: 2.5rem;
+    font-weight: 800;
+    width: 100%;
+    text-align: center;
+    border: none;
+    border-bottom: 2px dashed #ccc;
+    outline: none;
+    font-family: inherit;
+    background: transparent;
+    padding-bottom: 5px;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
+}
+
+.detail__editInputTitle:focus {
+    border-bottom-color: #272727;
+}
