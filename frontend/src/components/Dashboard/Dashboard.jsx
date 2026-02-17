@@ -3,22 +3,27 @@ import styles from './Dashboard.module.css';
 import Searchbar from '../Searchbar/Searchbar';
 import Popup from '../Popup/Popup';
 import Header from '../Header/Header';
-import { Clock, Loader2, Leaf } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 import { logout } from '../../utils/auth';
+import RecipeCard from './RecipeCard/RecipeCard';
+import TagFilter from './TagFilter/TagFilter';
 
 export default function Dashboard() {
+    // State-Initialisierung
     const [recipes, setRecipes] = useState([]);
     const [search, setSearch] = useState("");
     const [showPopup, setShowPopup] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [selected, setSelected] = useState([])
     const navigate = useNavigate();
+
+    // Festgelegte Filter-Optionen
     const tags = ["high protein", "< 30min", "vegetarisch", "vegan", "Hauptspeise", "Dessert", "Frühstück", "Backen"];
 
-    const fetchRecipes = async () => {
-            
+    // API-Interaktion
+    const fetchRecipes = async () => {   
         try {
             const response = await api.get("/recipes/");
             setRecipes(response.data);
@@ -31,44 +36,27 @@ export default function Dashboard() {
         }
     };
 
-    // Dieser Effekt läuft genau 1x beim Start (wegen dem leeren Array [] am Ende)
-    useEffect(() => { fetchRecipes() }, []); // <--- Das leere Array ist wichtig!
+    // Lädt die Rezepte einmalig beim ersten Rendern
+    useEffect(() => { fetchRecipes() }, []); 
 
+    // Logik für die Filter Auswahl
     const toggleFilter = (filter) => {
     selected.includes(filter)
-        ? setSelected(selected.filter(f => f !== filter))
-        : setSelected([...selected, filter]);
+        ? setSelected(selected.filter(f => f !== filter)) // Tag entfernen
+        : setSelected([...selected, filter]);            // Tag hinzufügen
     };
-
 
     return (
         <div>
             <Header handleLogout={logout}></Header>
             <div className='app'>
+                {/* Obere Sektion: Suche und Filter Tags */}
                 <Searchbar search={search} setSearch={setSearch} showPopup={showPopup} setShowPopup={setShowPopup}></Searchbar>
-                <div className={styles.dashboard__filterWrapper}>
-                {tags.map(tag => {
-                    // Prüfen, ob der Tag aktiv ist
-                    const isActive = selected.includes(tag);
-                    
-                    return (
-                        <button
-                            key={tag}
-                            value={tag}
-                            onClick={() => toggleFilter(tag)}
-                            className={`
-                                ${styles.dashboard__btnFilter} 
-                                ${isActive ? styles.dashboard__btnFilterActive : ''}
-                            `}
-                        >
-                            {tag}
-                        </button>
-                    );
-                })}
-            </div>
+                <TagFilter tags={tags} toggleFilter={toggleFilter} selected={selected}></TagFilter>
 
                 <Popup showPopup={showPopup} setShowPopup={setShowPopup} onRecipeAdded={fetchRecipes}></Popup>
                 
+                {/* Ladeanzeige oder Leermeldung */}
                 {isLoading 
                     ? (<Loader2 className={styles.dashboard__loadingIcon}></Loader2>) 
                     : (recipes.length === 0 
@@ -76,33 +64,17 @@ export default function Dashboard() {
                         : null)
                 }
 
-                {/* Das Gitter für die Karten */}
+                {/* Hauptbereich: Gefilterte Rezept Karten */}
                 <div className={styles.dashboard__grid}>
                     {recipes
-                        .filter(item => item.title.toLowerCase().includes(search.toLowerCase()) && selected.every(tag => item.content.tags.includes(tag)))
+                        .filter(item => 
+                            item.title.toLowerCase().includes(search.toLowerCase()) && 
+                            selected.every(tag => item.content.tags.includes(tag))
+                        )
                         .map(recipe => (
-                        <div key={recipe.id} className={styles.dashboard__card} onClick={() => navigate(`/recipe/${recipe.id}`)}> 
-                            <img className={styles.dashboard__picture} src={`data:image/png;base64,${recipe.image}`} alt={recipe.title} loading="lazy"></img>
-                            <div className={styles.dashboard__cardContent}>
-                                <h3>{recipe.title}</h3>
-                                <div className={styles.dashboard__cardContentDetailsWrapper}>
-                                    <div className={styles.dashboard__cookingTimeBox}>
-                                        <Clock size={14}></Clock>
-                                        <span>
-                                            {recipe.content.cooking_time >= 60
-                                                ? `${Math.round(recipe.content.cooking_time / 30) / 2} std`
-                                                : `${recipe.content.cooking_time} min`}
-                                        </span>
-                                    </div>
-                                    {recipe.content.tags.some(tag => ["vegan", "vegetarisch"].includes(tag)) && (
-                                    <div className={styles.dashboard__veganBox}>
-                                        <Leaf size={13} strokeWidth={2.5} />
-                                    </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                            <RecipeCard key={recipe.id} recipe={recipe} />
+                        ))
+                    }
                 </div>
             </div>
         </div>

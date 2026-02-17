@@ -1,0 +1,57 @@
+/* =========================================
+   TAG-FILTER STYLES
+   ========================================= */
+
+.dashboard__filterWrapper {
+    display: flex;
+    align-items: center;  
+    overflow-x: auto;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 0; 
+    padding-top: 0.25rem;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* Edge */
+}
+
+.dashboard__filterWrapper::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.dashboard__filterWrapper::after {
+    content: "";
+    display: block;
+    min-width: 1rem; 
+    height: 1px;
+}
+
+.dashboard__btnFilter {
+    padding: 0.6rem 1.2rem;
+    border-radius: 2rem;
+    background-color: rgb(243, 243, 243);
+    color: #4b5563;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    margin-right: 0.75rem; 
+    border: none;
+    cursor: pointer;
+}
+
+.dashboard__btnFilter:last-of-type {
+    margin-right: 0;
+}
+
+.dashboard__btnFilter:hover {
+    transform: translateY(-1px);
+}
+
+.dashboard__btnFilterActive {
+    background-color: rgb(20, 20, 20);
+    color: white; 
+    transform: translateY(-1px);
+}
