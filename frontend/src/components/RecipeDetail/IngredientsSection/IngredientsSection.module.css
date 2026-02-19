@@ -1,6 +1,7 @@
 /* =========================================
-   INGREDIENTS-SECTION
+   INGREDIENTS SECTION (Anzeige)
    ========================================= */
+
 .detail__section--ingredients {
     display: flex;
     flex-direction: column;
@@ -10,7 +11,7 @@
     padding: 1.25rem;
     box-shadow: 0 5px 20px rgba(0,0,0,0.10);
     box-sizing: border-box;
-    flex: 1; /* Füllt den Raum im leftWrapper aus */
+    flex: 1; 
 }
 
 /* Header Zeile: Zutaten links, Steuerung rechts */
@@ -75,6 +76,7 @@
     font-size: 1rem;
 }
 
+/* Zutatenliste */
 .detail__ingredientsList {
     display: flex;
     flex-direction: column;
@@ -110,7 +112,90 @@
     font-size: 0.95rem;
 }
 
-/* Hinzufügen Button */
+
+/* =========================================
+   INGREDIENTS SECTION (Edit Mode)
+   ========================================= */
+
+/* Edit Mode Servings */
+.detail__servingsEdit {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.detail__inputServings {
+    width: 3.5rem;
+    padding: 0.4rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1rem;
+    outline: none;
+}
+
+.detail__inputServings:focus {
+    border-color: #272727;
+    background-color: #fcfcfc;
+}
+
+.detail__servingsLabel {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Edit Mode Zutaten-Inputs */
+.detail__editIngredientsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.detail__editIngredientRow {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.25rem;
+    align-items: center;
+}
+
+.detail__editIngInputAmount { width: 4rem; }
+.detail__editIngInputUnit { width: 4rem; }
+.detail__editIngInputName { flex: 1; min-width: 0; }
+
+.detail__editIngInputAmount, 
+.detail__editIngInputUnit, 
+.detail__editIngInputName {
+    padding: 0.4rem;
+    border: 1px solid #ddd;
+    border-radius: 0.4rem;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.detail__editIngInputAmount:focus, 
+.detail__editIngInputUnit:focus, 
+.detail__editIngInputName:focus {
+    border-color: #272727;
+    background-color: #fcfcfc;
+}
+
+/* Hilfsklassen Buttons (Hinzufügen / Löschen) */
+.detail__btnDeleteSmall {
+    background: transparent;
+    border: none;
+    color: #9e0303;
+    cursor: pointer;
+    padding: 0.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.detail__btnDeleteSmall:hover {
+    color: #cc0000;
+}
+
 .detail__btnAddIngredient {
     margin-top: 0.5rem;
     background: transparent;
@@ -128,4 +213,23 @@
     border-color: #aaa;
     color: #333;
     background-color: #fafafa;
+}
+
+/* =========================================
+   MOBILE ANPASSUNGEN
+   ========================================= */
+@media (max-width: 480px) {
+    .detail__ingredientsHeaderRow {
+        flex-direction: row; 
+    }
+    
+    .detail__ingredientsTitle {
+        font-size: 1.25rem;
+    }
+    
+    .detail__servingsText {
+        font-size: 0.8rem;
+        min-width: auto;
+        padding: 0 0.5rem;
+    }
 }

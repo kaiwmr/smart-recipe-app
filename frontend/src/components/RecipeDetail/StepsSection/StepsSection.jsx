@@ -1,7 +1,7 @@
-import { Clock } from "lucide-react";
+import { Clock, X } from "lucide-react";
 import styles from "./StepsSection.module.css";
 
-export default function StepsSection( {isEditing, recipe, editedRecipe, updateCookingTime, handleStepChange, deleteStep, add} ) {
+export default function StepsSection( {isEditing, recipe, editedRecipe, updateCookingTime, handleStepChange, deleteStep, addStep} ) {
     return(
         <div className={styles["detail__section--steps"]}>
             <div className={styles.detail__ingredientsHeaderRow}>

@@ -5,8 +5,12 @@ export default function NutrientsSection( {editedRecipe, isEditing, recipe, upda
     return(
         <div className={styles["detail__section--nutrients"]}>
             <div className={styles.detail__nutrientsHeader}>
-                <h3 className={styles.detail__ingredientsTitle}>Nährwerte</h3>
-                <span className={styles.detail__nutrientsProPortion}>pro Portion</span>
+                <h3 className={styles.detail__nutrientsTitle}>Nährwerte</h3>
+                {isEditing ? (
+                    <span className={styles.detail__nutrientsProPortion}>Gesamt</span>
+                ) : (
+                    <span className={styles.detail__nutrientsProPortion}>pro Portion</span>
+                )}
             </div>
             
             <div className={styles.detail__nutrientsGrid}>

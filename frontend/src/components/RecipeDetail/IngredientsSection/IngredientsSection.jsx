@@ -1,4 +1,4 @@
-import { Minus, Plus } from 'lucide-react';
+import { Minus, Plus, X } from 'lucide-react';
 import styles from './IngredientsSection.module.css';
 
 export default function IngredientsSection( {recipe, isEditing, editedRecipe, updateServings, calculateAmount, handleIngredientChange, deleteIngredient, currentServings, addIngredient}){

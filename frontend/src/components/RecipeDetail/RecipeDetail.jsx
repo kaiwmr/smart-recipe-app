@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from './RecipeDetail.module.css';
-import { X, Loader2, Minus, Plus, Clock } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import api from '../../api/api';
 import ImageSection from './ImageSection/ImageSection';
 import TitleSection from './TitleSection/TitleSection';
 import NutrientsSection from './NutrientsSection/NutrientsSection';
 import IngredientsSection from './IngredientsSection/IngredientsSection';
 import StepsSection from './StepsSection/StepsSection';
+import validateRecipeUpdate from '../../utils/validateRecipeUpdate';
 
 export default function RecipeDetail() {
     const { id } = useParams();
@@ -53,52 +54,14 @@ export default function RecipeDetail() {
 
     const handleSave = async () => {
         // 1. Validierungsprozess
-        if (!editedRecipe.title.trim()) {
-            toast.error("Das Rezept braucht einen Titel.");
+        const errorMessage = validateRecipeUpdate(editedRecipe);
+        
+        if (errorMessage) {
+            toast.error(errorMessage)
             return;
         }
 
-        if (editedRecipe.content.ingredients.length === 0) {
-            toast.error("Das Rezept muss Zutaten beinhalten.");
-            return;
-        }
-
-        if (editedRecipe.content.steps.length === 0) {
-            toast.error("Das Rezept muss Zubereitungsschritte beinhalten.");
-            return;
-        }
-
-        const hasInvalidIngredient = editedRecipe.content.ingredients.some(ing => !ing.name.trim());
-        if (hasInvalidIngredient) {
-            toast.error("Alle Zutaten müssen einen Namen haben.");
-            return;
-        }
-
-        const cookingTime = parseInt(editedRecipe.content.cooking_time);
-        if (isNaN(cookingTime) || cookingTime <= 0) {
-            toast.error("Ungültige Zubereitungszeit.");
-            return;
-        }
-
-        for (const key in editedRecipe.content.nutrients) {
-            const value = editedRecipe.content.nutrients[key];
-            const parsedValue = parseInt(value);
-
-            if (value === "" || isNaN(parsedValue)) {
-                toast.error(`Bitte gib einen Wert für ${key} ein.`);
-                return;
-            }
-            if (parsedValue < 0) {
-                toast.error(`${key} darf nicht negativ sein.`);
-                return;
-            }
-        }
-
-        const servings = parseInt(editedRecipe.content.servings);
-        if (isNaN(servings) || servings <= 0) {
-            toast.error("Ungültige Portionsanzahl.");
-            return;
-        }
+        // 2. API Call
         try {
             const payload = {
                 title: editedRecipe.title,
@@ -107,7 +70,7 @@ export default function RecipeDetail() {
                 image: editedRecipe.image
             };
 
-            const response = await api.put(`/recipes/${id}`,payload);
+            const response = await api.put(`recipes/${id}`,payload);
 
             setRecipe(response.data);
             setCurrentServings(response.data.content.servings || 1);
@@ -271,6 +234,7 @@ export default function RecipeDetail() {
 
     return (
         <div >
+            {/* Bild + Buttons */}
             <ImageSection
             recipe={recipe}
             toggleEditMode={toggleEditMode}
@@ -280,6 +244,7 @@ export default function RecipeDetail() {
             ></ImageSection>
 
             <div className="app">
+                {/* Titel */}
                 <TitleSection
                 recipe={recipe}
                 isEditing={isEditing}
@@ -323,9 +288,9 @@ export default function RecipeDetail() {
                     deleteStep={deleteStep}
                     addStep={addStep}>
                     </StepsSection>
-    
                 </div>
 
+                {/* Original Link */}
                 {recipe.url && (
                     <div className={styles.detail__sourceContainer}>
                         <a href={recipe.url} target="_blank" rel="noreferrer" className={styles.detail__btnSource}>
