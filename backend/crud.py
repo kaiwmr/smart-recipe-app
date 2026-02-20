@@ -1,8 +1,7 @@
 from typing import Optional
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
-import models
-import schemas
+import models, schemas
 from typing import List
 
 # Setup für das Passwort-Hashing

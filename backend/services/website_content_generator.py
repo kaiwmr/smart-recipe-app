@@ -1,6 +1,6 @@
 import httpx
 from bs4 import BeautifulSoup
-import services.ai_content_normalizer as ai_content_normalizer
+from services import ai_content_normalizer
 
 
 async def scrape_and_generate(url: str) -> dict:

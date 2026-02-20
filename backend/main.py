@@ -1,18 +1,17 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-import models
-import schemas
-import crud
-import services.website_content_generator as website_content_generator
-import services.tiktok_content_generator as tiktok_content_generator
-from database import engine, SessionLocal
+import models, schemas, crud
+from services import website_content_generator
+from services import tiktok_content_generator
+from database import engine, get_db
 from jose import jwt
 from datetime import datetime, timedelta, timezone
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from typing import List
 import os
 from dotenv import load_dotenv
+
 
 
 load_dotenv()
@@ -45,16 +44,6 @@ def create_access_token(data:dict) -> str:
     token = jwt.encode(data_copy, key= SECRET_KEY, algorithm=ALGORITHM)
 
     return token
-
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> models.User:

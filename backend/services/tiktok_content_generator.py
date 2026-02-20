@@ -1,7 +1,7 @@
 import os
 from openai import AsyncOpenAI
 import tempfile
-import services.ai_content_normalizer as ai_content_normalizer
+from services import ai_content_normalizer
 from dotenv import load_dotenv
 import httpx
 import yt_dlp
