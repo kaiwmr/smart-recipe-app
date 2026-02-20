@@ -1,3 +1,6 @@
+/* =========================================
+   1. LOGIN-SEITE: HAUPT-CONTAINER
+   ========================================= */
 .login {
     height: 100vh;
     display: flex;
@@ -5,13 +8,16 @@
     align-items: center;
 }
 
+/* Mobile Anpassung */
 @media (max-width: 768px) {
     .login {
         align-items: flex-start;
-
     }
 }
 
+/* =========================================
+   2. LOGIN-BOX
+   ========================================= */
 .login__box {
     background-color: white;
     min-width: 20rem;
@@ -23,6 +29,7 @@
     align-items: center;
 }
 
+/* Mobile Anpassung */
 @media (max-width: 768px) {
     .login__box {
         width: 100%;
@@ -33,12 +40,18 @@
     }
 }
 
+/* =========================================
+   3. LOGO
+   ========================================= */
 .login__logo {
     height: 3rem;
     width: auto;
     margin-bottom: 3rem;
 }
 
+/* =========================================
+   4. INPUT-FELDER
+   ========================================= */
 .login__input {
     width: 100%;
     box-sizing: border-box;
@@ -51,6 +64,7 @@
     margin-top: 1.5rem;
 }
 
+/* Passwortfeld mit Icon */
 .login__inputPassword {
     display: flex;
     align-items: center;
@@ -79,6 +93,9 @@
     cursor: pointer;
 }
 
+/* =========================================
+   5. LOGIN-BUTTON
+   ========================================= */
 .login__button {
     background-color: rgb(20, 20, 20);
     color: white;
@@ -93,10 +110,12 @@
     cursor: pointer;
 }
 
-.login__authSelection{
+/* =========================================
+   6. AUTH-SELECTION
+   ========================================= */
+.login__authSelection {
     margin-top: 2rem;
     width: 100%;
-
 }
 
 .login__authSelectionButton {
@@ -107,15 +126,16 @@
     cursor: pointer;
     padding: 0.5rem;
     font-size: 1rem;
-
 }
 
 .login__authSelectionButtonActive {
     border-bottom-color: rgb(20, 20, 20); /* Active-Style */
     font-weight: bold;
-
 }
 
+/* =========================================
+   7. ERWEITERBARE ELEMENTE (Invite Code Input)
+   ========================================= */
 .expandable {
     width: 100%;
     max-height: 0;
@@ -125,6 +145,6 @@
 }
 
 .expandableActive {
-    max-height: 5rem; /* Genug Platz für Input (2.5rem) + Margin (1.5rem) */
+    max-height: 5rem; /* Genug Platz für Input + Margin */
     opacity: 1;
 }

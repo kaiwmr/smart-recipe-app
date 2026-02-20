@@ -1,4 +1,6 @@
-/* Der Hauptcontainer bleibt gleich */
+/* =========================================
+   1. HAUPT-CONTAINER
+   ========================================= */
 .search {
     display: flex;
     align-items: center;
@@ -6,6 +8,9 @@
     width: 100%;
 }
 
+/* =========================================
+   2. BASIS-STYLES FÜR INPUT & BUTTON
+   ========================================= */
 /* Gemeinsame Basis */
 .search__inputWrapper, 
 .search__btnAdd {
@@ -16,29 +21,30 @@
     align-items: center; /* Vertikale Zentrierung */
 }
 
+/* Input-Wrapper */
 .search__inputWrapper {
     flex: 1;
     background-color: #ececec;
     padding: 0 1rem; 
 }
 
-/* Das Eingabefeld (Input) */
+/* Eingabefeld */
 .search__input {
     flex: 1;
     height: 100%;
-    background: transparent; /* !important falls nötig gegen index.css */
-    border: none;           /* Entfernt den 1px Rahmen aus index.css */
+    background: transparent;
+    border: none;        
     outline: none;
     font-size: 1rem;
     color: #374151;
 }
 
-/* Der Button */
+/* Button */
 .search__btnAdd {
     background-color: rgb(20, 20, 20);
     color: #ffffff;
-    border: none; /* Entfernt Rahmen */
-    padding: 0 1.25rem; /* Überschreibt die 10px aus index.css */
+    border: none;            /* Entfernt Rahmen */
+    padding: 0 1.25rem;      /* Überschreibt default padding */
     font-size: 1rem;
     font-weight: 1000;
     white-space: nowrap;
@@ -47,7 +53,9 @@
     cursor: pointer;
 }
 
-/* Icon-Ausrichtung */
+/* =========================================
+   3. ICON STYLES
+   ========================================= */
 .search__icon {
     display: flex;
     align-items: center;

@@ -1,60 +1,69 @@
+/* =========================================
+   1. GLOBAL STYLES & BODY
+   ========================================= */
 body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #fafafa;
-  color: #333;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fafafa;
+    color: #333;
 }
 
-/* Entfernt die Standard-Abstände von Überschriften, die das Layout verzerren */
+/* Überschriften-Resets */
 h1, h2, h3 {
-  margin: 0.25rem;
+    margin: 0.25rem;
 }
 
-/* Haupt-App-Container */
+/* =========================================
+   2. HAUPT-APP CONTAINER
+   ========================================= */
 .app {
-  max-width: 90%;
-  margin: 0 auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;        /* 👈 Zentraler Abstand für alle Elemente (ca. 24px) */
+    max-width: 90%;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;       /* Zentraler Abstand für alle Elemente */
 }
 
-/* Container: sorgt für Abstand zu allen Seiten und zentriert Toasts */
+/* =========================================
+   3. TOASTIFY
+   ========================================= */
+/* Toast Container: Abstand und horizontale Zentrierung */
 .Toastify__toast-container {
-  padding: 1rem;           /* Abstand zu Bildschirmrändern */
-  width: 100%;              /* ganze Breite verfügbar */
-  display: flex;
-  justify-content: center;  /* Toasts horizontal zentrieren */
-  box-sizing: border-box;
+    padding: 1rem;           
+    width: 100%;          
+    display: flex;
+    justify-content: center;  
+    box-sizing: border-box;
 }
 
 /* Das eigentliche Toast */
 .app__toast {
-  background: black;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 2rem;
-  font-size: 0.9rem;
-  min-width: 20px;
-  max-width: 95%;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  pointer-events: auto;
-  justify-content: center;
-  width: auto;
+    background: black;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    min-width: 20px;
+    max-width: 95%;          
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    pointer-events: auto;
+    justify-content: center;
+    width: auto;
 }
 
+/* =========================================
+   4. BUTTONS
+   ========================================= */
 button {
-  all: unset;
-  -webkit-appearance: none;
-  appearance: none;
-  box-sizing: border-box;
-  cursor: pointer;
-  user-select: none;
-  text-align: center;
-  font-family: inherit;
-  
-  /* Optional: Standard-Verhalten für Touch-Geräte */
-  -webkit-tap-highlight-color: transparent; 
+    all: unset;
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent; 
 }

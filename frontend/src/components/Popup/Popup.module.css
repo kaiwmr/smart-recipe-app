@@ -1,3 +1,6 @@
+/* =========================================
+   1. POPUP-OVERLAY
+   ========================================= */
 .popup {
     position: fixed;
     top: 0;
@@ -9,19 +12,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: fadeIn 0.3s ease-out; /* Hintergrund blendet sanft ein */
+    animation: fadeIn 0.3s ease-out; 
 }
 
+/* =========================================
+   2. POPUP-MODAL
+   ========================================= */
 .popup__modal {
     background: white;
     padding: 1.25rem;
     border-radius: 1rem;
     width: 90%;
-    box-sizing: border-box; /* WICHTIG: Padding wird jetzt IN die 90% eingerechnet */
-    max-width: 35rem; /* Wird auf dem PC nicht breiter als ca. 400px */
-    animation: popIn 0.3s; /* Fenster ploppt leicht auf */
+    max-width: 35rem;     
+    box-sizing: border-box;   
+    animation: popIn 0.3s;    
 }
 
+/* =========================================
+   3. CLOSE BUTTON
+   ========================================= */
 .popup__btnClose {
     cursor: pointer;
     transition: transform 0.5s;
@@ -29,25 +38,33 @@
 }
 
 .popup__btnClose:hover {
-  transform: scale(1.1);  /* leichtes Vergrößern beim Hover */
+    transform: scale(1.1);  
 }
 
+/* =========================================
+   4. HEADER
+   ========================================= */
 .popup__header {
-  display: flex;           /* macht eine Reihe */
-  align-items: center;     /* vertikal zentrieren */
-  justify-content: space-between; /* Text links, Icon rechts */
-  gap: 1rem;               /* optional: Abstand zwischen Text und Icon */
+    display: flex;                  
+    align-items: center;          
+    justify-content: space-between;  
+    gap: 1rem;                       
 }
 
 .popup__header h2 {
     margin: 0;
 }
 
+/* =========================================
+   5. FORM
+   ========================================= */
 .popup__form {
-    margin-top: 2rem; /* Abstand zur Überschrift */
+    margin-top: 2rem; 
 }
 
-/* Definition der Animationen */
+/* =========================================
+   6. ANIMATIONEN
+   ========================================= */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
