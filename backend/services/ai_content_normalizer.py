@@ -12,6 +12,70 @@ load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
 
+# --- RECIPE SCHEMA ---
+recipe_schema = {
+    "type": "OBJECT",
+    "required": ["title", "visual_summary", "content"],
+    "properties": {
+        "title": {"type": "STRING"},
+        "visual_summary": {"type": "STRING"},
+        "content": {
+            "type": "OBJECT",
+            "required": ["servings", "ingredients", "steps", "cooking_time", "tags", "nutrients"],
+            "properties": {
+                "servings": {"type": "NUMBER"},
+                "cooking_time": {"type": "NUMBER"},
+                "nutrients": {"type": "NULL"}, 
+                "steps": {
+                    "type": "ARRAY",
+                    "items": {"type": "STRING"}
+                },
+                "tags": {
+                    "type": "ARRAY",
+                    "items": {
+                        "type": "STRING",
+                        "enum": ["vegan", "vegetarisch", "Hauptspeise", "Frühstück", "Dessert", "Backen"]
+                    }
+                },
+                "ingredients": {
+                    "type": "ARRAY",
+                    "items": {
+                        "type": "OBJECT",
+                        "required": ["name", "id_slug", "search_term", "amount", "unit", "est_weight_g", "per_100g"],
+                        "properties": {
+                            "name": {"type": "STRING"},
+                            "id_slug": {"type": "STRING"},
+                            "search_term": {"type": "STRING"},
+                            "amount": {"type": "NUMBER", "nullable": True},
+                            "unit": {
+                                "type": "STRING", 
+                                "nullable": True, # Erlaubt null als Wert
+                                "enum": ["g", "kg", "ml", "l", "EL", "TL", "Prise", "Stück", "Bund", "Scheibe", "Blatt"]
+                            },
+                            "est_weight_g": {"type": "NUMBER"},
+                            "per_100g": {
+                                "type": "OBJECT",
+                                "required": ["kcal", "protein", "fat", "saturated_fat", "carbs", "sugar", "fiber", "salt"],
+                                "properties": {
+                                    "kcal": {"type": "NUMBER"},
+                                    "protein": {"type": "NUMBER"},
+                                    "fat": {"type": "NUMBER"},
+                                    "saturated_fat": {"type": "NUMBER"},
+                                    "carbs": {"type": "NUMBER"},
+                                    "sugar": {"type": "NUMBER"},
+                                    "fiber": {"type": "NUMBER"},
+                                    "salt": {"type": "NUMBER"}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 # --- SYSTEM INSTRUCTION ---
 SYSTEM_INSTRUCTION = """
     ROLLE:
@@ -22,14 +86,17 @@ SYSTEM_INSTRUCTION = """
     STYLE GUIDE (Befolge diese Regeln strikt!):
 
     1. SPRACHE REGELN:
+    - DEUTSCH: 'title', 'steps', 'tags' und 'ingredients[].name'.
+    - ENGLISCH: 'visual_summary', 'id_slug' und 'search_term'.
     - Schreibe jeden Arbeitsschritt im Imperativ (Du-Form).
     - Verwende NIEMALS Passivformen.
 
     2. MENGEN REGELN:
     - Wandle Brüche in Dezimalzahlen um (1/2 → 0.5).
-    - Verwende ausschließlich diese units: g, kg, ml, l, EL, TL, Prise, Stück, Bund, Scheibe, Blatt
     - Falls keine Einheit angegeben ist, lasse sie LEER.
-    - Wenn die Original-Einheit (z.B. cup, oz, lb) nicht in der erlaubten Liste steht, konvertiere die Menge in 'g' oder 'ml' und nutze diese als Einheit.
+    - Einheiten dürfen nie alleine stehen, wenn eine Einheit vorhanden ist brauchst du auch zwangsweise eine Menge.
+    - Wenn die Original-Einheit (z.B. cup, oz, lb, Dose, Packung, Glas, Tasse, Pck.) nicht in der erlaubten Liste steht, KONVERTIERE die Menge zwingend in 'g' oder 'ml'. 
+    - Beispiel-Konvertierung: "1 Dose Bohnen" -> 240 g Bohnen, "1 Packung Feta" -> 200 g Feta, "1 cup Reis" -> 185 g Reis, "1 Pck. Vanillezucker" -> 8 g Vanillezucker.
     - Schätze für jede Zutat zusätzlich das Gewicht in Gramm (est_weight_g), welches man tatsächlich verzehrt (z.B. Frittieröl nur bruchteilig verrechnen) und stelle sicher, dass es immer größer als 0 ist.
 
     3. INHALT REGELN:
@@ -38,8 +105,11 @@ SYSTEM_INSTRUCTION = """
     - Fasse logisch zusammengehörige Schritte zusammen.
     - Schätze wie viele Minuten die Zubereitung in Minuten braucht (5er Schritte).
     - Erzeuge einen "search_term" für jede Zutat (einfacher, generischer, englischer Begriff für Datenbankabgleiche).
-    - Liefere geschätzte Nährwerte "per_100g" für jede Zutat (Ausgangszustand/unverarbeitet) als Fallback (Details siehe Output Format).
-    - Wähle für jedes Rezept alle passenden Tags aus. Die möglichen Tags sind ausschließlich (wenn ein Rezept vegan ist, es natürlich auch vegetarisch): vegan, vegetarisch, Hauptspeise, Frühstück, Dessert, Backen
+    - Liefere geschätzte Nährwerte "per_100g" für jede Zutat (Ausgangszustand/unverarbeitet) als Fallback.
+    - TAG-LOGIK:
+        * Prüfe vor dem Taggen die Zutaten. Wenn Fleisch (Rind, Schwein, Geflügel, Speck, Schinken, etc.) oder Fisch enthalten ist, lösche die Tags "vegan" und "vegetarisch" zwingend.
+        * Jedes Rezept erhält genau eine primäre Mahlzeiten-Kategorie: Hauptspeise, Frühstück oder Dessert. Wähle die Kategorie, die am besten beschreibt, wie das Gericht primär verzehrt wird. Diese schließen sich gegenseitig aus.
+        * Nutze 'Backen' nur, wenn ein Teig im Ofen gegart/gebacken wird.
     - Schätze eine sinnvolle Anzahl an Portionen (servings) für das Gericht, basierend auf den Zutatenmengen für durchschnittliche Erwachsene. Übernehme, wenn vorhanden, NICHT blind die Angabe von der Quelle.
 
     4. TITEL REGELN:
@@ -67,7 +137,6 @@ SYSTEM_INSTRUCTION = """
     - BEISPIELE ZUR ORIENTIERUNG:
         * "Natives Olivenöl Extra" -> "olive-oil"
         * "Frische rote Paprikaschote" -> "bell-pepper"
-        * "Gemischtes Hackfleisch" -> "mixed-mince"
         * "Hähnchenbrustfilet (Bio)" -> "chicken-breast"
         * "Fettarme Milch (1,5%)" -> "low-fat-milk"
         * "Getrocknete Tomaten (ohne Öl)" -> "dried-tomato"
@@ -76,48 +145,38 @@ SYSTEM_INSTRUCTION = """
     - FEHLER-FALLBACK:
         Wenn eine Zutat nicht eindeutig ist, wähle den kürzestmöglichen, allgemeinsten englischen Begriff der Hauptzutat.
 
-    OUTPUT FORMAT:
+    6. VISUAL_SUMMARY REGELN:
+    - Es ist KEIN KI-Prompt, sondern eine sachliche, präzise Beschreibung des fertigen Gerichts.
+    - Beschreibe ausschließlich das Endergebnis, nicht die Zubereitung.
+    - Beschreibe nur visuell erkennbare Eigenschaften:
+        * Form der Zutaten (z.B. ganz, gewürfelt, in Scheiben, gerieben, püriert, geschichtet)
+        * Konsistenz (z.B. cremig, knusprig, stückig, kompakt, locker, flüssig)
+        * Farbe
+        * Anordnung (vermischt, getrennt, geschichtet, Sauce darüber, Topping obenauf)
+    - Beschreibe Formen nur, wenn sie aus den Arbeitsschritten eindeutig hervorgehen.
+    - Erfinde keine zusätzlichen Zutaten, Garnituren oder Toppings.
+    - Erwähne nur Zutaten, die im finalen Gericht sichtbar sind.
+    - Erwähne alle Zutaten, die dazu beitragen, dass das Gericht optisch ansprechend angerichtet werden kann.
+    - Keine Licht-, Kamera-, Styling- oder Fotografie-Begriffe.
+    - Keine Wertungen oder emotionale Sprache.
+    - Maximal 2-4 Sätze.
+    - Neutral und rein beschreibend formulieren.
 
-    Gib ausschließlich ein gültiges JSON-Objekt mit genau diesen Feldern zurück:
-
-    title: string
-    content:
-        servings: number
-        ingredients: Liste von Zutatenobjekten mit
-            name: string
-            id_slug: string
-            search_term: string
-            amount: number oder null
-            unit: string oder null
-            est_weight_g: number
-            per_100g:
-                kcal: number
-                protein: number
-                fat: number
-                saturated_fat: number
-                carbs: number
-                sugar: number
-                fiber: number
-                salt: number
-        steps: Liste von Strings
-        cooking_time: number (minutes)
-        tags: Liste von Strings
-        nutrients: null
-
-    WICHTIG:
-    - Kein Markdown.
-    - Keine Codeblöcke.
-    - Keine Erklärungen.
-    - Nur reines JSON als Antwort.
+    OUTPUT:
+    Fülle das hinterlegte JSON-Schema unter strikter Einhaltung der Logik-Regeln aus. 
+    Gib ausschließlich das reine JSON-Objekt zurück.
 """
 
-# Konfiguration inkl. System Instruction
+# --- CONFIG ---
 conf = types.GenerateContentConfig(
     system_instruction=SYSTEM_INSTRUCTION,
     response_mime_type="application/json",
-    temperature=0.1
+    response_schema=recipe_schema,
+    temperature=0.1,
+    thinking_config=types.ThinkingConfig(thinking_level="MINIMAL")
 )
 
+# --- FUNCTION CALL ---
 async def call_gemini(content: str) -> dict:
 
     user_prompt = f"""
@@ -125,29 +184,36 @@ async def call_gemini(content: str) -> dict:
 
     {content}
     """
-
-    response = await client.aio.models.generate_content(
-        model="gemini-2.5-flash",
+    response = await client.aio.models.generate_content_stream(
+        model="gemini-3-flash-preview",
         contents=user_prompt,
         config=conf
     )
 
-    data = json.loads(response.text)
+    full_response = ""
+    image_task = None
+    image_function_triggered = False
 
+    async for chunk in response:
+        full_response += chunk.text
 
-    # Parallelisierung der nachfolgenden Services
-    tasks = [
-        generate_image(client=client, recipe=data), 
-        calculate_nutrients(ingredients=data["content"]["ingredients"])
-    ]
+        if not image_function_triggered and '"content":' in full_response:
+            image_task = asyncio.create_task(generate_image(client=client, recipe=full_response))
+            image_function_triggered = True
 
-    image_and_nutrients = await asyncio.gather(*tasks)
+    data = json.loads(full_response)
 
-    data["image"] = image_and_nutrients[0]
-    data["content"]["nutrients"] = image_and_nutrients[1].model_dump()
+    nutrients = await calculate_nutrients(ingredients=data["content"]["ingredients"])
+
+    if image_task:
+        data["image"] = await asyncio.wait_for(image_task, timeout=15.0)
+    else:
+        data["image"] = None
+
+    data["content"]["nutrients"] = nutrients.model_dump()
 
     nutrients = data["content"]["nutrients"]
-    if nutrients["kcal"] > 0 and (nutrients["protein"] / nutrients["kcal"] * 100) > 7:
+    if nutrients["kcal"] > 0 and (nutrients["protein"] / nutrients["kcal"] * 100) > 6:
         data["content"]["tags"].append("high protein")
 
     if data["content"].get("cooking_time", 999) <= 30: 

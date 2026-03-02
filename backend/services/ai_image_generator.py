@@ -8,7 +8,7 @@ load_dotenv()
 
 async def generate_image(client, recipe: dict) -> bytes:
 
-    prompt = f"""Rezept: Titel {recipe["title"]} Zutaten: {recipe["content"]["ingredients"]} Schritte: {recipe["content"]["steps"]}
+    prompt = f"""Rezept: {recipe}
     Erstelle ein Bild im identischen Studio-Stil wie das Referenzbild und beachte das Essen passend zum Rezept darzustellen.
     Behalte denselben Hintergrund (gleicher Tisch, gleiche Oberfläche, gleiche Farbe und Textur) bei.
     Die Beleuchtung, Kameraposition, Perspektive und Bildstimmung sollen wirken, als wäre das Foto im selben Studio und in derselben Fotosession aufgenommen worden.
