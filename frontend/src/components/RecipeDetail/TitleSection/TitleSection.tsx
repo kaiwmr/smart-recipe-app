@@ -1,6 +1,15 @@
 import styles from './TitleSection.module.css';
 
-export default function TitleSection( {recipe, isEditing, editedRecipe, setEditedRecipe,}) {
+import { Recipe } from '../../../types';
+
+interface TitleSectionProps {
+    recipe: Recipe;
+    isEditing: boolean;
+    editedRecipe: Recipe;
+    setEditedRecipe: (value: Recipe) => void;
+}
+
+export default function TitleSection( {recipe, isEditing, editedRecipe, setEditedRecipe}: TitleSectionProps) {
 
     return(
         <div className={styles.detail__titleContainer}>

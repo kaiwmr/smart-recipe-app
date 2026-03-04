@@ -1,7 +1,32 @@
 import { Minus, Plus, X } from 'lucide-react';
 import styles from './IngredientsSection.module.css';
 
-export default function IngredientsSection( {recipe, isEditing, editedRecipe, updateServings, calculateAmount, handleIngredientChange, deleteIngredient, currentServings, addIngredient}){
+import { Recipe } from '../../../types';
+import { Ingredient } from '../../../types';
+
+interface IngredientsSectionProps {
+    recipe: Recipe;
+    isEditing: boolean;
+    editedRecipe: Recipe;
+    updateServings: (value: string) => void;
+    calculateAmount: (baseAmount: number) => number | string;
+    handleIngredientChange: (index: number, field: keyof Ingredient, value: string) => void;
+    deleteIngredient: (indexToDelete: number) => void;
+    currentServings: number;
+    addIngredient: () => void;
+}
+
+export default function IngredientsSection({
+  recipe,
+  isEditing,
+  editedRecipe,
+  updateServings,
+  calculateAmount,
+  handleIngredientChange,
+  deleteIngredient,
+  currentServings,
+  addIngredient
+}: IngredientsSectionProps){
     return(
         <div className={styles["detail__section--ingredients"]}>
                             
@@ -15,7 +40,7 @@ export default function IngredientsSection( {recipe, isEditing, editedRecipe, up
                         <div className={styles.detail__servingsControl}>
                             <button 
                                 className={styles.detail__btnServing} 
-                                onClick={() => updateServings(currentServings - 1)}
+                                onClick={() => updateServings(String(currentServings - 1))}
                                 disabled={currentServings <= 1}
                             >
                                 <Minus size={14} />
@@ -25,7 +50,7 @@ export default function IngredientsSection( {recipe, isEditing, editedRecipe, up
                             </span>
                             <button 
                                 className={styles.detail__btnServing} 
-                                onClick={() => updateServings(currentServings + 1)}
+                                onClick={() => updateServings(String(currentServings + 1))}
                             >
                                 <Plus size={14} />
                             </button>
@@ -64,14 +89,14 @@ export default function IngredientsSection( {recipe, isEditing, editedRecipe, up
                                     type='number'
                                     placeholder="Menge"
                                     className={styles.detail__editIngInputAmount}
-                                    value={ing.amount || ""}
+                                    value={ing.amount ?? ""}
                                     onChange={(e) => handleIngredientChange(index, "amount", e.target.value)}
                                 />
                                 <input
                                     type='text'
                                     placeholder="Einh."
                                     className={styles.detail__editIngInputUnit}
-                                    value={ing.unit}
+                                    value={ing.unit ?? ""}
                                     onChange={(e) => handleIngredientChange(index, "unit", e.target.value)}
                                 />
                                 <input

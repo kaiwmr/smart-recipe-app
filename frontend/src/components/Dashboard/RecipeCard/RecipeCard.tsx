@@ -1,8 +1,13 @@
 import styles from './RecipeCard.module.css';
 import { useNavigate } from "react-router-dom";
 import { Clock, Leaf } from "lucide-react"
+import { Recipe } from '../../../types';
 
-export default function RecipeCard({ recipe }) {
+interface RecipeCardProps {
+    recipe: Recipe;
+}
+
+export default function RecipeCard({ recipe }: RecipeCardProps) {
     const navigate = useNavigate(); 
 
     return (
@@ -22,8 +27,8 @@ export default function RecipeCard({ recipe }) {
                     <div className={styles.dashboard__cookingTimeBox}>
                         <Clock size={14} />
                         <span>
-                            {recipe.content.cooking_time >= 60
-                                ? `${Math.round(recipe.content.cooking_time / 30) / 2} std`
+                            {Number(recipe.content.cooking_time) >= 60
+                                ? `${Math.round(Number(recipe.content.cooking_time) / 30) / 2} std`
                                 : `${recipe.content.cooking_time} min`}
                         </span>
                     </div>

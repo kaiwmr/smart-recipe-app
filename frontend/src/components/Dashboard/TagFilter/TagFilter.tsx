@@ -1,6 +1,12 @@
 import styles from './TagFilter.module.css';
 
-export default function TagFilter({ tags, toggleFilter, selected }) {
+interface TagFilterProps {
+    tags: string[];
+    toggleFilter: (tag: string) => void;
+    selected: string[];
+}
+
+export default function TagFilter({ tags, toggleFilter, selected }: TagFilterProps) {
 
     return (
         <div className={styles.dashboard__filterWrapper}>

@@ -1,7 +1,13 @@
 import styles from './Searchbar.module.css';
 import { Search, Plus } from 'lucide-react';
 
-export default function Searchbar({ search, setSearch, setShowPopup }) {
+interface SearchbarProps {
+    search: string;
+    setSearch: (value: string) => void;
+    setShowPopup: (value: boolean) => void;
+}
+
+export default function Searchbar({ search, setSearch, setShowPopup }: SearchbarProps) {
 
     return (
         <div className={styles.search}>

@@ -2,7 +2,13 @@ import styles from './Popup.module.css';
 import { X } from 'lucide-react';
 import AddRecipe from '../AddRecipe/AddRecipe';
 
-export default function Popup({ showPopup, setShowPopup, onRecipeAdded }) {
+interface PopupProps {
+    showPopup: boolean;
+    setShowPopup: (value: boolean) => void;
+    onRecipeAdded: () => Promise<void>;
+}
+
+export default function Popup({ showPopup, setShowPopup, onRecipeAdded }: PopupProps) {
     return (
         <div>
             {showPopup && (
@@ -23,8 +29,8 @@ export default function Popup({ showPopup, setShowPopup, onRecipeAdded }) {
                             ></X>
                         </div>
                         <div className={styles.popup__form}>
-                            <AddRecipe onRecipeAdded={() => {
-                                onRecipeAdded(); // Falls Dashboard eine Refresh-Funktion übergibt
+                            <AddRecipe onRecipeAdded={async () => {
+                                await onRecipeAdded(); // Falls Dashboard eine Refresh-Funktion übergibt
                                 setShowPopup(false); // Popup schließen bei Erfolg
                             }} />
                         </div>

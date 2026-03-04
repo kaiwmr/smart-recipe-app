@@ -9,14 +9,14 @@ import api from '../../api/api';
 // Diese Komponente empfängt eine Funktion "onLoginSuccess" von der App,
 // die sie aufruft, wenn alles geklappt hat.
 export default function Login() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [inviteCode, setInviteCode] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [showRegistration, setShowRegistration] = useState(false);
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [inviteCode, setInviteCode] = useState<string>("");
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showRegistration, setShowRegistration] = useState<boolean>(false);
     const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
+    const handleLogin = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
         
 
@@ -39,7 +39,7 @@ export default function Login() {
 
     };
 
-    const handleRegistration = async (e) => {
+    const handleRegistration = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 
         e.preventDefault()
 

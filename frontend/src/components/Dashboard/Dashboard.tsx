@@ -10,17 +10,19 @@ import { logout } from '../../utils/auth';
 import RecipeCard from './RecipeCard/RecipeCard';
 import TagFilter from './TagFilter/TagFilter';
 
+import { Recipe } from '../../types';
+
 export default function Dashboard() {
     // State-Initialisierung
-    const [recipes, setRecipes] = useState([]);
-    const [search, setSearch] = useState("");
-    const [showPopup, setShowPopup] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [selected, setSelected] = useState([])
+    const [recipes, setRecipes] = useState<Recipe[]>([]);
+    const [search, setSearch] = useState<string>("");
+    const [showPopup, setShowPopup] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [selected, setSelected] = useState<string[]>([])
     const navigate = useNavigate();
 
     // Festgelegte Filter-Optionen
-    const tags = ["high protein", "< 30min", "vegetarisch", "vegan", "Hauptspeise", "Dessert", "Frühstück", "Backen"];
+    const tags: string[] = ["high protein", "< 30min", "vegetarisch", "vegan", "Hauptspeise", "Dessert", "Frühstück", "Backen"];
 
     // API-Interaktion
     const fetchRecipes = async () => {   
@@ -40,10 +42,10 @@ export default function Dashboard() {
     useEffect(() => { fetchRecipes() }, []); 
 
     // Logik für die Filter Auswahl
-    const toggleFilter = (filter) => {
-    selected.includes(filter)
-        ? setSelected(selected.filter(f => f !== filter)) // Tag entfernen
-        : setSelected([...selected, filter]);            // Tag hinzufügen
+    const toggleFilter = (filter: string) => {
+        selected.includes(filter)
+            ? setSelected(selected.filter(f => f !== filter)) // Tag entfernen
+            : setSelected([...selected, filter]);            // Tag hinzufügen
     };
 
     return (
@@ -51,7 +53,7 @@ export default function Dashboard() {
             <Header handleLogout={logout}></Header>
             <div className='app'>
                 {/* Obere Sektion: Suche und Filter Tags */}
-                <Searchbar search={search} setSearch={setSearch} showPopup={showPopup} setShowPopup={setShowPopup}></Searchbar>
+                <Searchbar search={search} setSearch={setSearch} setShowPopup={setShowPopup}></Searchbar>
                 <TagFilter tags={tags} toggleFilter={toggleFilter} selected={selected}></TagFilter>
 
                 <Popup showPopup={showPopup} setShowPopup={setShowPopup} onRecipeAdded={fetchRecipes}></Popup>

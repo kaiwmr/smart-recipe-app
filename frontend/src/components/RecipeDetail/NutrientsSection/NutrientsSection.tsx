@@ -1,6 +1,16 @@
 import styles from './NutrientsSection.module.css';
 
-export default function NutrientsSection( {editedRecipe, isEditing, recipe, updateNutrients} ) {
+import { Recipe } from '../../../types';
+import { Nutrients } from '../../../types';
+
+interface NutrientsSectionProps {
+    editedRecipe: Recipe;
+    isEditing: boolean;
+    recipe: Recipe;
+    updateNutrients: (value: string, field: keyof Nutrients) => void;
+}
+
+export default function NutrientsSection( {editedRecipe, isEditing, recipe, updateNutrients}: NutrientsSectionProps) {
 
     return(
         <div className={styles["detail__section--nutrients"]}>
@@ -27,7 +37,7 @@ export default function NutrientsSection( {editedRecipe, isEditing, recipe, upda
                             />
                         ) : (
                             <span className={styles.detail__nutrientsValue}>
-                                {Math.floor(recipe.content.nutrients.kcal / (recipe.content.servings || 1))}
+                                {Math.floor(recipe.content.nutrients.kcal / (Number(recipe.content.servings) || 1))}
                             </span>
                         )}
                         <span className={styles.detail__nutrientsUnit}>kcal</span>
@@ -47,7 +57,7 @@ export default function NutrientsSection( {editedRecipe, isEditing, recipe, upda
                             />
                         ) : (
                             <span className={styles.detail__nutrientsValue}>
-                                {Math.floor(recipe.content.nutrients.protein / (recipe.content.servings || 1))}
+                                {Math.floor(recipe.content.nutrients.protein / (Number(recipe.content.servings) || 1))}
                             </span>
                         )}
                         <span className={styles.detail__nutrientsUnit}>g</span>
@@ -67,7 +77,7 @@ export default function NutrientsSection( {editedRecipe, isEditing, recipe, upda
                             />
                         ) : (
                             <span className={styles.detail__nutrientsValue}>
-                                {Math.floor(recipe.content.nutrients.carbs / (recipe.content.servings || 1))}
+                                {Math.floor(recipe.content.nutrients.carbs / (Number(recipe.content.servings) || 1))}
                             </span>
                         )}
                         <span className={styles.detail__nutrientsUnit}>g</span>
@@ -87,7 +97,7 @@ export default function NutrientsSection( {editedRecipe, isEditing, recipe, upda
                             />
                         ) : (
                             <span className={styles.detail__nutrientsValue}>
-                                {Math.floor(recipe.content.nutrients.fat / (recipe.content.servings || 1))}
+                                {Math.floor(recipe.content.nutrients.fat / (Number(recipe.content.servings) || 1))}
                             </span>
                         )}
                         <span className={styles.detail__nutrientsUnit}>g</span>

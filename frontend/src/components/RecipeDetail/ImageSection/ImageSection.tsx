@@ -2,7 +2,17 @@ import styles from './ImageSection.module.css';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Edit2, Trash2, Save, X } from 'lucide-react'; 
 
-export default function ImageSection({ recipe, toggleEditMode, deleteRecipe, isEditing, handleSave }) {
+import { Recipe } from '../../../types';
+
+interface ImageSectionProps {
+    recipe: Recipe;
+    toggleEditMode: (value: boolean) => void;
+    deleteRecipe: (value: number) => void;
+    isEditing: boolean;
+    handleSave: () => Promise<void>
+}
+
+export default function ImageSection({ recipe, toggleEditMode, deleteRecipe, isEditing, handleSave }: ImageSectionProps) {
     const navigate = useNavigate(); 
 
     return (

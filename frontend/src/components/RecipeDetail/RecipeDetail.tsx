@@ -11,15 +11,19 @@ import IngredientsSection from './IngredientsSection/IngredientsSection';
 import StepsSection from './StepsSection/StepsSection';
 import validateRecipeUpdate from '../../utils/validateRecipeUpdate';
 
+import { Recipe } from '../../types';
+import { Ingredient } from '../../types';
+import { Nutrients } from '../../types';
+
 export default function RecipeDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
     
-    const [recipe, setRecipe] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedRecipe, setEditedRecipe] = useState(null);
-    const [currentServings, setCurrentServings] = useState(1); 
+    const [recipe, setRecipe] = useState<Recipe | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [editedRecipe, setEditedRecipe] = useState<Recipe | null>(null);
+    const [currentServings, setCurrentServings] = useState<number>(1); 
 
     useEffect(() => {
         const fetchRecipe = async () => {
@@ -43,10 +47,13 @@ export default function RecipeDetail() {
         fetchRecipe();
     }, [id, navigate]);
 
-    const calculateAmount = (baseAmount) => {
+    if (isLoading || !recipe || !editedRecipe) return <Loader2 className={styles.detail__loadingIcon}></Loader2>;
+
+
+    const calculateAmount = (baseAmount: number | null) => {
         if (!baseAmount) return "";
-        const baseServings = recipe.content.servings || 1; // Schutz vor Division durch 0
-        const result = (baseAmount / baseServings) * currentServings;
+        const baseServings = recipe?.content.servings || 1; // Schutz vor Division durch 0
+        const result = (baseAmount / Number(baseServings)) * currentServings;
         
         // Runden auf max 2 Stellen
         return parseFloat(result.toFixed(2));
@@ -64,10 +71,10 @@ export default function RecipeDetail() {
         // 2. API Call
         try {
             const payload = {
-                title: editedRecipe.title,
-                content: editedRecipe.content,
-                url: editedRecipe.url,
-                image: editedRecipe.image
+                title: editedRecipe?.title,
+                content: editedRecipe?.content,
+                url: editedRecipe?.url,
+                image: editedRecipe?.image
             };
 
             const response = await api.put(`recipes/${id}`,payload);
@@ -83,7 +90,7 @@ export default function RecipeDetail() {
     };
 
     // --- Servings Logic ---
-    const updateServings = (value) => {
+    const updateServings = (value: string) => {
         if (value === "") {
             setEditedRecipe({
                 ...editedRecipe, 
@@ -104,7 +111,7 @@ export default function RecipeDetail() {
         }
     };
 
-    const updateCookingTime = (value) => {
+    const updateCookingTime = (value: string) => {
         if (value === "") {
             setEditedRecipe({
                 ...editedRecipe, 
@@ -122,7 +129,7 @@ export default function RecipeDetail() {
         });
     };
 
-    const updateNutrients = (value, field) => {
+    const updateNutrients = (value: string, field: keyof Nutrients) => {
         if (value === "") {
             setEditedRecipe({
                 ...editedRecipe,
@@ -152,10 +159,10 @@ export default function RecipeDetail() {
         });
     };
 
-    const handleIngredientChange = (index, field, value) => {
+    const handleIngredientChange = (index: number, field: keyof Ingredient, value: string) => {
         const newIngredients = [...editedRecipe.content.ingredients];
         
-        let finalValue = value;
+        let finalValue: number | string = value;
         
         if (field === "amount") {
             const parsed = parseFloat(value);
@@ -170,7 +177,7 @@ export default function RecipeDetail() {
         });
     };
     
-    const handleStepChange = (index, newText) => {
+    const handleStepChange = (index: number, newText: string) => {
         if (newText.length > 2000) return; 
 
         const newSteps = [...editedRecipe.content.steps];
@@ -178,7 +185,9 @@ export default function RecipeDetail() {
         setEditedRecipe({ ...editedRecipe, content: { ...editedRecipe.content, steps: newSteps } });
     };
 
-    const deleteStep = (indexToDelete) => {
+    const deleteStep = (indexToDelete: number) => {
+        if (!editedRecipe) return;
+
         const newSteps = editedRecipe.content.steps.filter((_, index) => index !== indexToDelete);
         setEditedRecipe({ ...editedRecipe, content: { ...editedRecipe.content, steps: newSteps } });
     };
@@ -190,7 +199,7 @@ export default function RecipeDetail() {
         });
     };
 
-    const deleteIngredient = (indexToDelete) => {
+    const deleteIngredient = (indexToDelete: number) => {
         const newIngredients = editedRecipe.content.ingredients.filter((_, index) => index !== indexToDelete);
         setEditedRecipe({
             ...editedRecipe,
@@ -208,7 +217,7 @@ export default function RecipeDetail() {
         });
     };
 
-    const deleteRecipe = async (recipeId) => {
+    const deleteRecipe = async (recipeId: number) => {
         if (!window.confirm("Wirklich löschen?")) return;
         try {
             await api.delete(`/recipes/${recipeId}`);
@@ -219,7 +228,7 @@ export default function RecipeDetail() {
         }
     };
 
-    const toggleEditMode = (status) => {
+    const toggleEditMode = (status: boolean) => {
         if (status === true) {
             setEditedRecipe({
                 ...recipe,
@@ -230,7 +239,6 @@ export default function RecipeDetail() {
     };
 
 
-    if (isLoading || !recipe) return <Loader2 className={styles.detail__loadingIcon}></Loader2>;
 
     return (
         <div >

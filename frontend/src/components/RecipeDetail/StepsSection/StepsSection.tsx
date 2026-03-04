@@ -1,7 +1,19 @@
 import { Clock, X } from "lucide-react";
 import styles from "./StepsSection.module.css";
 
-export default function StepsSection( {isEditing, recipe, editedRecipe, updateCookingTime, handleStepChange, deleteStep, addStep} ) {
+import { Recipe } from "../../../types";
+
+interface StepsSectionProps {
+    isEditing: boolean;
+    recipe: Recipe;
+    editedRecipe: Recipe;
+    updateCookingTime: (value: string) => void;
+    handleStepChange: (index: number, newText: string) => void;
+    deleteStep: (indexToDelete: number) => void;
+    addStep: () => void;
+}
+
+export default function StepsSection( {isEditing, recipe, editedRecipe, updateCookingTime, handleStepChange, deleteStep, addStep}: StepsSectionProps) {
     return(
         <div className={styles["detail__section--steps"]}>
             <div className={styles.detail__ingredientsHeaderRow}>
@@ -23,8 +35,8 @@ export default function StepsSection( {isEditing, recipe, editedRecipe, updateCo
                         </div>
                     ) : (
                         <span className={styles.detail__timeText}>
-                            {recipe.content.cooking_time >= 60
-                                    ? (<><strong> {Math.round(recipe.content.cooking_time / 30) / 2} </strong> Stunden</>)
+                            {Number(recipe.content.cooking_time) >= 60
+                                    ? (<><strong> {Math.round(Number(recipe.content.cooking_time) / 30) / 2} </strong> Stunden</>)
                                     : <><strong>{recipe.content.cooking_time}</strong> Minuten </>}
                         </span>
                     )}

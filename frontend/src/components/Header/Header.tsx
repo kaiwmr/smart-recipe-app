@@ -2,7 +2,11 @@ import { LogOut } from 'lucide-react';
 import styles from './Header.module.css';
 import logo from "../../assets/BiteWiseLogo.svg";
 
-export default function Header({ handleLogout }) {
+interface HeaderProps {
+    handleLogout: () => void;
+}
+
+export default function Header({ handleLogout }: HeaderProps) {
     return (
         <div className={styles.header}>
             <img className={styles.header__logo} src={logo} alt='BiteWise Logo'></img>

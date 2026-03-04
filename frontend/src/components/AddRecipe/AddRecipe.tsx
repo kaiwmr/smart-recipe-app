@@ -4,11 +4,15 @@ import styles from './AddRecipe.module.css';
 import { toast } from "react-toastify";
 import api from "../../api/api";
 
-export default function AddRecipe({ onRecipeAdded }) {
-  const [url, setUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+interface AddRecipeProps  {
+  onRecipeAdded: () => Promise<void>;
+}
 
-  const handleSubmit = async (e) => {
+export default function AddRecipe({ onRecipeAdded }: AddRecipeProps) {
+  const [url, setUrl] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setIsLoading(true);
@@ -18,7 +22,7 @@ export default function AddRecipe({ onRecipeAdded }) {
 
       toast.success("Rezept erstellt");
       setUrl("");
-      onRecipeAdded();
+      await onRecipeAdded();
     } catch (error) {
       console.error(error);
       toast.error("Fehler aufgetreten")
