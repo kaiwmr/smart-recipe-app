@@ -1,17 +1,23 @@
 import styles from './TagFilter.module.css';
 
+// ==========================================
+// 1. PROPS & INTERFACES
+// ==========================================
 interface TagFilterProps {
-    tags: string[];
-    toggleFilter: (tag: string) => void;
-    selected: string[];
+    tags: string[];                  // Liste aller verfügbaren Filter
+    toggleFilter: (tag: string) => void; // Funktion zum Umschalten eines Filters
+    selected: string[];              // Liste der aktuell aktiven Filter
 }
 
 export default function TagFilter({ tags, toggleFilter, selected }: TagFilterProps) {
 
+    // ==========================================
+    // 2. RENDERING
+    // ==========================================
     return (
         <div className={styles.dashboard__filterWrapper}>
             {tags.map(tag => {
-                // Prüfen, ob der aktuelle Tag in der Liste der ausgewählten Filter ist
+                // Lokale Prüfung: Ist dieser spezifische Tag gerade ausgewählt?
                 const isActive = selected.includes(tag);
                 
                 return (
@@ -19,7 +25,10 @@ export default function TagFilter({ tags, toggleFilter, selected }: TagFilterPro
                         key={tag}
                         value={tag}
                         onClick={() => toggleFilter(tag)}
-                        /* Dynamische Klasse: Fügt den Active-Style hinzu, wenn isActive true ist */
+                        /*
+                           Wir hängen die 'Active'-Klasse nur an, wenn isActive true ist.
+                           => sorgt für das visuelle Feedback
+                        */
                         className={`
                             ${styles.dashboard__btnFilter} 
                             ${isActive ? styles.dashboard__btnFilterActive : ''}

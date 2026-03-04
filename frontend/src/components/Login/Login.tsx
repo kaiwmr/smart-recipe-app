@@ -6,9 +6,10 @@ import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 
-// Diese Komponente empfängt eine Funktion "onLoginSuccess" von der App,
-// die sie aufruft, wenn alles geklappt hat.
 export default function Login() {
+    // ==========================================
+    // 1. STATES
+    // ==========================================
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [inviteCode, setInviteCode] = useState<string>("");
@@ -16,9 +17,13 @@ export default function Login() {
     const [showRegistration, setShowRegistration] = useState<boolean>(false);
     const navigate = useNavigate();
 
+    // ==========================================
+    // 2. AUTH-LOGIK (LOGIN & REGISTRIERUNG)
+    // ==========================================
+
+    // Login (Authentifizierung): Sendet Login Data als FormData (OAuth2 Standard)
     const handleLogin = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
-        
 
         const formData = new FormData();
         formData.append("username", email);
@@ -26,22 +31,20 @@ export default function Login() {
 
         try {
             const response = await api.post("/token", formData);
-
             const token = response.data.access_token;
-            localStorage.setItem("BiteWiseToken", token)
-            navigate("/dashboard");
             
+            // Token sicher im LocalStorage ablegen
+            localStorage.setItem("BiteWiseToken", token);
+            navigate("/dashboard");
         } catch (error) {
-            console.error(error);
+            console.error("Login Fehler:", error);
             toast.error("Login ist schiefgelaufen");
-
         }
-
     };
 
+    // Registrierung: Sendet neue Benutzerdaten als JSON-Objekt
     const handleRegistration = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-
-        e.preventDefault()
+        e.preventDefault();
 
         const userData = {
             email: email,
@@ -52,19 +55,21 @@ export default function Login() {
         try {
             await api.post("/users/", userData);
             toast.success("User erstellt - Du kannst dich nun anmelden");
-            
+            setShowRegistration(false); // Nach Erfolg zum Login wechseln
         } catch (error) {
-            console.error(error);
+            console.error("Registrierungs Fehler:", error);
             toast.error("Registrierung ist schiefgelaufen");
         }
-
-
     };
 
-
+    // ==========================================
+    // 3. HILFSFUNKTION / ICONS
+    // ==========================================
     const PasswordIcon = showPassword ? Eye : EyeOff;
 
-
+    // ==========================================
+    // 4. RENDERING
+    // ==========================================
     return (
         <div className={styles.login}>
             <form className={styles.login__box} onSubmit={showRegistration ? handleRegistration : handleLogin}>
@@ -72,20 +77,25 @@ export default function Login() {
 
                 <h3>{showRegistration ? "Konto erstellen" : "Willkommen zurück!"}</h3>
 
+                {/* Umschalter zwischen Login und Registrierung */}
                 <div className={styles.login__authSelection}>
                     <button
-                    type="button"
-                    className={`${styles.login__authSelectionButton} ${!showRegistration ? styles.login__authSelectionButtonActive : ""}`}
-                    onClick={() => setShowRegistration(false)}
-                    >Anmelden</button>
+                        type="button"
+                        className={`${styles.login__authSelectionButton} ${!showRegistration ? styles.login__authSelectionButtonActive : ""}`}
+                        onClick={() => setShowRegistration(false)}
+                    >
+                        Anmelden
+                    </button>
                     <button
-                    type="button"
-                    className={`${styles.login__authSelectionButton} ${showRegistration ? styles.login__authSelectionButtonActive : ""}`} 
-                    onClick={() => setShowRegistration(true)}
-                    >Registrieren
+                        type="button"
+                        className={`${styles.login__authSelectionButton} ${showRegistration ? styles.login__authSelectionButtonActive : ""}`} 
+                        onClick={() => setShowRegistration(true)}
+                    >
+                        Registrieren
                     </button>
                 </div>
 
+                {/* Email Input */}
                 <input
                     className={styles.login__input}
                     type="email"
@@ -94,6 +104,7 @@ export default function Login() {
                     onChange={e => setEmail(e.target.value)}
                 />
 
+                {/* Passwort Input mit Sichtbarkeitstoggle */}
                 <div className={styles.login__inputPassword}>
                     <input
                         className={styles.login__field}
@@ -109,6 +120,7 @@ export default function Login() {
                     />
                 </div>
 
+                {/* Erweiterbarer Bereich für den Invite-Code (nur bei Registrierung sichtbar) */}
                 <div className={`${styles.expandable} ${showRegistration ? styles.expandableActive : ""}`}>
                     <input
                         className={styles.login__input}

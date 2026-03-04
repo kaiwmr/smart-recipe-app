@@ -1,9 +1,11 @@
 import { Minus, Plus, X } from 'lucide-react';
 import styles from './IngredientsSection.module.css';
 
-import { Recipe } from '../../../types';
-import { Ingredient } from '../../../types';
+import { Recipe, Ingredient } from '../../../types';
 
+// ==========================================
+// 1. PROPS & INTERFACES
+// ==========================================
 interface IngredientsSectionProps {
     recipe: Recipe;
     isEditing: boolean;
@@ -27,16 +29,20 @@ export default function IngredientsSection({
   currentServings,
   addIngredient
 }: IngredientsSectionProps){
+    
+    // ==========================================
+    // 2. RENDERING
+    // ==========================================
     return(
         <div className={styles["detail__section--ingredients"]}>
                             
-            {/* Header Zeile: Titel Links, Portionen Rechts */}
+            {/* --- HEADER-ZEILE: Titel & Portions-Steuerung --- */}
             <div className={styles.detail__ingredientsHeaderRow}>
                 <h3 className={styles.detail__ingredientsTitle}>Zutaten</h3>
                 
-                {/* Portionen Steuerung */}
                 <div className={styles.detail__servingsWrapper}>
                     {!isEditing ? (
+                        /* MODUS: ANSICHT (Portionen anpassen für Umrechnung) */
                         <div className={styles.detail__servingsControl}>
                             <button 
                                 className={styles.detail__btnServing} 
@@ -56,6 +62,7 @@ export default function IngredientsSection({
                             </button>
                         </div>
                     ) : (
+                        /* MODUS: BEARBEITEN (Basis-Portionszahl des Rezepts ändern) */
                         <div className={styles.detail__servingsEdit}>
                             <input
                                 type='number'
@@ -70,21 +77,28 @@ export default function IngredientsSection({
                 </div>
             </div>
 
+            {/* --- HAUPTBEREICH: Zutaten-Liste --- */}
             {!isEditing ? (
+                /* MODUS: ANSICHT ( Mengen & Namen) */
                 <ul className={styles.detail__ingredientsList}>
                     {recipe.content.ingredients.map((ing, index) => (
                         <li className={styles.detail__ingredientsItem} key={index}>
                             <p className={styles.detail__ingredientsBox}>
-                                {ing.amount ? `${calculateAmount(ing.amount)} ${ing.unit}` : (ing.unit || "-")}
+                                {ing.amount 
+                                    ? `${calculateAmount(ing.amount)} ${ing.unit}` 
+                                    : (ing.unit || "-")
+                                }
                             </p>
                             <span>{ing.name}</span>
                         </li>
                     ))}
                 </ul>
                 ) : (
+                    /* MODUS: BEARBEITEN (Input-Felder für jede Zutat) */
                     <div className={styles.detail__editIngredientsContainer}>
                         {editedRecipe.content.ingredients.map((ing, index) => (
                             <div key={index} className={styles.detail__editIngredientRow}>
+                                {/* Menge */}
                                 <input
                                     type='number'
                                     placeholder="Menge"
@@ -92,6 +106,7 @@ export default function IngredientsSection({
                                     value={ing.amount ?? ""}
                                     onChange={(e) => handleIngredientChange(index, "amount", e.target.value)}
                                 />
+                                {/* Einheit */}
                                 <input
                                     type='text'
                                     placeholder="Einh."
@@ -99,6 +114,7 @@ export default function IngredientsSection({
                                     value={ing.unit ?? ""}
                                     onChange={(e) => handleIngredientChange(index, "unit", e.target.value)}
                                 />
+                                {/* Name der Zutat */}
                                 <input
                                     type='text'
                                     placeholder="Zutat"
@@ -106,11 +122,14 @@ export default function IngredientsSection({
                                     value={ing.name}
                                     onChange={(e) => handleIngredientChange(index, "name", e.target.value)}
                                 />
+                                {/* Zutat entfernen */}
                                 <button className={styles.detail__btnDeleteSmall} onClick={() => deleteIngredient(index)}>
                                     <X size={16} />
                                 </button>
                             </div>
                         ))}
+                        
+                        {/* Neue Zutat hinzufügen */}
                         <button className={styles.detail__btnAddIngredient} onClick={addIngredient}>
                             + Zutat hinzufügen
                         </button>

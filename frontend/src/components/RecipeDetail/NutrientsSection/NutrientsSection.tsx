@@ -1,31 +1,44 @@
 import styles from './NutrientsSection.module.css';
+import { Recipe, Nutrients } from '../../../types';
 
-import { Recipe } from '../../../types';
-import { Nutrients } from '../../../types';
-
+// ==========================================
+// 1. PROPS & INTERFACES
+// ==========================================
 interface NutrientsSectionProps {
-    editedRecipe: Recipe;
-    isEditing: boolean;
-    recipe: Recipe;
-    updateNutrients: (value: string, field: keyof Nutrients) => void;
+    editedRecipe: Recipe;   // Der aktuelle Bearbeitungszustand
+    isEditing: boolean;     // Status, ob wir uns im Editiermodus befinden
+    recipe: Recipe;         // Die ursprünglichen Rezeptdaten aus der DB
+    updateNutrients: (value: string, field: keyof Nutrients) => void; // Handler für Änderungen
 }
 
-export default function NutrientsSection( {editedRecipe, isEditing, recipe, updateNutrients}: NutrientsSectionProps) {
+export default function NutrientsSection({ 
+    editedRecipe, 
+    isEditing, 
+    recipe, 
+    updateNutrients 
+}: NutrientsSectionProps) {
 
+    // ==========================================
+    // 2. RENDERING
+    // ==========================================
     return(
         <div className={styles["detail__section--nutrients"]}>
+            
+            {/* --- HEADER: Titel & Anzeige-Modus --- */}
             <div className={styles.detail__nutrientsHeader}>
                 <h3 className={styles.detail__nutrientsTitle}>Nährwerte</h3>
                 {isEditing ? (
+                    /* Im Edit-Modus bearbeiten die Werte für das gesamte Rezept */
                     <span className={styles.detail__nutrientsProPortion}>Gesamt</span>
                 ) : (
+                    /* In der Ansicht rechnen wir die Werte auf eine Portion herunter */
                     <span className={styles.detail__nutrientsProPortion}>pro Portion</span>
                 )}
             </div>
             
             <div className={styles.detail__nutrientsGrid}>
 
-                {/* ------------ Kalorien ------------ */}
+                {/* ------------ KALORIEN (kcal) ------------ */}
                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--cal"]}`}>
                     <div className={styles.detail__nutrientsData}>
                         {isEditing ? (
@@ -37,6 +50,7 @@ export default function NutrientsSection( {editedRecipe, isEditing, recipe, upda
                             />
                         ) : (
                             <span className={styles.detail__nutrientsValue}>
+                                {/* Berechnung: Gesamtkalorien / Portionsanzahl */}
                                 {Math.floor(recipe.content.nutrients.kcal / (Number(recipe.content.servings) || 1))}
                             </span>
                         )}
@@ -45,7 +59,7 @@ export default function NutrientsSection( {editedRecipe, isEditing, recipe, upda
                     <span className={styles.detail__nutrientsLabel}>Kalorien</span>
                 </div>
 
-                {/* ------------ Protein ------------ */}
+                {/* ------------ PROTEIN (g) ------------ */}
                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--protein"]}`}>
                     <div className={styles.detail__nutrientsData}>
                         {isEditing ? (
@@ -65,7 +79,7 @@ export default function NutrientsSection( {editedRecipe, isEditing, recipe, upda
                     <span className={styles.detail__nutrientsLabel}>Protein</span>
                 </div>
 
-                {/* ------------ Carbs ------------ */}
+                {/* ------------ KOHLENHYDRATE (Carbs, g) ------------ */}
                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--carbs"]}`}>
                     <div className={styles.detail__nutrientsData}>
                         {isEditing ? (
@@ -85,7 +99,7 @@ export default function NutrientsSection( {editedRecipe, isEditing, recipe, upda
                     <span className={styles.detail__nutrientsLabel}>Carbs</span>
                 </div>
 
-                {/* ------------ Fett ------------ */}
+                {/* ------------ FETT (g) ------------ */}
                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--fat"]}`}>
                     <div className={styles.detail__nutrientsData}>
                         {isEditing ? (
@@ -108,5 +122,4 @@ export default function NutrientsSection( {editedRecipe, isEditing, recipe, upda
             </div>
         </div>
     );
-
 }

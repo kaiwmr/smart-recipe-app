@@ -35,7 +35,7 @@ export default function RecipeDetail() {
     }
 
     // ==========================================
-    // 4. RENDER: DIE BENUTZEROBERFLÄCHE
+    // 4. RENDERING
     // ==========================================
     return (
         <div >
