@@ -8,6 +8,7 @@ from database import engine, get_db
 from jose import jwt
 from datetime import datetime, timedelta, timezone
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from fastapi.concurrency import run_in_threadpool
 from typing import List
 import os
 from dotenv import load_dotenv
@@ -150,7 +151,7 @@ async def create_recipe_from_url(url: str, db: Session = Depends(get_db), curren
     recipe_in = schemas.RecipeCreate(title=recipe_title, content=recipe_content, url=url, image=recipe_image)
 
     # 3. In DB speichern (user_id korrekt übergeben)
-    return crud.create_recipe(db=db, item=recipe_in, user_id=current_user.id)
+    return run_in_threadpool(crud.create_recipe(db=db, item=recipe_in, user_id=current_user.id))
 
 
 @app.delete("/recipes/{recipe_id}", response_model=dict)

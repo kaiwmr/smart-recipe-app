@@ -1,5 +1,6 @@
 import os
 from openai import AsyncOpenAI
+import asyncio
 import tempfile
 from services import ai_content_normalizer
 from dotenv import load_dotenv
@@ -27,8 +28,8 @@ async def transcribe_and_generate(url: str) -> dict:
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=True)
-            audio_path = ydl.prepare_filename(info)  
+            info = await asyncio.to_thread(ydl.extract_info(url, download=True))
+            audio_path = await asyncio.to_thread(ydl.prepare_filename(info))
 
         with open(audio_path, "rb") as audio_file:
             transcription = await openai_client.audio.transcriptions.create(
