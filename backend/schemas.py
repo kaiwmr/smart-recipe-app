@@ -43,10 +43,10 @@ class Ingredient(BaseModel):
     name: str
     amount: Optional[float] = None
     unit: Optional[str] = None
-    id_slug: str
-    search_term: str
-    est_weight_g: float
-    per_100g: Nutrients
+    id_slug: Optional[str] = None
+    search_term: Optional[str] = None
+    est_weight_g: Optional[float] = 0.0
+    per_100g: Optional[Nutrients] = None
 
 
 class RecipeContent(BaseModel):
