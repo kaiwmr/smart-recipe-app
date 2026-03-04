@@ -151,7 +151,7 @@ async def create_recipe_from_url(url: str, db: Session = Depends(get_db), curren
     recipe_in = schemas.RecipeCreate(title=recipe_title, content=recipe_content, url=url, image=recipe_image)
 
     # 3. In DB speichern (user_id korrekt übergeben)
-    return await run_in_threadpool(crud.create_recipe(db=db, item=recipe_in, user_id=current_user.id))
+    return await run_in_threadpool(crud.create_recipe, db=db, item=recipe_in, user_id=current_user.id)
 
 
 @app.delete("/recipes/{recipe_id}", response_model=dict)
