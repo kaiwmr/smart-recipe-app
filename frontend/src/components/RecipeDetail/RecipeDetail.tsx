@@ -1,304 +1,101 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 import styles from './RecipeDetail.module.css';
 import { Loader2 } from 'lucide-react';
-import api from '../../api/api';
+
+// ==========================================
+// CHILD COMPONENTS
+// ==========================================
 import ImageSection from './ImageSection/ImageSection';
 import TitleSection from './TitleSection/TitleSection';
 import NutrientsSection from './NutrientsSection/NutrientsSection';
 import IngredientsSection from './IngredientsSection/IngredientsSection';
 import StepsSection from './StepsSection/StepsSection';
-import validateRecipeUpdate from '../../utils/validateRecipeUpdate';
 
-import { Recipe } from '../../types';
-import { Ingredient } from '../../types';
-import { Nutrients } from '../../types';
+// ==========================================
+// CUSTOM HOOK
+// ==========================================
+import useRecipeEditor from './useRecipeEditor';
 
 export default function RecipeDetail() {
+    // 1. URL-Parameter auslesen
     const { id } = useParams();
-    const navigate = useNavigate();
     
-    const [recipe, setRecipe] = useState<Recipe | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [isEditing, setIsEditing] = useState<boolean>(false);
-    const [editedRecipe, setEditedRecipe] = useState<Recipe | null>(null);
-    const [currentServings, setCurrentServings] = useState<number>(1); 
+    // 2. Custom Hook aufrufen, der alle Daten und Funktionen bereitstellt
+    const { 
+        recipe, editedRecipe, setEditedRecipe, isLoading, isEditing, currentServings,
+        calculateAmount, handleSave, updateServings, updateCookingTime, 
+        updateNutrients, handleIngredientChange, handleStepChange, deleteStep, 
+        addStep, deleteIngredient, addIngredient, deleteRecipe, toggleEditMode 
+    } = useRecipeEditor(id);
 
-    useEffect(() => {
-        const fetchRecipe = async () => {
-            try {
-                const response = await api.get(`recipes/${id}`);
-                
-                const data = response.data;
-                setRecipe(data);
-                setEditedRecipe(data);
-                setCurrentServings(data.content.servings || 1); 
+    // 3. Ladezustand & Fehlerbehandlung ("Guard Clause" für das UI)
+    // Wenn Daten noch geladen werden oder fehlen, wird nur der Loading Spinner gezeigt.
+    if (isLoading || !recipe || !editedRecipe) {
+        return <Loader2 className={styles.detail__loadingIcon}></Loader2>;
+    }
 
-            } catch (error) {
-                console.error("Fehler:", error);
-                toast.error("Rezept konnte nicht geladen werden.");
-                navigate("/dashboard");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchRecipe();
-    }, [id, navigate]);
-
-    if (isLoading || !recipe || !editedRecipe) return <Loader2 className={styles.detail__loadingIcon}></Loader2>;
-
-
-    const calculateAmount = (baseAmount: number | null) => {
-        if (!baseAmount) return "";
-        const baseServings = recipe?.content.servings || 1; // Schutz vor Division durch 0
-        const result = (baseAmount / Number(baseServings)) * currentServings;
-        
-        // Runden auf max 2 Stellen
-        return parseFloat(result.toFixed(2));
-    };
-
-    const handleSave = async () => {
-        // 1. Validierungsprozess
-        const errorMessage = validateRecipeUpdate(editedRecipe);
-        
-        if (errorMessage) {
-            toast.error(errorMessage)
-            return;
-        }
-
-        // 2. API Call
-        try {
-            const payload = {
-                title: editedRecipe?.title,
-                content: editedRecipe?.content,
-                url: editedRecipe?.url,
-                image: editedRecipe?.image
-            };
-
-            const response = await api.put(`recipes/${id}`,payload);
-
-            setRecipe(response.data);
-            setCurrentServings(response.data.content.servings || 1);
-            setIsEditing(false);
-            toast.success("Gespeichert!");
-        } catch (error) {
-            console.error("Fehler beim Speichern:", error);
-            toast.error("Fehler beim Speichern");
-        }
-    };
-
-    // --- Servings Logic ---
-    const updateServings = (value: string) => {
-        if (value === "") {
-            setEditedRecipe({
-                ...editedRecipe, 
-                content: { ...editedRecipe.content, servings: "" }
-            });
-            return;
-        }
-
-        const val = parseInt(value);
-        if (isNaN(val) || val < 1) return; 
-        setCurrentServings(val);
-        
-        if(isEditing) {
-            setEditedRecipe({
-                ...editedRecipe,
-                content: { ...editedRecipe.content, servings: val }
-            });
-        }
-    };
-
-    const updateCookingTime = (value: string) => {
-        if (value === "") {
-            setEditedRecipe({
-                ...editedRecipe, 
-                content: { ...editedRecipe.content, cooking_time: "" }
-            });
-            return;
-        }
-
-        const val = parseInt(value);
-        if (isNaN(val) || val < 0) return;
-
-        setEditedRecipe({
-            ...editedRecipe,
-            content: { ...editedRecipe.content, cooking_time: val }
-        });
-    };
-
-    const updateNutrients = (value: string, field: keyof Nutrients) => {
-        if (value === "") {
-            setEditedRecipe({
-                ...editedRecipe,
-                content: { 
-                    ...editedRecipe.content,
-                    nutrients: {
-                        ...editedRecipe.content.nutrients, 
-                        [field]: "" 
-                    } 
-                }
-            });
-            return;
-        }
-
-        const val = parseInt(value);
-        if (isNaN(val) || val < 0) return;
-
-        setEditedRecipe({
-            ...editedRecipe,
-            content: { 
-                ...editedRecipe.content,
-                nutrients: {
-                    ...editedRecipe.content.nutrients, 
-                    [field]: val 
-                } 
-            }
-        });
-    };
-
-    const handleIngredientChange = (index: number, field: keyof Ingredient, value: string) => {
-        const newIngredients = [...editedRecipe.content.ingredients];
-        
-        let finalValue: number | string = value;
-        
-        if (field === "amount") {
-            const parsed = parseFloat(value);
-            if (value !== "" && (isNaN(parsed) || parsed < 0)) return;
-            finalValue = value === "" ? "" : parsed;
-        }
-
-        newIngredients[index] = { ...newIngredients[index], [field]: finalValue };
-        setEditedRecipe({
-            ...editedRecipe,
-            content: { ...editedRecipe.content, ingredients: newIngredients }
-        });
-    };
-    
-    const handleStepChange = (index: number, newText: string) => {
-        if (newText.length > 2000) return; 
-
-        const newSteps = [...editedRecipe.content.steps];
-        newSteps[index] = newText;
-        setEditedRecipe({ ...editedRecipe, content: { ...editedRecipe.content, steps: newSteps } });
-    };
-
-    const deleteStep = (indexToDelete: number) => {
-        if (!editedRecipe) return;
-
-        const newSteps = editedRecipe.content.steps.filter((_, index) => index !== indexToDelete);
-        setEditedRecipe({ ...editedRecipe, content: { ...editedRecipe.content, steps: newSteps } });
-    };
-
-    const addStep = () => {
-        setEditedRecipe({
-            ...editedRecipe,
-            content: { ...editedRecipe.content, steps: [...editedRecipe.content.steps, ""] }
-        });
-    };
-
-    const deleteIngredient = (indexToDelete: number) => {
-        const newIngredients = editedRecipe.content.ingredients.filter((_, index) => index !== indexToDelete);
-        setEditedRecipe({
-            ...editedRecipe,
-            content: { ...editedRecipe.content, ingredients: newIngredients }
-        });
-    };
-
-    const addIngredient = () => {
-        setEditedRecipe({
-            ...editedRecipe,
-            content: { 
-                ...editedRecipe.content, 
-                ingredients: [...editedRecipe.content.ingredients, { name: "", amount: 1, unit: "" }] 
-            }
-        });
-    };
-
-    const deleteRecipe = async (recipeId: number) => {
-        if (!window.confirm("Wirklich löschen?")) return;
-        try {
-            await api.delete(`/recipes/${recipeId}`);
-            toast.success("Rezept gelöscht");
-            navigate("/dashboard");
-        } catch (error) {
-            toast.error("Fehler aufgetreten");
-        }
-    };
-
-    const toggleEditMode = (status: boolean) => {
-        if (status === true) {
-            setEditedRecipe({
-                ...recipe,
-                content: { ...recipe.content, servings: currentServings }
-            });
-        }
-        setIsEditing(status);
-    };
-
-
-
+    // ==========================================
+    // 4. RENDER: DIE BENUTZEROBERFLÄCHE
+    // ==========================================
     return (
         <div >
-            {/* Bild + Buttons */}
+            {/* --- OBERER BEREICH: Bild & Aktions Buttons --- */}
             <ImageSection
-            recipe={recipe}
-            toggleEditMode={toggleEditMode}
-            deleteRecipe={deleteRecipe}
-            isEditing={isEditing}
-            handleSave={handleSave}
+                recipe={recipe}
+                toggleEditMode={toggleEditMode}
+                deleteRecipe={deleteRecipe}
+                isEditing={isEditing}
+                handleSave={handleSave}
             ></ImageSection>
 
             <div className="app">
-                {/* Titel */}
+                {/* --- HEADER: Rezepttitel --- */}
                 <TitleSection
-                recipe={recipe}
-                isEditing={isEditing}
-                editedRecipe={editedRecipe}
-                setEditedRecipe={setEditedRecipe}
+                    recipe={recipe}
+                    isEditing={isEditing}
+                    editedRecipe={editedRecipe}
+                    setEditedRecipe={setEditedRecipe}
                 ></TitleSection>
 
                 <div className={styles.detail__wrapper}>
                     <div className={styles.detail__leftWrapper}>
                         
-                        {/* Nährwerte */}
+                        {/* --- LINKE SPALTE: Nährwerte --- */}
                         <NutrientsSection
-                        editedRecipe={editedRecipe}
-                        isEditing={isEditing}
-                        recipe={recipe}
-                        updateNutrients={updateNutrients}>
+                            editedRecipe={editedRecipe}
+                            isEditing={isEditing}
+                            recipe={recipe}
+                            updateNutrients={updateNutrients}>
                         </NutrientsSection>
                         
-                        {/* Zutaten & Portionen */}
+                        {/* --- LINKE SPALTE: Zutaten & Portionen --- */}
                         <IngredientsSection
-                        recipe={recipe}
-                        isEditing={isEditing}
-                        editedRecipe={editedRecipe}
-                        updateServings={updateServings}
-                        calculateAmount={calculateAmount}
-                        handleIngredientChange={handleIngredientChange}
-                        deleteIngredient={deleteIngredient}
-                        currentServings={currentServings}
-                        addIngredient={addIngredient}>
+                            recipe={recipe}
+                            isEditing={isEditing}
+                            editedRecipe={editedRecipe}
+                            updateServings={updateServings}
+                            calculateAmount={calculateAmount}
+                            handleIngredientChange={handleIngredientChange}
+                            deleteIngredient={deleteIngredient}
+                            currentServings={currentServings}
+                            addIngredient={addIngredient}>
                         </IngredientsSection>
 
                     </div>
 
-                    {/* Zubereitung */}
+                    {/* --- RECHTE SPALTE: Zubereitungsschritte --- */}
                     <StepsSection
-                    isEditing={isEditing}
-                    recipe={recipe}
-                    editedRecipe={editedRecipe}
-                    updateCookingTime={updateCookingTime}
-                    handleStepChange={handleStepChange}
-                    deleteStep={deleteStep}
-                    addStep={addStep}>
+                        isEditing={isEditing}
+                        recipe={recipe}
+                        editedRecipe={editedRecipe}
+                        updateCookingTime={updateCookingTime}
+                        handleStepChange={handleStepChange}
+                        deleteStep={deleteStep}
+                        addStep={addStep}>
                     </StepsSection>
                 </div>
 
-                {/* Original Link */}
+                {/* --- FOOTER: Link zur Original Quelle --- */}
                 {recipe.url && (
                     <div className={styles.detail__sourceContainer}>
                         <a href={recipe.url} target="_blank" rel="noreferrer" className={styles.detail__btnSource}>
