@@ -37,8 +37,6 @@ export default function Dashboard() {
             setRecipes(response.data);
         } catch (error) {
             console.error("Fehler beim Laden der Rezepte:", error);
-            // Hinweis: Ein native 'alert' blockiert den Thread. Später ggf. durch Toast ersetzen.
-            alert("Session abgelaufen?");
             navigate("/login")
         } finally {
             setIsLoading(false);
