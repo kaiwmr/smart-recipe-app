@@ -1,45 +1,31 @@
 import axios from "axios";
-import { logout, getToken } from "../utils/auth";
+import { logoutUser } from "../utils/auth";
 
 // ==========================================
 // 1. API-INSTANZ INITIALISIERUNG
 // ==========================================
-// Erstellen einer zentralen Instanz mit der Basis-URL aus den Umgebungsvariablen.
+// Zentrale Instanz mit Basis-URL aus den Umgebungsvariablen.
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL
+    baseURL: import.meta.env.VITE_API_URL,
+    // Zwingt Axios dazu, den HttpOnly-Cookie bei jeder 
+    // Anfrage an das Backend automatisch mitzusenden.
+    withCredentials: true 
 });
 
 // ==========================================
-// 2. REQUEST-INTERCEPTOR (TOKEN-HANDLING)
+// 2. RESPONSE-INTERCEPTOR (FEHLER-HANDLING)
 // ==========================================
-// Bevor ein Request abgeschickt wird, klinken wir uns hier ein.
-api.interceptors.request.use(config => {
-    const token = getToken();
-    
-    // Falls ein Token im Speicher existiert, wird er automatisch 
-    // in den Authorization-Header jeder Anfrage gepackt.
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    
-    return config;
-});
-
-// ==========================================
-// 3. RESPONSE-INTERCEPTOR (FEHLER-HANDLING)
-// ==========================================
-// Sobald eine Antwort vom Server zurückkommt, prüfen wir sie hier zentral.
+// Fängt Backend-Antworten ab, bevor sie in der aufrufenden Komponente landen.
 api.interceptors.response.use(
-    response => response, // Erfolgreiche Antworten einfach durchreichen
-    error => {
-        // Falls der Server mit 401 (Unauthorized) antwortet, 
-        // ist der Token vermutlich abgelaufen.
-        if (error.response?.status === 401) {
-            // Wir loggen den User automatisch aus und räumen auf.
-            logout();
+    (response) => response,
+    (error) => {
+        // Wenn das Backend 401 (Unauthorized) meldet (z.B. Cookie abgelaufen/fehlt):
+        if (error.response && error.response.status === 401) {
+            // 1. Lokales UI-Flag entfernen
+            logoutUser();
+            // 2. User hart zur Login-Seite zurückwerfen
+            window.location.href = '/login';
         }
-        
-        // Den Fehler für die aufrufende Komponente (z.B. Dashboard) verfügbar machen/weiterreichen.
         return Promise.reject(error);
     }
 );

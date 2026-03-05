@@ -5,6 +5,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
+import { loginUser } from '../../utils/auth';
 
 export default function Login() {
     // ==========================================
@@ -30,11 +31,8 @@ export default function Login() {
         formData.append("password", password);
 
         try {
-            const response = await api.post("/token", formData);
-            const token = response.data.access_token;
-            
-            // Token sicher im LocalStorage ablegen
-            localStorage.setItem("BiteWiseToken", token);
+            await api.post("/token", formData);
+            loginUser();
             navigate("/dashboard");
         } catch (error) {
             console.error("Login Fehler:", error);

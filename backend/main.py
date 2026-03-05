@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import models, schemas, crud
@@ -33,24 +33,30 @@ app.add_middleware(CORSMiddleware, allow_origins= origins, allow_credentials= Tr
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 300
+ACCESS_TOKEN_EXPIRE_SECONDS = 300
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 def create_access_token(data:dict) -> str:
     data_copy = data.copy()
-    expire_time = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire_time = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_SECONDS * 60)
     data_copy["exp"] = expire_time
     token = jwt.encode(data_copy, key= SECRET_KEY, algorithm=ALGORITHM)
 
     return token
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> models.User:
+def get_current_user(request: Request, db: Session = Depends(get_db)) -> models.User:
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"})
 
-    credentials_exception = HTTPException(status_code=401, detail="Could not validate credentials", headers={"WWW-Authenticate": "Bearer"})
-
+    token = request.cookies.get("access_token")
+    if not token:
+        raise credentials_exception
+    
     try:
         token_data = jwt.decode(token, key= SECRET_KEY, algorithms=[ALGORITHM])
         user_email = token_data.get("sub")
@@ -61,8 +67,8 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise credentials_exception
     
     user = crud.get_user_by_email(db=db, email=user_email) 
-
-    if not user: raise credentials_exception
+    if not user:
+        raise credentials_exception
 
     return user        
 
@@ -87,8 +93,8 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 
 
-@app.post("/token", response_model=schemas.Token)
-def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+@app.post("/token", response_model=dict)
+def login_for_access_token(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
 
     # 1. User aus der Datenbank suchen
     user = crud.get_user_by_email(db, email=form_data.username)
@@ -99,10 +105,29 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     # 3. Token erstellen
     access_token = create_access_token(data={"sub": user.email})
     
-    # 4. Token gemäß dem Token-Schema zurückgeben
-    return {"access_token": access_token, "token_type": "bearer"}
+    #4. Token als Cookie setzen
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,     # Verhindert XSS (JS hat keinen Zugriff)
+        secure=True,       # Cookie wird nur über HTTPS gesendet
+        samesite="none",   # Erlaubt Cookies über verschiedene Domains (Frontend vs Backend)
+        max_age=ACCESS_TOKEN_EXPIRE_SECONDS * 60 # Ablaufzeit in Sekunden
+    )
+    
+    return {"message": "Login successful"}
 
+@app.post("/logout", response_model=dict)
+def delete_token(response: Response):
 
+    response.delete_cookie(
+        key="access_token",
+        httponly=True,
+        secure=True,
+        samesite="none"
+    )
+
+    return {"message": "Logout successful"}
 
 @app.get("/users/me", response_model= schemas.User)
 def read_users_me(current_user: models.User = Depends(get_current_user)):

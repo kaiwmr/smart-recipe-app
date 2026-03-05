@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Navigate } from 'react-router-dom';
-import { getToken } from '../../utils/auth';
+import { getIsAuthenticated } from '../../utils/auth';
 
 // ==========================================
 // 1. PROPS & INTERFACES
@@ -11,21 +11,24 @@ interface PrivateRouteProps {
 }
 
 /**
- * Higher-Order Component zur Absicherung von Routen.
- * Prüft, ob ein gültiger Token vorhanden ist, bevor der Inhalt gerendert wird.
+ * Higher-Order Component zur Absicherung von Frontend-Routen.
+ * ACHTUNG: Prüft nur das lokale "isAuthenticated" UI-Flag. 
+ * Die echte Autorisierung passiert bei jedem Request im Backend 
+ * durch die Überprüfung des HttpOnly-Cookies
  */
 export default function PrivateRoute({ children }: PrivateRouteProps) {
   
   // ==========================================
-  // 2. AUTH-LOGIK (ZUGANGSPRÜFUNG)
+  // 2. AUTH-LOGIK (UI-ZUGANGSPRÜFUNG)
   // ==========================================
-  const token = getToken();
+  // Wir prüfen unser harmloses Dummy-Flag aus dem LocalStorage
+  const isAuthenticated = getIsAuthenticated();
 
   // ==========================================
-  // 3. RENDERING / REDIRECT
+  // 3. RENDERING
   // ==========================================
   
-  // Wenn ein Token existiert, darf der User die "children" sehen.
-  // Falls nicht, wird er automatisch zur Login-Seite umgeleitet.
-  return token ? <>{children}</> : <Navigate to="/login" />;
+  // Flag vorhanden -> Komponente rendern.
+  // Flag fehlt -> Automatisch zum Login weiterleiten.
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 }
