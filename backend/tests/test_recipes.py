@@ -12,7 +12,7 @@ async def test_create_recipe_from_website_url_mocked(client, db_session):
     )
 
     token = create_access_token({"sub": user.email})
-    headers = {"Authorization": f"Bearer {token}"}
+    cookies = {"access_token": token}
 
     mock_ai_data = {
         "title": "Test Pasta",
@@ -49,7 +49,7 @@ async def test_create_recipe_from_website_url_mocked(client, db_session):
 
             response = await client.post(
                 "/recipes/from-url?url=https://test.de",
-                headers=headers
+                cookies=cookies
             )
 
             assert response.status_code == 200

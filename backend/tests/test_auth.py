@@ -22,5 +22,7 @@ async def test_full_auth_flow(client, db_session):
     }
 
     login_resp = await client.post("/token", data=login_data)
+
     assert login_resp.status_code == 200
-    assert "access_token" in login_resp.json()
+    assert login_resp.json() == {"message": "Login successful"}
+    assert "access_token" in login_resp.cookies
