@@ -1,16 +1,14 @@
 import json
 from google import genai
 from google.genai import types
-import os
 from dotenv import load_dotenv
 from services.ai_image_generator import generate_image
 from services.nutrients_calculator import calculate_nutrients
 import asyncio
+from config import settings
 
-load_dotenv()
 
-api_key = os.getenv("GEMINI_API_KEY")
-client = genai.Client(api_key=api_key)
+client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
 # --- RECIPE SCHEMA ---
 recipe_schema = {

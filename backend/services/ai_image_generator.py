@@ -1,9 +1,6 @@
 from google.genai import types
 import os
-from dotenv import load_dotenv
 import base64
-
-load_dotenv()
 
 
 async def generate_image(client, recipe: dict) -> bytes:
