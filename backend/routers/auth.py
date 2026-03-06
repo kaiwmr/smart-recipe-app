@@ -1,20 +1,20 @@
 from fastapi import HTTPException, Request, Depends, APIRouter, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-import os
 from dotenv import load_dotenv
 from jose import jwt
 import models, crud
 from database import get_db
 from datetime import datetime, timedelta, timezone
+from config import settings
 
 auth_router = APIRouter()
 
 load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_SECONDS = 300
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_SECONDS = settings.ACCESS_TOKEN_EXPIRE_SECONDS
 
 def create_access_token(data:dict) -> str:
     data_copy = data.copy()

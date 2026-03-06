@@ -1,17 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import models
-from database import engine, get_db
+from database import engine
 from dotenv import load_dotenv
 from routers import recipes, users, auth
+from config import settings
 
 load_dotenv()
 
-origins = [
-    "http://localhost:3000", # React Standard
-    "http://localhost:5173", # Vite Standard (modernes React)
-    "https://smart-recipe-frontend-hwxe.onrender.com"
-]
+origins = [ settings.FRONTEND_URL]
 
 
 # Datenbank-Tabellen erstellen

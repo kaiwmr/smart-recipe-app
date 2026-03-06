@@ -1,9 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from config import settings
 
 # 1. Die URL zur Datenbank definieren
-SQLALCHEMY_DATABASE_URL = "sqlite:///./smartrecipe.db"
+SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
 
 # 2. Die "Engine" (Der Motor) erstellen
 engine = create_engine(
