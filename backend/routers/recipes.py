@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, APIRouter
+from fastapi import Depends, HTTPException, APIRouter, Request
 from sqlalchemy.orm import Session
 import models, schemas, crud
 from services import website_content_generator
@@ -7,6 +7,7 @@ from database import get_db
 from fastapi.concurrency import run_in_threadpool
 from typing import List
 from routers.auth import get_current_user
+from limiter import limiter
 
 recipe_router = APIRouter()
 
@@ -29,7 +30,8 @@ def get_recipe_by_id(recipe_id: int, current_user: models.User = Depends(get_cur
     return recipe
 
 @recipe_router.post("/from-url", response_model=schemas.Recipe)
-async def create_recipe_from_url(url: str, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+@limiter.limit("3/minute")
+async def create_recipe_from_url(request: Request, url: str, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
 
     
     # 1. Daten asynchron laden (await statt asyncio.run)
