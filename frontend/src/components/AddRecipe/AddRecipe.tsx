@@ -3,6 +3,7 @@ import { Link } from 'lucide-react';
 import styles from './AddRecipe.module.css';
 import { toast } from "react-toastify";
 import api from "../../api/api";
+import axios from "axios";
 
 // ==========================================
 // 1. PROPS & INTERFACES
@@ -40,7 +41,12 @@ export default function AddRecipe({ onRecipeAdded }: AddRecipeProps) {
       await onRecipeAdded();
     } catch (error) {
       console.error("Fehler beim Erstellen des Rezepts:", error);
-      toast.error("Fehler aufgetreten");
+      if (axios.isAxiosError(error) && error.response?.status === 429) {
+        toast.error("Rate-limit erreicht");
+      }
+      else {
+        toast.error("Fehler aufgetreten");
+      }
     } finally {
       setIsLoading(false);
     }

@@ -44,10 +44,8 @@ export default function Popup({ showPopup, setShowPopup, onRecipeAdded }: PopupP
                         {/* Inhaltsbereich: Formular zum Hinzufügen von Rezepten */}
                         <div className={styles.popup__form}>
                             <AddRecipe onRecipeAdded={async () => {
-                                // Erst die Daten im Dashboard aktualisieren...
+                                setShowPopup(false);
                                 await onRecipeAdded(); 
-                                // ...dann das Popup automatisch schließen
-                                setShowPopup(false); 
                             }} />
                         </div>
                     </div>
