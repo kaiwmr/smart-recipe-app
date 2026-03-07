@@ -49,6 +49,11 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> models.
 
     return user  
 
+def is_user_admin(current_user: models.User = Depends(get_current_user)) -> models.User:
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Admin privileges required")
+    return current_user
+    
 @auth_router.post("/token", response_model=dict)
 def login_for_access_token(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
 
@@ -90,7 +95,7 @@ def delete_token(response: Response):
 
 
 @auth_router.post("/invite-code", response_model=dict)
-def create_invite_code(code: str, db: Session = Depends(get_db)):
+def create_invite_code(code: str, db: Session = Depends(get_db), admin: models.User = Depends(is_user_admin)):
     crud.create_invite_code(db=db,code=code)
 
-    return {"detail": "Invite Code created"}
+    return {"detail": f"Invite Code '{code}' created successfully"}

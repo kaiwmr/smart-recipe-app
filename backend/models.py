@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, JSON, Float
+from sqlalchemy import Column, Integer, String, ForeignKey, JSON, Float, Boolean
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -8,6 +8,7 @@ class User(Base):
 
     # Spalten definieren
     id = Column(Integer, primary_key=True, index=True)
+    is_admin = Column(Boolean, default=False)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     recipes = relationship("Recipe", back_populates="owner")
