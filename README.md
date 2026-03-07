@@ -2,12 +2,24 @@
   <h1>🍲 BiteWise</h1>
   <p><strong>An AI-powered pipeline for multimodal recipe extraction, normalization, and generation.</strong></p>
 
-  <a href="[https://github.com/kaiwmr/smart-recipe-app/actions/workflows/tests.yml](https://github.com/kaiwmr/smart-recipe-app/actions/workflows/tests.yml)"><img src="[https://github.com/kaiwmr/smart-recipe-app/actions/workflows/tests.yml/badge.svg](https://github.com/kaiwmr/smart-recipe-app/actions/workflows/tests.yml/badge.svg)" alt="CI/CD Tests"></a>
-  <a href="[https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)"><img src="[https://img.shields.io/badge/FastAPI-005571?style=flat-square&logo=fastapi](https://img.shields.io/badge/FastAPI-005571?style=flat-square&logo=fastapi)" alt="FastAPI"></a>
-  <a href="[https://react.dev/](https://react.dev/)"><img src="[https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB](https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB)" alt="React 19"></a>
-  <a href="[https://www.typescriptlang.org/](https://www.typescriptlang.org/)"><img src="[https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)" alt="TypeScript"></a>
-  <a href="[https://openai.com/](https://openai.com/)"><img src="[https://img.shields.io/badge/AI-OpenAI_Whisper-412991?style=flat-square&logo=openai](https://img.shields.io/badge/AI-OpenAI_Whisper-412991?style=flat-square&logo=openai)" alt="OpenAI Whisper"></a>
-  <a href="[https://deepmind.google/technologies/gemini/](https://deepmind.google/technologies/gemini/)"><img src="[https://img.shields.io/badge/AI-Google_Gemini-8E75B2?style=flat-square&logo=google](https://img.shields.io/badge/AI-Google_Gemini-8E75B2?style=flat-square&logo=google)" alt="Gemini 2.5 Flash"></a>
+  <a href="https://github.com/kaiwmr/smart-recipe-app/actions/workflows/tests.yml">
+    <img src="https://github.com/kaiwmr/smart-recipe-app/actions/workflows/tests.yml/badge.svg" alt="CI/CD Tests">
+  </a>
+  <a href="https://fastapi.tiangolo.com/">
+    <img src="https://img.shields.io/badge/FastAPI-005571?style=flat-square&logo=fastapi" alt="FastAPI">
+  </a>
+  <a href="https://react.dev/">
+    <img src="https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React 19">
+  </a>
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
+  </a>
+  <a href="https://openai.com/">
+    <img src="https://img.shields.io/badge/AI-OpenAI_Whisper-412991?style=flat-square&logo=openai" alt="OpenAI Whisper">
+  </a>
+  <a href="https://deepmind.google/technologies/gemini/">
+    <img src="https://img.shields.io/badge/AI-Google_Gemini-8E75B2?style=flat-square&logo=google" alt="Gemini 2.5 Flash">
+  </a>
 </div>
 
 <br />
