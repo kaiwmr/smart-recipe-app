@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_serializer
+from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
 import base64
 
@@ -19,8 +19,7 @@ class User(UserBase):
 
     # Wichtig: Damit Pydantic versteht, dass es Daten auch
     # aus dem SQLAlchemy-Modell lesen darf (nicht nur aus Dictionaries).
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Token(BaseModel):
@@ -74,5 +73,4 @@ class Recipe(RecipeBase):
     id: int
     owner_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
