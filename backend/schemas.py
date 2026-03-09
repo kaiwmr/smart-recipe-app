@@ -59,7 +59,7 @@ class RecipeContent(BaseModel):
 class RecipeBase(BaseModel):
     title: str
     content: RecipeContent #neu
-    url: str
+    url: Optional[str] = ""
     image: str
 
 
@@ -74,3 +74,6 @@ class Recipe(RecipeBase):
     owner_id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+class UserInput(BaseModel):
+    user_input: str

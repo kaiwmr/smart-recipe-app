@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 import models, schemas, crud
 from services import website_content_generator
 from services import tiktok_content_generator
+from services import user_content_generator
 from database import get_db
 from fastapi.concurrency import run_in_threadpool
 from typing import List
@@ -49,6 +50,24 @@ async def create_recipe_from_url(request: Request, url: str, db: Session = Depen
 
     
     recipe_in = schemas.RecipeCreate(title=recipe_title, content=recipe_content, url=url, image=recipe_image)
+
+    # 3. In DB speichern (user_id korrekt übergeben)
+    return await run_in_threadpool(crud.create_recipe, db=db, item=recipe_in, user_id=current_user.id)
+
+
+@recipe_router.post("/from-user-input", response_model=schemas.Recipe)
+@limiter.limit("3/minute")
+async def create_recipe_from_user_input(request: Request, input_data: schemas.UserInput, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+
+    
+    data = await user_content_generator.generate_from_input(user_input=input_data.user_input)
+    
+    recipe_title = data.get("title", "Unbekannt")
+    recipe_content = data.get("content")
+    recipe_image = data.get("image")
+
+    
+    recipe_in = schemas.RecipeCreate(title=recipe_title, content=recipe_content, image=recipe_image)
 
     # 3. In DB speichern (user_id korrekt übergeben)
     return await run_in_threadpool(crud.create_recipe, db=db, item=recipe_in, user_id=current_user.id)
