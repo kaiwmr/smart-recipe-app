@@ -49,6 +49,7 @@
     align-items: center;          
     justify-content: space-between;  
     gap: 1rem;                       
+    margin-bottom: 1rem;
 }
 
 .popup__header h2 {
@@ -56,14 +57,47 @@
 }
 
 /* =========================================
-   5. FORM
+   5. TAB SWITCHER
    ========================================= */
-.popup__form {
-    margin-top: 2rem; 
+.popup__tabs {
+    display: flex;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+/* Grundstyle für beide Buttons (aktiv & inaktiv) */
+.popup__tabs button {
+    width: 50%;
+    background: none;
+    border: none;
+    border-bottom: 3px solid #e9e9e9; /* Grauer Standard-Strich */
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Der inaktive Tab */
+.tab_inactive {
+    color: #6b7280;
+}
+
+/* Der aktive Tab */
+.tab_active {
+    border-bottom-color: rgb(20, 20, 20) !important; /* Schwarzer Strich */
+    font-weight: bold;
+    color: rgb(20, 20, 20);
 }
 
 /* =========================================
-   6. ANIMATIONEN
+   6. FORM
+   ========================================= */
+.popup__form {
+    margin-top: 1rem; 
+}
+
+/* =========================================
+   7. ANIMATIONEN
    ========================================= */
 @keyframes fadeIn {
     from { opacity: 0; }

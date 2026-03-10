@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { Link } from 'lucide-react';
-import styles from './AddRecipe.module.css';
+import styles from './AddRecipeLink.module.css';
 import { toast } from "react-toastify";
-import api from "../../api/api";
+import api from "../../../api/api";
 import axios from "axios";
 
 // ==========================================
 // 1. PROPS & INTERFACES
 // ==========================================
-interface AddRecipeProps {
+interface AddRecipeLinkProps {
   // Funktion, die nach erfolgreichem Hinzufügen im Dashboard aufgerufen wird
   onRecipeAdded: () => Promise<void>;
 }
 
-export default function AddRecipe({ onRecipeAdded }: AddRecipeProps) {
+export default function AddRecipeLink({ onRecipeAdded }: AddRecipeLinkProps) {
   
   // ==========================================
   // 2. STATES
@@ -31,7 +31,6 @@ export default function AddRecipe({ onRecipeAdded }: AddRecipeProps) {
     setIsLoading(true);
 
     try {
-      // POST-Request an den KI-Extractor Endpunkt
       await api.post("/recipes/from-url", null, { params: { url: url }});
 
       toast.success("Rezept erstellt");

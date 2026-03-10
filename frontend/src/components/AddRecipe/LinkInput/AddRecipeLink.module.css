@@ -1,0 +1,66 @@
+/* =========================================
+   1. INPUT WRAPPER
+   ========================================= */
+.addRecipe__inputWrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid #ccc; /* Rahmen um den Wrapper */
+    border-radius: 2rem;
+    padding: 0 12px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    background-color: white;
+    height: 2.5rem; /* Fixe Höhe für saubere vertikale Zentrierung */
+}
+
+/* Icon links neben Input */
+.addRecipe__icon {
+    color: #6b7280;
+    margin-right: 8px;
+}
+
+/* =========================================
+   2. INPUT FELD
+   ========================================= */
+/* Überschreibt Styles aus Popup.module.css */
+.addRecipe__inputWrapper input {
+    border: none;      
+    outline: none;     
+    background: transparent;
+    padding: 0;        
+    margin: 0;
+    flex: 1;          
+    height: 100%;      
+}
+
+/* =========================================
+   3. SUBTITLE
+   ========================================= */
+.addRecipe__subtitle {
+    text-align: center;
+    font-size: 0.75rem;
+    color: gray;
+}
+
+/* =========================================
+   4. BUTTON ADD RECIPE
+   ========================================= */
+.addRecipe__btnAdd {
+    text-align: center;
+    background-color: rgb(20, 20, 20);
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    border: none;
+    height: 2.5rem;
+    width: 100%;
+    border-radius: 2rem;   
+    cursor: pointer;
+}
+
+/* Ladezustand Button */
+.addRecipe__btnAdd.loading {
+    background-color: rgb(97, 97, 97); /* Farbe im Ladezustand */
+    cursor: not-allowed;
+}

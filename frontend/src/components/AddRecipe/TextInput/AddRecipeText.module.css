@@ -3,35 +3,39 @@
    ========================================= */
 .addRecipe__inputWrapper {
     display: flex;
-    align-items: center;
+    align-items: flex-start; 
     width: 100%;
-    border: 1px solid #ccc; /* Rahmen um den Wrapper */
-    border-radius: 2rem;
-    padding: 0 12px;
+    border: 1px solid #ccc;
+    border-radius: 1rem; 
+    padding: 12px;
     box-sizing: border-box;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     background-color: white;
-    height: 2.5rem; /* Fixe Höhe für saubere vertikale Zentrierung */
+   
 }
 
-/* Icon links neben Input */
+/* Icon links neben Textarea */
 .addRecipe__icon {
     color: #6b7280;
     margin-right: 8px;
+    margin-top: 2px; 
 }
 
 /* =========================================
-   2. INPUT FELD
+   2. TEXTAREA FELD
    ========================================= */
-/* Überschreibt Styles aus Popup.module.css */
-.addRecipe__inputWrapper input {
-    border: none;      /* Rahmen weg */
-    outline: none;     /* Fokus-Rahmen weg */
+.addRecipe__textarea {
+    border: none;
+    outline: none;
     background: transparent;
-    padding: 0;        /* Padding weg, damit Text mittig sitzt */
+    padding: 0;
     margin: 0;
-    flex: 1;           /* Füllt den restlichen Platz */
-    height: 100%;      /* Füllt die Höhe des Wrappers */
+    flex: 1;
+    width: 100%;
+    resize: vertical; 
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.4;
 }
 
 /* =========================================
@@ -41,6 +45,7 @@
     text-align: center;
     font-size: 0.75rem;
     color: gray;
+    margin-top: 10px;
 }
 
 /* =========================================
@@ -55,12 +60,12 @@
     border: none;
     height: 2.5rem;
     width: 100%;
-    border-radius: 2rem;     /* Abgerundete Ecken */
+    border-radius: 2rem;
     cursor: pointer;
 }
 
 /* Ladezustand Button */
 .addRecipe__btnAdd.loading {
-    background-color: rgb(97, 97, 97); /* Farbe im Ladezustand */
+    background-color: rgb(97, 97, 97);
     cursor: not-allowed;
 }
