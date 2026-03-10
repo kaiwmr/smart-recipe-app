@@ -32,7 +32,7 @@ recipe_schema = {
                     "type": "ARRAY",
                     "items": {
                         "type": "STRING",
-                        "enum": ["vegan", "vegetarisch", "Hauptspeise", "Frühstück", "Dessert", "Backen"]
+                        "enum": ["vegan", "vegetarisch", "Hauptspeise", "Frühstück", "Dessert", "Backen", "Beilage"]
                     }
                 },
                 "ingredients": {
@@ -106,7 +106,7 @@ SYSTEM_INSTRUCTION = """
     - Liefere geschätzte Nährwerte "per_100g" für jede Zutat (Ausgangszustand/unverarbeitet) als Fallback.
     - TAG-LOGIK:
         * Prüfe vor dem Taggen die Zutaten. Wenn Fleisch (Rind, Schwein, Geflügel, Speck, Schinken, etc.) oder Fisch enthalten ist, lösche die Tags "vegan" und "vegetarisch" zwingend.
-        * Jedes Rezept erhält genau eine primäre Mahlzeiten-Kategorie: Hauptspeise, Frühstück oder Dessert. Wähle die Kategorie, die am besten beschreibt, wie das Gericht primär verzehrt wird. Diese schließen sich gegenseitig aus.
+        * Jedes Rezept erhält genau eine primäre Mahlzeiten-Kategorie: Hauptspeise, Frühstück, Dessert oder Beilage. Wähle die Kategorie, die am besten beschreibt, wie das Gericht primär verzehrt wird. Diese schließen sich gegenseitig aus.
         * Nutze 'Backen' nur, wenn ein Teig im Ofen gegart/gebacken wird.
     - Schätze eine sinnvolle Anzahl an Portionen (servings) für das Gericht, basierend auf den Zutatenmengen für durchschnittliche Erwachsene. Übernehme, wenn vorhanden, NICHT blind die Angabe von der Quelle.
 

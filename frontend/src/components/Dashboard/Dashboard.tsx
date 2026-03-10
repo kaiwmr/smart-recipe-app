@@ -24,7 +24,7 @@ export default function Dashboard() {
     const navigate = useNavigate();
 
     // Festgelegte Filter Optionen für die Tag-Leiste
-    const tags: string[] = ["high protein", "< 30min", "vegetarisch", "vegan", "Hauptspeise", "Dessert", "Frühstück", "Backen"];
+    const tags: string[] = ["high protein", "< 30min", "vegetarisch", "vegan", "Hauptspeise", "Dessert", "Frühstück", "Backen", "Beilage"];
 
     // ==========================================
     // 2. API-INTERAKTION & EFFECTS
