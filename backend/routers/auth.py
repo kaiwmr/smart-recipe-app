@@ -73,7 +73,6 @@ def login_for_access_token(response: Response, form_data: OAuth2PasswordRequestF
         httponly=True,     # Verhindert XSS (JS hat keinen Zugriff)
         secure=True,       # Cookie wird nur über HTTPS gesendet
         samesite="none",   # Erlaubt Cookies über verschiedene Domains (Frontend vs Backend)
-        domain=settings.COOKIE_DOMAIN,
         path="/",
         max_age=ACCESS_TOKEN_EXPIRE_SECONDS * 60 # Ablaufzeit in Sekunden
     )
@@ -89,7 +88,6 @@ def delete_token(response: Response):
         secure=True,
         samesite="none",
         path="/",
-        domain=settings.COOKIE_DOMAIN
     )
 
     return {"message": "Logout successful"}

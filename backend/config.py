@@ -11,7 +11,6 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str
 
     FRONTEND_URLS: list[str] = ["http://localhost:5173"]
-    COOKIE_DOMAIN: str | None = None  # Standardmäßig None für localhost
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
     
