@@ -56,8 +56,6 @@ export default function useRecipeEditor(id: string | undefined){
             const payload = {
                 title: editedRecipe.title,
                 content: editedRecipe.content,
-                url: editedRecipe.url,
-                image: editedRecipe.image
             };
 
             const response = await api.put(`recipes/${id}`, payload);

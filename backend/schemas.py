@@ -59,17 +59,16 @@ class RecipeContent(BaseModel):
 class RecipeBase(BaseModel):
     title: str
     content: RecipeContent #neu
-    url: Optional[str] = ""
-    image: str
 
 
 class RecipeCreate(RecipeBase):
-    pass
+    url: Optional[str] = ""
+    image: str
 
 class RecipeUpdate(RecipeBase):
     pass
 
-class Recipe(RecipeBase):
+class Recipe(RecipeCreate):
     id: int
     owner_id: int
 
