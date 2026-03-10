@@ -1,7 +1,8 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
-    SECRET_KEY: str = "secret_key"
+    SECRET_KEY: str = "something_very_secret"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_SECONDS: int = 300
 
@@ -10,6 +11,7 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str
 
     FRONTEND_URLS: list[str] = ["http://localhost:5173"]
+    COOKIE_DOMAIN: str | None = None  # Standardmäßig None für localhost
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
     
