@@ -1,7 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    SECRET_KEY: str
+    SECRET_KEY: str = "secret_key"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_SECONDS: int = 300
 
@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str
     OPENAI_API_KEY: str
 
-    FRONTEND_URL: str = "http://localhost:5173"
+    FRONTEND_URLS: list[str] = ["http://localhost:5173"]
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
     
