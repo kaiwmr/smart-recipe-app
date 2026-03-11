@@ -1,9 +1,9 @@
 from google.genai import types
 import os
-import base64
+from utils import image_utils
 
 
-async def generate_image(client, recipe: dict) -> bytes:
+async def generate_image(client, recipe: dict) -> str:
 
     prompt = f"""Rezept: {recipe}
     Erstelle ein Bild im identischen Studio-Stil wie das Referenzbild und beachte das Essen passend zum Rezept darzustellen.
@@ -19,12 +19,12 @@ async def generate_image(client, recipe: dict) -> bytes:
     Hintergrund, Lichtstil und Gesamtästhetik sollen konsistent bleiben.
     """
 
-    reference_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "style_reference.png")
+    reference_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "style_reference.jpg")
 
     with open(reference_image, "rb") as f:
         reference_part = types.Part(
             inline_data=types.Blob(
-                mime_type="image/png",
+                mime_type="image/jpg",
                 data=f.read()
             )
         )
@@ -41,5 +41,5 @@ async def generate_image(client, recipe: dict) -> bytes:
     for part in response.candidates[0].content.parts:
         if part.inline_data and part.inline_data.mime_type.startswith("image/"):
             image_bytes = part.inline_data.data
-            image_base64 = base64.b64encode(image_bytes).decode("utf-8")
-            return image_base64
+            image_path = await image_utils.process_image_bytes(image_bytes)
+            return image_path

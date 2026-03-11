@@ -4,6 +4,8 @@ import { ChevronLeft, Edit2, Trash2, Save, X } from 'lucide-react';
 
 import { Recipe } from '../../../types';
 
+const API_URL = import.meta.env.VITE_API_URL 
+
 // ==========================================
 // 1. PROPS & INTERFACES
 // ==========================================
@@ -33,10 +35,10 @@ export default function ImageSection({
     // ==========================================
     return (
         <div className={styles.detail__pictureWrapper}>
-            {/* Rezeptbild als Base64-String aus der Datenbank */}
+            {/* Rezeptbild */}
             <img
                 className={styles.detail__picture}
-                src={`data:image/png;base64,${recipe.image}`}
+                src={`${API_URL}${recipe.image}`}
                 alt={recipe.title}
             />
             

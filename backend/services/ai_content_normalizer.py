@@ -204,7 +204,7 @@ async def call_gemini(content: str) -> dict:
     nutrients = await calculate_nutrients(ingredients=data["content"]["ingredients"])
 
     if image_task:
-        data["image"] = await asyncio.wait_for(image_task, timeout=15.0)
+        data["image"] = await asyncio.wait_for(image_task, timeout=25.0)
     else:
         data["image"] = None
 

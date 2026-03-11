@@ -1,8 +1,9 @@
-from typing import Optional
+from typing import Optional, List
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 import models, schemas
-from typing import List
+from pathlib import Path
+from config import settings
 
 # Setup für das Passwort-Hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -63,6 +64,12 @@ def delete_recipe(db:Session, recipe_id: int, user_id: int) -> bool:
     db_recipe = db.query(models.Recipe).filter(models.Recipe.id == recipe_id, models.Recipe.owner_id == user_id).first()
 
     if db_recipe:
+        
+        filename = db_recipe.image.split("/")[-1]
+        file_path = Path(settings.UPLOAD_DIR) / filename
+        if file_path.exists():
+            file_path.unlink()
+        
         db.delete(db_recipe)
         db.commit()
         return True

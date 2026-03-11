@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Clock, Leaf } from "lucide-react"
 import { Recipe } from '../../../types';
 
+const API_URL = import.meta.env.VITE_API_URL 
+
 // ==========================================
 // 1. PROPS & INTERFACES
 // ==========================================
@@ -23,10 +25,10 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
         /* Klick auf die gesamte Karte navigiert zur Detailansicht des Rezepts */
         <div className={styles.dashboard__card} onClick={() => navigate(`/recipe/${recipe.id}`)}> 
             
-            {/* Rezeptbild (Base64-Format aus der Datenbank) */}
+            {/* Rezeptbild */}
             <img 
                 className={styles.dashboard__picture} 
-                src={`data:image/png;base64,${recipe.image}`} 
+                src={`${API_URL}${recipe.image}`}
                 alt={recipe.title} 
                 loading="lazy" 
             />

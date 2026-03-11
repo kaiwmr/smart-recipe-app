@@ -8,9 +8,10 @@ venv/
 # Umgebungsvariablen (GEHEIMNISSE!)
 .env
 
-# Datenbank
+# Datenbank und Bilder
 *.db
 *.sqlite3
+uploads
 
 # Node.js / React Müll
 node_modules/
