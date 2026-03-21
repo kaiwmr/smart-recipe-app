@@ -62,9 +62,11 @@ async def create_recipe_from_url(request: Request, url: str, db: Session = Depen
 @limiter.limit("3/minute")
 async def create_recipe_from_user_input(request: Request, input_data: schemas.UserInput, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
 
-    
-    data = await user_content_generator.generate_from_input(user_input=input_data.user_input)
-    
+    try:
+        data = await user_content_generator.generate_from_input(user_input=input_data.user_input)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
     recipe_title = data.get("title", "Unbekannt")
     recipe_content = data.get("content")
     recipe_image = data.get("image")

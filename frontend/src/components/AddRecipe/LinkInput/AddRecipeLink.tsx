@@ -20,6 +20,7 @@ export default function AddRecipeLink({ onRecipeAdded }: AddRecipeLinkProps) {
   // ==========================================
   const [url, setUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loadingText, setLoadingText] = useState<string>("KI arbeitet...");
 
   // ==========================================
   // 3. FORMULAR LOGIK (API-INTERAKTION)
@@ -27,8 +28,29 @@ export default function AddRecipeLink({ onRecipeAdded }: AddRecipeLinkProps) {
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!url) {
+      toast.warning("Bitte gib eine URL ein");
+      return;
+    }
+
     // Lade-Status aktivieren
     setIsLoading(true);
+    setLoadingText("Website wird aufgerufen...");
+
+    const steps = [
+      "Inhalte werden analysiert...",
+      "Daten werden verarbeitet...",
+      "Rezepturen werden identifiziert...",
+      "Details werden aufbereitet..."
+    ];
+
+    let stepIndex = 0;
+    const intervalId = setInterval(() => {
+      if (stepIndex < steps.length) {
+        setLoadingText(steps[stepIndex]);
+        stepIndex++;
+      }
+    }, 3000);
 
     try {
       await api.post("/recipes/from-url", null, { params: { url: url }});
@@ -52,9 +74,11 @@ export default function AddRecipeLink({ onRecipeAdded }: AddRecipeLinkProps) {
       else {
         toast.error("Fehler aufgetreten");
       }
-    }
+      }
     } finally {
+      clearInterval(intervalId);
       setIsLoading(false);
+      setLoadingText("KI arbeitet..."); 
     }
   };
 
@@ -82,7 +106,7 @@ export default function AddRecipeLink({ onRecipeAdded }: AddRecipeLinkProps) {
           type="submit"
           disabled={isLoading}
         >
-          {isLoading ? "KI arbeitet..." : "Zum Katalog hinzufügen"}
+          {isLoading ? loadingText : "Zum Katalog hinzufügen"}
         </button>
 
         <p className={styles.addRecipe__subtitle}>

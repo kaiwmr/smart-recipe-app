@@ -19,6 +19,7 @@ export default function AddRecipeText({ onRecipeAdded }: AddRecipeTextProps) {
   // ==========================================
   const [userInput, setUserInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loadingText, setLoadingText] = useState<string>("KI arbeitet...");
 
   // ==========================================
   // 3. FORMULAR LOGIK (API-INTERAKTION)
@@ -27,11 +28,27 @@ export default function AddRecipeText({ onRecipeAdded }: AddRecipeTextProps) {
     e.preventDefault();
 
     if (!userInput.trim()) {
-      toast.warning("Bitte gib einen Rezept-Text ein.");
+      toast.warning("Bitte gib ein Rezept ein");
       return;
     }
 
     setIsLoading(true);
+    setLoadingText("Text wird gelesen...");
+
+    const steps = [
+      "Inhalte werden analysiert...",
+      "Daten werden verarbeitet...",
+      "Rezepturen werden identifiziert...",
+      "Details werden aufbereitet..."
+    ];
+
+    let stepIndex = 0;
+    const intervalId = setInterval(() => {
+      if (stepIndex < steps.length) {
+        setLoadingText(steps[stepIndex]);
+        stepIndex++;
+      }
+    }, 3000);
 
     try {
       // POST-Request (als JSON-Body gesendet)
@@ -43,13 +60,23 @@ export default function AddRecipeText({ onRecipeAdded }: AddRecipeTextProps) {
       await onRecipeAdded();
     } catch (error) {
       console.error("Fehler beim Erstellen des Rezepts:", error);
-      if (axios.isAxiosError(error) && error.response?.status === 429) {
-        toast.error("Rate-limit erreicht");
-      } else {
+      if (axios.isAxiosError(error)){
+        const status = error.response?.status;
+
+        if (status == 429) {
+          toast.error("Rate-limit erreicht");
+        }
+        else if (status === 404) {
+          toast.error("Kein Rezept gefunden");
+      }
+      else {
         toast.error("Fehler aufgetreten");
       }
+      }
     } finally {
+      clearInterval(intervalId);
       setIsLoading(false);
+      setLoadingText("KI arbeitet..."); 
     }
   };
 
@@ -78,7 +105,7 @@ export default function AddRecipeText({ onRecipeAdded }: AddRecipeTextProps) {
           type="submit"
           disabled={isLoading}
         >
-          {isLoading ? "KI arbeitet..." : "Zum Katalog hinzufügen"}
+          {isLoading ? loadingText : "Zum Katalog hinzufügen"}
         </button>
 
         <p className={styles.addRecipe__subtitle}>
