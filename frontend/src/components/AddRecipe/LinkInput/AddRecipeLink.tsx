@@ -40,12 +40,19 @@ export default function AddRecipeLink({ onRecipeAdded }: AddRecipeLinkProps) {
       await onRecipeAdded();
     } catch (error) {
       console.error("Fehler beim Erstellen des Rezepts:", error);
-      if (axios.isAxiosError(error) && error.response?.status === 429) {
-        toast.error("Rate-limit erreicht");
+      if (axios.isAxiosError(error)){
+        const status = error.response?.status;
+
+        if (status == 429) {
+          toast.error("Rate-limit erreicht");
+        }
+        else if (status === 404) {
+          toast.error("Kein Rezept gefunden");
       }
       else {
         toast.error("Fehler aufgetreten");
       }
+    }
     } finally {
       setIsLoading(false);
     }

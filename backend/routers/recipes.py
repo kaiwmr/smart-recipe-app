@@ -36,10 +36,13 @@ async def create_recipe_from_url(request: Request, url: str, db: Session = Depen
 
     
     # 1. Daten asynchron laden (await statt asyncio.run)
-    if "tiktok.com" in url:
-        data = await tiktok_content_generator.transcribe_and_generate(url)
-    else:
-        data = await website_content_generator.scrape_and_generate(url)
+    try:
+        if "tiktok.com" in url:
+            data = await tiktok_content_generator.transcribe_and_generate(url)
+        else:
+            data = await website_content_generator.scrape_and_generate(url)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
     # 2. In Pydantic-Schema umwandeln
     # WICHTIG: 'content' im Schema erwartet ein Dictionary/Objekt, keinen String!

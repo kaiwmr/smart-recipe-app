@@ -1,7 +1,6 @@
 import json
 from google import genai
 from google.genai import types
-from dotenv import load_dotenv
 from services.ai_image_generator import generate_image
 from services.nutrients_calculator import calculate_nutrients
 import asyncio
@@ -80,6 +79,7 @@ SYSTEM_INSTRUCTION = """
     Du bist ein professioneller Rezept-Redakteur für eine Koch-App.
     Deine Aufgabe ist es, unstrukturierten HTML-Rezepttext, Video Daten oder benutzerdefinierte Eingaben in ein sauberes,
     standardisiertes Rezeptformat zu überführen.
+    Sollten die übergebenen Daten rein gar nichts mit einem Rezept zu tun haben, den übergebe als title exakt "No Recipe Found".
 
     STYLE GUIDE (Befolge diese Regeln strikt!):
 
@@ -196,6 +196,9 @@ async def call_gemini(content: str) -> dict:
         full_response += chunk.text
 
         if not image_function_triggered and '"content":' in full_response:
+            if "No Recipe Found" in full_response:
+                asyncio.create_task(response.aclose()) # beendet den Stream
+                raise ValueError("No recipe found")
             image_task = asyncio.create_task(generate_image(client=client, recipe=full_response))
             image_function_triggered = True
 
