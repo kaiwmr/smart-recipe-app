@@ -64,11 +64,13 @@ def delete_recipe(db:Session, recipe_id: int, user_id: int) -> bool:
     db_recipe = db.query(models.Recipe).filter(models.Recipe.id == recipe_id, models.Recipe.owner_id == user_id).first()
 
     if db_recipe:
+        image_usage_count = db.query(models.Recipe).filter(models.Recipe.image == db_recipe.image).count()
         
-        filename = db_recipe.image.split("/")[-1]
-        file_path = Path(settings.UPLOAD_DIR) / filename
-        if file_path.exists():
-            file_path.unlink()
+        if image_usage_count == 1:
+            filename = db_recipe.image.split("/")[-1]
+            file_path = Path(settings.UPLOAD_DIR) / filename
+            if file_path.exists():
+                file_path.unlink()
         
         db.delete(db_recipe)
         db.commit()
@@ -147,3 +149,11 @@ def create_nutrients(db: Session, id_slug: str, nutrients: dict) -> models.Ingre
     db.refresh(db_nutrients)
 
     return db_nutrients
+
+
+def get_recipe_by_url(url: str, db:Session) -> Optional[dict]:
+    db_recipe = db.query(models.Recipe).filter(models.Recipe.url == url).first()
+
+    if not db_recipe:
+        return None
+    return schemas.Recipe.model_validate(db_recipe).model_dump()

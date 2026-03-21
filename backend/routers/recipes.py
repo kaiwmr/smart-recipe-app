@@ -34,15 +34,15 @@ def get_recipe_by_id(recipe_id: int, current_user: models.User = Depends(get_cur
 @limiter.limit("3/minute")
 async def create_recipe_from_url(request: Request, url: str, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
 
-    
-    # 1. Daten asynchron laden (await statt asyncio.run)
-    try:
-        if "tiktok.com" in url:
-            data = await tiktok_content_generator.transcribe_and_generate(url)
-        else:
-            data = await website_content_generator.scrape_and_generate(url)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    data = await run_in_threadpool(crud.get_recipe_by_url, db=db, url=url)
+    if not data: 
+        try:
+            if "tiktok.com" in url:
+                data = await tiktok_content_generator.transcribe_and_generate(url)
+            else:
+                data = await website_content_generator.scrape_and_generate(url)
+        except ValueError as e:
+            raise HTTPException(status_code=404, detail=str(e))
 
     # 2. In Pydantic-Schema umwandeln
     # WICHTIG: 'content' im Schema erwartet ein Dictionary/Objekt, keinen String!
