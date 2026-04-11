@@ -33,4 +33,4 @@ app.include_router(auth.auth_router)
 
 @app.get("/")
 def read_root():
-    return {"message": "Willkommen bei SmartRecipe!"}
+    return {"message": "Willkommen bei BiteWise!"}

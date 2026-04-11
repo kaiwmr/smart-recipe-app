@@ -12,7 +12,6 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
-# Hilfsfunktion: Passwort hashen
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
@@ -24,7 +23,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def get_user_by_email(db: Session, email: str) -> Optional[models.User]:
     return db.query(models.User).filter(models.User.email == email).first()
 
-
 def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     # 1. Passwort verschlüsseln
     hashed_password = get_password_hash(user.password)
@@ -34,11 +32,10 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     
     # 3. Zur DB hinzufügen und speichern
     db.add(db_user)
-    db.commit()      # Bestätigen ("Enter drücken")
-    db.refresh(db_user) # Daten neu laden (um die generierte ID zu bekommen)
+    db.commit()      
+    db.refresh(db_user) 
     
     return db_user
-
 
 def create_recipe(db: Session, item: schemas.RecipeCreate, user_id: int) -> models.Recipe:
 
@@ -50,14 +47,11 @@ def create_recipe(db: Session, item: schemas.RecipeCreate, user_id: int) -> mode
 
     return db_recipe
 
-
 def get_recipes(user_id: int, db: Session, skip: int = 0, limit: int = 100) -> List[models.Recipe]:
     return db.query(models.Recipe).filter(models.Recipe.owner_id == user_id).offset(skip).limit(limit).all()
 
 def get_recipe_by_id(user_id: int, db: Session, recipe_id: int) -> models.Recipe:
     return db.query(models.Recipe).filter(models.Recipe.id == recipe_id, models.Recipe.owner_id == user_id).first()
-
-
 
 def delete_recipe(db:Session, recipe_id: int, user_id: int) -> bool:
 
@@ -77,8 +71,6 @@ def delete_recipe(db:Session, recipe_id: int, user_id: int) -> bool:
         return True
     
     return False
-
-
 
 def create_invite_code(db: Session, code: str) -> models.InviteCode:
     db_invite_code = models.InviteCode(code=code, usages=10)
@@ -110,7 +102,6 @@ def use_invite_code(db: Session, code: str) -> bool:
 
     return True
 
-
 def update_recipe(updates: schemas.RecipeUpdate, db:Session, recipe_id: int, user_id: int) -> bool:
 
     db_recipe = db.query(models.Recipe).filter(models.Recipe.id == recipe_id, models.Recipe.owner_id == user_id).first()
@@ -118,18 +109,15 @@ def update_recipe(updates: schemas.RecipeUpdate, db:Session, recipe_id: int, use
     if not db_recipe:
         return None
     
-    # 2. Felder aktualisieren
-    # Wir kopieren die Werte aus dem Schema in das Datenbank-Objekt
     update_data = updates.model_dump(exclude_unset=True)
     
-    # Hier passiert die Magie: Wir updaten Titel, Content, URL gleichzeitig
+    # updaten von Titel, Content, URL gleichzeitig
     for key, value in update_data.items():
         setattr(db_recipe, key, value)
     
     db.commit()
     db.refresh(db_recipe)
     return db_recipe
-
 
 def get_nutrients_by_id(id_slug: str, db:Session) -> Optional[models.IngredientNutrients]:
 
@@ -140,7 +128,6 @@ def get_nutrients_by_id(id_slug: str, db:Session) -> Optional[models.IngredientN
     
     return db_nutrients
 
-
 def create_nutrients(db: Session, id_slug: str, nutrients: dict) -> models.IngredientNutrients:
     db_nutrients = models.IngredientNutrients(id_slug=id_slug, **nutrients)
 
@@ -149,7 +136,6 @@ def create_nutrients(db: Session, id_slug: str, nutrients: dict) -> models.Ingre
     db.refresh(db_nutrients)
 
     return db_nutrients
-
 
 def get_recipe_by_url(url: str, db:Session) -> Optional[dict]:
     db_recipe = db.query(models.Recipe).filter(models.Recipe.url == url).first()

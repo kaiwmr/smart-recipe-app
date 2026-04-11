@@ -3,16 +3,14 @@ from sqlalchemy.orm import relationship
 from database import Base
 
 class User(Base):
-    # Tabellenname in der Datenbank
+
     __tablename__ = "users"
 
-    # Spalten definieren
     id = Column(Integer, primary_key=True, index=True)
     is_admin = Column(Boolean, default=False)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     recipes = relationship("Recipe", back_populates="owner")
-
 
 class Recipe(Base):
 
@@ -27,7 +25,6 @@ class Recipe(Base):
     image = Column(String)
     nutrients = Column(JSON)
 
-
 class IngredientNutrients(Base):
 
     __tablename__ = "ingredient_nutrients"
@@ -41,7 +38,6 @@ class IngredientNutrients(Base):
     sugar = Column(Float)
     fiber = Column(Float)
     salt = Column(Float)
-
 
 class InviteCode(Base):
 

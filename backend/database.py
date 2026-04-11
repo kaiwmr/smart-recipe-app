@@ -3,18 +3,18 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from config import settings
 
-# 1. Die URL zur Datenbank definieren
+# 1. URL zur Datenbank definieren
 SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
 
-# 2. Die "Engine" (Der Motor) erstellen
+# 2. Engine erstellen
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
 
-# 3. Die "Session" (Die Arbeitssitzung) vorbereiten
+# 3. Session vorbereiten
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# 4. Die "Base" (Die Basis-Klasse)
+# 4. Base
 Base = declarative_base()
 
 # 5. Dependency-Funktion für FastAPI

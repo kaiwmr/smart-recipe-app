@@ -1,33 +1,24 @@
 from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
-import base64
 
-# 1. Basis-Schema (Daten, die wir immer brauchen)
 class UserBase(BaseModel):
     email: str
 
-# 2. Schema für die Erstellung (Input vom Nutzer)
-# Hier brauchen wir zusätzlich das Passwort
 class UserCreate(UserBase):
     password: str
     invite_code: str
 
-# 3. Schema für die Antwort (Output an den Nutzer)
-# Hier geben wir die ID zurück, aber KEIN Passwort!
 class User(UserBase):
     id: int
 
     # Wichtig: Damit Pydantic versteht, dass es Daten auch
-    # aus dem SQLAlchemy-Modell lesen darf (nicht nur aus Dictionaries).
+    # aus dem SQLAlchemy-Modell lesen darf (nicht nur aus Dicts).
     model_config = ConfigDict(from_attributes=True)
-
 
 class Token(BaseModel):
     access_token: str
     token_type: str
 
-
-#neu
 class Nutrients(BaseModel):
     kcal: float
     protein: float
@@ -47,7 +38,6 @@ class Ingredient(BaseModel):
     est_weight_g: Optional[float] = 0.0
     per_100g: Optional[Nutrients] = None
 
-
 class RecipeContent(BaseModel):
     servings: int
     ingredients: List[Ingredient]
@@ -58,8 +48,7 @@ class RecipeContent(BaseModel):
 
 class RecipeBase(BaseModel):
     title: str
-    content: RecipeContent #neu
-
+    content: RecipeContent 
 
 class RecipeCreate(RecipeBase):
     url: Optional[str] = ""
