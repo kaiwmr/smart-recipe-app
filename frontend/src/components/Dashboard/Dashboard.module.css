@@ -1,7 +1,4 @@
-/* =========================================
-   DASHBOARD LAYOUT (GRID)
-   ========================================= */
-
+/* --- Dashboard Layout (Grid) ------------- */
 .dashboard__grid {
     margin-top: 0.5rem;
     display: grid;
@@ -9,22 +6,19 @@
     gap: 1.75rem;
 }
 
-/* Mobile Gitter-Anpassung */
 @media (max-width: 764px) {
     .dashboard__grid {
         grid-template-columns: repeat(auto-fill, minmax(max(150px, 16.7%), 1fr));
     }
 }
 
+/* --- Status & Feedback ------------------- */
 .dashboard__loadingIcon {
     width: 2rem;
     height: 2rem;
     margin: 2rem auto;
     animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
+    display: block;
 }
 
 .dashboard__nothingFound {
@@ -32,4 +26,10 @@
     justify-content: center;
     margin-top: 2rem;
     font-size: 1rem;
+    color: #666;
+}
+
+/* --- Animations -------------------------- */
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }

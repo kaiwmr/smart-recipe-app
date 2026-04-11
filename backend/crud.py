@@ -15,22 +15,17 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
-
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
-
 
 def get_user_by_email(db: Session, email: str) -> Optional[models.User]:
     return db.query(models.User).filter(models.User.email == email).first()
 
 def create_user(db: Session, user: schemas.UserCreate) -> models.User:
-    # 1. Passwort verschlüsseln
     hashed_password = get_password_hash(user.password)
     
-    # 2. Datenbank-Modell befüllen
     db_user = models.User(email=user.email, hashed_password=hashed_password)
     
-    # 3. Zur DB hinzufügen und speichern
     db.add(db_user)
     db.commit()      
     db.refresh(db_user) 

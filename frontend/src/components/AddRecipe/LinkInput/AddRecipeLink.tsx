@@ -1,30 +1,20 @@
 import { useState } from "react";
 import { Link } from 'lucide-react';
-import styles from './AddRecipeLink.module.css';
 import { toast } from "react-toastify";
-import api from "../../../api/api";
 import axios from "axios";
+import styles from './AddRecipeLink.module.css';
+import api from "../../../api/api";
 
-// ==========================================
-// 1. PROPS & INTERFACES
-// ==========================================
 interface AddRecipeLinkProps {
-  // Funktion, die nach erfolgreichem Hinzufügen im Dashboard aufgerufen wird
   onRecipeAdded: () => Promise<void>;
 }
 
 export default function AddRecipeLink({ onRecipeAdded }: AddRecipeLinkProps) {
-  
-  // ==========================================
-  // 2. STATES
-  // ==========================================
   const [url, setUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadingText, setLoadingText] = useState<string>("KI arbeitet...");
 
-  // ==========================================
-  // 3. FORMULAR LOGIK (API-INTERAKTION)
-  // ==========================================
+  // --- Form Logic: Scraper & AI Processing --
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -33,7 +23,6 @@ export default function AddRecipeLink({ onRecipeAdded }: AddRecipeLinkProps) {
       return;
     }
 
-    // Lade-Status aktivieren
     setIsLoading(true);
     setLoadingText("Website wird aufgerufen...");
 
@@ -56,24 +45,15 @@ export default function AddRecipeLink({ onRecipeAdded }: AddRecipeLinkProps) {
       await api.post("/recipes/from-url", null, { params: { url: url }});
 
       toast.success("Rezept erstellt");
-      setUrl(""); // Input nach Erfolg leeren
-      
-      // Dashboard-Liste aktualisieren
+      setUrl("");
       await onRecipeAdded();
     } catch (error) {
-      console.error("Fehler beim Erstellen des Rezepts:", error);
-      if (axios.isAxiosError(error)){
+      console.error("AI Scraper Error:", error);
+      if (axios.isAxiosError(error)) {
         const status = error.response?.status;
-
-        if (status == 429) {
-          toast.error("Rate-limit erreicht");
-        }
-        else if (status === 404) {
-          toast.error("Kein Rezept gefunden");
-      }
-      else {
-        toast.error("Fehler aufgetreten");
-      }
+        if (status === 429) toast.error("Rate-limit erreicht");
+        else if (status === 404) toast.error("Kein Rezept gefunden");
+        else toast.error("Fehler aufgetreten");
       }
     } finally {
       clearInterval(intervalId);
@@ -82,16 +62,14 @@ export default function AddRecipeLink({ onRecipeAdded }: AddRecipeLinkProps) {
     }
   };
 
-  // ==========================================
-  // 4. RENDERING
-  // ==========================================
+  // --- Rendering ---------------------------
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <p>Füge einen Link zu einer Rezept-Webseite oder einem TikTok-Video ein.</p>
         
         <div className={styles.addRecipe__inputWrapper}>
-          <Link className={styles.addRecipe__icon} size={20}></Link>
+          <Link className={styles.addRecipe__icon} size={20} />
           <input
             type="text"
             placeholder="Link einfügen..."

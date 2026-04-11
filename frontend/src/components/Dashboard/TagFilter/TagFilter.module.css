@@ -1,7 +1,4 @@
-/* =========================================
-   TAG-FILTER STYLES
-   ========================================= */
-
+/* --- Filter Container (Horizontal Scroll) -- */
 .dashboard__filterWrapper {
     display: flex;
     align-items: center;  
@@ -13,12 +10,12 @@
     padding-top: 0.25rem;
     padding-bottom: 0.5rem;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .dashboard__filterWrapper::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
+    display: none;
 }
 
 .dashboard__filterWrapper::after {
@@ -28,6 +25,7 @@
     height: 1px;
 }
 
+/* --- Tag Button Styles --------------------- */
 .dashboard__btnFilter {
     padding: 0.6rem 1.2rem;
     border-radius: 2rem;
@@ -50,6 +48,7 @@
     transform: translateY(-1px);
 }
 
+/* --- Active State -------------------------- */
 .dashboard__btnFilterActive {
     background-color: rgb(20, 20, 20);
     color: white; 

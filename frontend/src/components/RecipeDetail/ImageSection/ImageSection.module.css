@@ -1,6 +1,4 @@
-/* =========================================
-   IMAGE-SECTION (HERO & ACTIONS)
-   ========================================= */
+/* --- Hero Image & Layout ----------------- */
 .detail__pictureWrapper {
     position: relative;
     width: 100%;
@@ -24,6 +22,7 @@
     object-fit: cover;
 }
 
+/* --- Control Overlay --------------------- */
 .detail__actions {
     position: absolute;
     top: 1rem;
@@ -34,7 +33,7 @@
     z-index: 10;
 }
 
-/* Button Basis & Farben */
+/* Button Base Styles */
 .detail__btnBack,
 .detail__btnEdit,
 .detail__btnDelete,
@@ -51,6 +50,7 @@
     z-index: 10;
 }
 
+/* Button Variations */
 .detail__btnBack {
     position: absolute;
     top: 1rem;

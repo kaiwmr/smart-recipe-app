@@ -1,7 +1,4 @@
-/* =========================================
-   INGREDIENTS SECTION (Anzeige)
-   ========================================= */
-
+/* --- Ingredients Section Container ------- */
 .detail__section--ingredients {
     display: flex;
     flex-direction: column;
@@ -14,7 +11,7 @@
     flex: 1; 
 }
 
-/* Header Zeile: Zutaten links, Steuerung rechts */
+/* --- Header & Servings Control ----------- */
 .detail__ingredientsHeaderRow {
     display: flex;
     justify-content: space-between;
@@ -32,7 +29,6 @@
     color: #1a1a1a;
 }
 
-/* Portionen Steuerung */
 .detail__servingsControl {
     display: flex;
     align-items: center;
@@ -76,7 +72,7 @@
     font-size: 1rem;
 }
 
-/* Zutatenliste */
+/* --- Ingredients List (View Mode) -------- */
 .detail__ingredientsList {
     display: flex;
     flex-direction: column;
@@ -112,12 +108,7 @@
     font-size: 0.95rem;
 }
 
-
-/* =========================================
-   INGREDIENTS SECTION (Edit Mode)
-   ========================================= */
-
-/* Edit Mode Servings */
+/* --- Ingredients Editor (Edit Mode) ------ */
 .detail__servingsEdit {
     display: flex;
     align-items: center;
@@ -146,7 +137,6 @@
     font-weight: 500;
 }
 
-/* Edit Mode Zutaten-Inputs */
 .detail__editIngredientsContainer {
     display: flex;
     flex-direction: column;
@@ -181,7 +171,7 @@
     background-color: #fcfcfc;
 }
 
-/* Hilfsklassen Buttons (Hinzufügen / Löschen) */
+/* --- Helper Buttons & Actions ------------ */
 .detail__btnDeleteSmall {
     background: transparent;
     border: none;
@@ -215,9 +205,7 @@
     background-color: #fafafa;
 }
 
-/* =========================================
-   MOBILE ANPASSUNGEN
-   ========================================= */
+/* --- Responsive Adjustments -------------- */
 @media (max-width: 480px) {
     .detail__ingredientsHeaderRow {
         flex-direction: row; 

@@ -1,14 +1,11 @@
 import styles from './NutrientsSection.module.css';
 import { Recipe, Nutrients } from '../../../types';
 
-// ==========================================
-// 1. PROPS & INTERFACES
-// ==========================================
 interface NutrientsSectionProps {
-    editedRecipe: Recipe;   // Der aktuelle Bearbeitungszustand
-    isEditing: boolean;     // Status, ob wir uns im Editiermodus befinden
-    recipe: Recipe;         // Die ursprünglichen Rezeptdaten aus der DB
-    updateNutrients: (value: string, field: keyof Nutrients) => void; // Handler für Änderungen
+    editedRecipe: Recipe;
+    isEditing: boolean;
+    recipe: Recipe;
+    updateNutrients: (value: string, field: keyof Nutrients) => void;
 }
 
 export default function NutrientsSection({ 
@@ -18,27 +15,22 @@ export default function NutrientsSection({
     updateNutrients 
 }: NutrientsSectionProps) {
 
-    // ==========================================
-    // 2. RENDERING
-    // ==========================================
     return(
         <div className={styles["detail__section--nutrients"]}>
             
-            {/* --- HEADER: Titel & Anzeige-Modus --- */}
+            {/* --- Header & Context Mode -------------- */}
             <div className={styles.detail__nutrientsHeader}>
                 <h3 className={styles.detail__nutrientsTitle}>Nährwerte</h3>
                 {isEditing ? (
-                    /* Im Edit-Modus bearbeiten die Werte für das gesamte Rezept */
                     <span className={styles.detail__nutrientsProPortion}>Gesamt</span>
                 ) : (
-                    /* In der Ansicht rechnen wir die Werte auf eine Portion herunter */
                     <span className={styles.detail__nutrientsProPortion}>pro Portion</span>
                 )}
             </div>
             
             <div className={styles.detail__nutrientsGrid}>
 
-                {/* ------------ KALORIEN (kcal) ------------ */}
+                {/* kcal */}
                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--cal"]}`}>
                     <div className={styles.detail__nutrientsData}>
                         {isEditing ? (
@@ -50,7 +42,6 @@ export default function NutrientsSection({
                             />
                         ) : (
                             <span className={styles.detail__nutrientsValue}>
-                                {/* Berechnung: Gesamtkalorien / Portionsanzahl */}
                                 {Math.floor(recipe.content.nutrients.kcal / (Number(recipe.content.servings) || 1))}
                             </span>
                         )}
@@ -59,7 +50,7 @@ export default function NutrientsSection({
                     <span className={styles.detail__nutrientsLabel}>Kalorien</span>
                 </div>
 
-                {/* ------------ PROTEIN (g) ------------ */}
+                {/* Protein */}
                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--protein"]}`}>
                     <div className={styles.detail__nutrientsData}>
                         {isEditing ? (
@@ -79,7 +70,7 @@ export default function NutrientsSection({
                     <span className={styles.detail__nutrientsLabel}>Protein</span>
                 </div>
 
-                {/* ------------ KOHLENHYDRATE (Carbs, g) ------------ */}
+                {/* Carbs */}
                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--carbs"]}`}>
                     <div className={styles.detail__nutrientsData}>
                         {isEditing ? (
@@ -99,7 +90,7 @@ export default function NutrientsSection({
                     <span className={styles.detail__nutrientsLabel}>Carbs</span>
                 </div>
 
-                {/* ------------ FETT (g) ------------ */}
+                {/* Fat */}
                 <div className={`${styles.detail__nutrientsCard} ${styles["detail__nutrientsCard--fat"]}`}>
                     <div className={styles.detail__nutrientsData}>
                         {isEditing ? (

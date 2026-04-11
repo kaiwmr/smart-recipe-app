@@ -11,9 +11,6 @@ openai_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
 
 
 # Erlaubte Fehler für einen Retry:
-# 1. TimeoutException: Webseite braucht zu lange zum Antworten
-# 2. ConnectError: Kurzer Verbindungsabbruch
-# 3. ValueError: Gemini hat sich beim JSON vertippt (Normalizer stürzt ab)
 RETRY_EXCEPTIONS = (httpx.TimeoutException, httpx.ConnectError, ValueError)
 
 # Filterfunktion: nur bei 5xx HTTPStatusError retryen
@@ -21,10 +18,10 @@ def retry_if_server_error(exc):
     return isinstance(exc, httpx.HTTPStatusError) and 500 <= exc.response.status_code < 600
 
 @retry(
-    stop=stop_after_attempt(3),  # 1 ursprünglicher Versuch + 2 Retries
-    wait=wait_exponential(multiplier=1, min=2),  # Retry 1: 2s, Retry 2: 4s
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=2),
     retry=retry_if_exception_type(RETRY_EXCEPTIONS) | retry_if_exception(retry_if_server_error),
-    reraise=True  # Fehler nach letzter Wiederholung erneut werfen
+    reraise=True
 )
 async def transcribe_and_generate(url: str) -> dict:
 

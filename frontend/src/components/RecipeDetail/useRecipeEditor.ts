@@ -8,18 +8,14 @@ import { Recipe, Ingredient, Nutrients } from '../../types';
 export default function useRecipeEditor(id: string | undefined){
     const navigate = useNavigate();
 
-    // ==========================================
-    // 1. STATES
-    // ==========================================
+    // --- State Management --------------------
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [editedRecipe, setEditedRecipe] = useState<Recipe | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [currentServings, setCurrentServings] = useState<number>(1); 
 
-    // ==========================================
-    // 2. API-CALLS & DATEN LADEN
-    // ==========================================
+    // --- Data Fetching -----------------------
     useEffect(() => {
         const fetchRecipe = async () => {
             try {
@@ -30,7 +26,7 @@ export default function useRecipeEditor(id: string | undefined){
                 setEditedRecipe(data);
                 setCurrentServings(data.content.servings || 1); 
             } catch (error) {
-                console.error("Fehler beim Laden des Rezepts:", error);
+                console.error("Fetch error:", error);
                 toast.error("Rezept konnte nicht geladen werden.");
                 navigate("/dashboard");
             } finally {
@@ -41,17 +37,16 @@ export default function useRecipeEditor(id: string | undefined){
         if (id) fetchRecipe();
     }, [id, navigate]);
 
+    // --- Persistence -------------------------
     const handleSave = async () => {
         if (!editedRecipe) return;
 
-        // 1. Validierungsprozess
         const errorMessage = validateRecipeUpdate(editedRecipe);
         if (errorMessage) {
             toast.error(errorMessage)
             return;
         }
 
-        // 2. API Call zum Speichern
         try {
             const payload = {
                 title: editedRecipe.title,
@@ -65,7 +60,7 @@ export default function useRecipeEditor(id: string | undefined){
             setIsEditing(false);
             toast.success("Gespeichert!");
         } catch (error) {
-            console.error("Fehler beim Speichern:", error);
+            console.error("Save error:", error);
             toast.error("Fehler beim Speichern");
         }
     };
@@ -77,19 +72,16 @@ export default function useRecipeEditor(id: string | undefined){
             toast.success("Rezept gelöscht");
             navigate("/dashboard");
         } catch (error) {
-            console.error("Fehler beim Löschen:", error);
+            console.error("Delete error:", error);
             toast.error("Fehler beim Löschen aufgetreten");
         }
     };
 
-    // ==========================================
-    // 3. UI-STEUERUNG (EDIT-MODUS)
-    // ==========================================
+    // --- View Logic --------------------------
     const toggleEditMode = (status: boolean) => {
         if (!recipe) return;
 
         if (status === true) {
-            // Beim Aktivieren des Edit-Modes den aktuellen Stand aus der DB holen
             setEditedRecipe({
                 ...recipe,
                 content: { ...recipe.content, servings: currentServings }
@@ -98,23 +90,20 @@ export default function useRecipeEditor(id: string | undefined){
         setIsEditing(status);
     };
 
-    // ==========================================
-    // 4. REZEPT LOGIK & BERECHNUNGEN
-    // ==========================================
+    // --- Calculation Helpers -----------------
     const calculateAmount = (baseAmount: number | null) => {
         if (!baseAmount || !recipe) return "";
         
-        const baseServings = recipe.content.servings || 1; // Schutz vor Division durch 0
+        const baseServings = recipe.content.servings || 1; 
         const result = (baseAmount / Number(baseServings)) * currentServings;
         
-        // Runden auf max 2 Stellen
         return parseFloat(result.toFixed(2));
     };
 
+    // --- Field Updates -----------------------
     const updateServings = (value: string) => {
         if (!editedRecipe) return;
 
-        // Erlaubt das Leeren des Feldes während des Tippens
         if (value === "") {
             setEditedRecipe({
                 ...editedRecipe, 
@@ -164,10 +153,7 @@ export default function useRecipeEditor(id: string | undefined){
                 ...editedRecipe,
                 content: { 
                     ...editedRecipe.content,
-                    nutrients: {
-                        ...editedRecipe.content.nutrients, 
-                        [field]: "" 
-                    } 
+                    nutrients: { ...editedRecipe.content.nutrients, [field]: "" } 
                 }
             });
             return;
@@ -180,17 +166,12 @@ export default function useRecipeEditor(id: string | undefined){
             ...editedRecipe,
             content: { 
                 ...editedRecipe.content,
-                nutrients: {
-                    ...editedRecipe.content.nutrients, 
-                    [field]: val 
-                } 
+                nutrients: { ...editedRecipe.content.nutrients, [field]: val } 
             }
         });
     };
 
-    // ==========================================
-    // 5. LISTEN BEARBEITEN (ZUTATEN & SCHRITTE)
-    // ==========================================
+    // --- List Operations ---------------------
     const handleIngredientChange = (index: number, field: keyof Ingredient, value: string) => {
         if (!editedRecipe) return;
 
@@ -257,9 +238,6 @@ export default function useRecipeEditor(id: string | undefined){
         setEditedRecipe({ ...editedRecipe, content: { ...editedRecipe.content, steps: newSteps } });
     };
 
-    // ==========================================
-    // 6. EXPORTS
-    // ==========================================
     return {
         recipe,
         editedRecipe,

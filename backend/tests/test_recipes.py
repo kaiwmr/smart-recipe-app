@@ -2,7 +2,7 @@ from unittest.mock import patch, AsyncMock, MagicMock
 from routers.auth import create_access_token
 
 async def test_create_recipe_from_website_url_mocked(client, db_session):
-    # 1. User manuell erstellen
+
     from crud import create_user
     from schemas import UserCreate
 
@@ -39,7 +39,6 @@ async def test_create_recipe_from_website_url_mocked(client, db_session):
     mock_recipe_db.owner_id = user.id
     mock_recipe_db.content = mock_ai_data["content"]
 
-    # 3. Services patchen
     # WICHTIG: Pfade müssen auf "main" zeigen, da dort die Imports liegen
     with patch("routers.recipes.website_content_generator.scrape_and_generate", new_callable=AsyncMock) as mock_scrape:
         with patch("routers.recipes.crud.create_recipe") as mock_crud:

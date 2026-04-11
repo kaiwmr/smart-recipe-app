@@ -1,6 +1,4 @@
-/* =========================================
-   NUTRIENTS-SECTION
-   ========================================= */
+/* --- Nutrients Section Container --------- */
 .detail__section--nutrients {
     display: flex;
     flex-direction: column;
@@ -21,28 +19,25 @@
     padding-bottom: 0.5rem;
 }
 
+.detail__nutrientsTitle {
+    margin: 0;
+    padding: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1a1a1a;
+}
+
 .detail__nutrientsProPortion {
     font-size: 0.85rem;
     color: #888;
     font-weight: 500;
 }
 
+/* --- Nutrient Grid Layout ---------------- */
 .detail__nutrientsGrid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
-}
-
-.detail__nutrientsData {
-    display: flex;
-    align-items: baseline; 
-    gap: 0.15rem;
-}
-
-.detail__nutrientsUnit {
-    font-size: 0.75rem;
-    font-weight: 600;
-    opacity: 0.8;
 }
 
 .detail__nutrientsCard {
@@ -55,9 +50,21 @@
     text-align: center;
 }
 
+.detail__nutrientsData {
+    display: flex;
+    align-items: baseline; 
+    gap: 0.15rem;
+}
+
 .detail__nutrientsValue {
     font-size: 1rem;
     font-weight: 800;
+}
+
+.detail__nutrientsUnit {
+    font-size: 0.75rem;
+    font-weight: 600;
+    opacity: 0.8;
 }
 
 .detail__nutrientsLabel {
@@ -68,14 +75,7 @@
     margin-top: 0.25rem; 
 }
 
-.detail__nutrientsTitle {
-    margin: 0;
-    padding: 0;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #1a1a1a;
-}
-
+/* --- Edit Mode Specifics ----------------- */
 .detail__nutrientsInput {
     width: 2.5rem;
     padding: 0.1rem;
@@ -87,11 +87,13 @@
     appearance: textfield; 
 }
 
+/* --- Nutrient Color Themes --------------- */
 .detail__nutrientsCard--cal { background-color: #fff0f0; color: #d32f2f; }
 .detail__nutrientsCard--protein { background-color: #f0f8ff; color: #1976d2; }
 .detail__nutrientsCard--carbs { background-color: #f1f8e9; color: #388e3c; }
 .detail__nutrientsCard--fat { background-color: #fcf9d9; color: #f57f17; }
 
+/* --- Responsive -------------------------- */
 @media (max-width: 768px) {
     .detail__nutrientsGrid { gap: 0.25rem; }
     .detail__nutrientsValue { font-size: 0.95rem; }

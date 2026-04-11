@@ -11,7 +11,7 @@ from database import Base, get_db
 from main import app
 from httpx import AsyncClient, ASGITransport
 
-# 1. Test Datenbank im RAM (wird bei jedem Testlauf neu erstellt)
+# Test Datenbank im RAM (wird bei jedem Testlauf neu erstellt)
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 
 engine = create_engine(

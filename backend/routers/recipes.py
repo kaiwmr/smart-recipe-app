@@ -44,19 +44,13 @@ async def create_recipe_from_url(request: Request, url: str, db: Session = Depen
         except ValueError as e:
             raise HTTPException(status_code=404, detail=str(e))
 
-    # 2. In Pydantic-Schema umwandeln
-    # WICHTIG: 'content' im Schema erwartet ein Dictionary/Objekt, keinen String!
-    # Wir nutzen data.get("content", data), falls Gemini die Struktur flach oder verschachtelt liefert.
     recipe_title = data.get("title", "Unbekannt")
     recipe_content = data.get("content")
     recipe_image = data.get("image")
 
-    
     recipe_in = schemas.RecipeCreate(title=recipe_title, content=recipe_content, url=url, image=recipe_image)
 
-    # 3. In DB speichern (user_id korrekt übergeben)
     return await run_in_threadpool(crud.create_recipe, db=db, item=recipe_in, user_id=current_user.id)
-
 
 @recipe_router.post("/from-user-input", response_model=schemas.Recipe)
 @limiter.limit("3/minute")
@@ -74,7 +68,6 @@ async def create_recipe_from_user_input(request: Request, input_data: schemas.Us
     
     recipe_in = schemas.RecipeCreate(title=recipe_title, content=recipe_content, image=recipe_image)
 
-    # 3. In DB speichern (user_id korrekt übergeben)
     return await run_in_threadpool(crud.create_recipe, db=db, item=recipe_in, user_id=current_user.id)
 
 

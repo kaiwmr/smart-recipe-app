@@ -57,16 +57,13 @@ def is_user_admin(current_user: models.User = Depends(get_current_user)) -> mode
 @auth_router.post("/token", response_model=dict)
 def login_for_access_token(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
 
-    # 1. User aus der Datenbank suchen
     user = crud.get_user_by_email(db, email=form_data.username)
 
     if not user or not crud.verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Incorrect email or password.", headers={"WWW-Authenticate": "Bearer"},)
     
-    # 3. Token erstellen
     access_token = create_access_token(data={"sub": user.email})
     
-    #4. Token als Cookie setzen
     response.set_cookie(
         key="access_token",
         value=access_token,
@@ -91,8 +88,6 @@ def delete_token(response: Response):
     )
 
     return {"message": "Logout successful"}
-
-
 
 @auth_router.post("/invite-code", response_model=dict)
 def create_invite_code(code: str, db: Session = Depends(get_db), admin: models.User = Depends(is_user_admin)):

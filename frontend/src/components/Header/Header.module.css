@@ -1,6 +1,4 @@
-/* =========================================
-   1. HEADER CONTAINER
-   ========================================= */
+/* --- Header Layout ----------------------- */
 .header {
     display: flex;
     align-items: center;
@@ -11,22 +9,17 @@
     padding: 1.25rem;
     line-height: 1;
     font-size: 1rem;
-
-    border-bottom: 1px solid #e0e0e0; /* Linie */
+    border-bottom: 1px solid #e0e0e0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* =========================================
-   2. LOGO
-   ========================================= */
+/* --- Branding & Logo --------------------- */
 .header__logo {
     height: 3rem;
     width: auto;
 }
 
-/* =========================================
-   3. LOGOUT-BEREICH
-   ========================================= */
+/* --- Logout Actions ---------------------- */
 .header__logoutPart {
     display: flex;
     align-items: center;
@@ -38,7 +31,7 @@
     cursor: pointer;
 }
 
-/* Mobile Anpassung */
+/* --- Responsive Adjustments -------------- */
 @media (max-width: 768px) {
     .header__logoutText {
         display: none;

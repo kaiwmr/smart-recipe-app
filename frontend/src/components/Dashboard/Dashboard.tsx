@@ -1,21 +1,18 @@
 import { useState, useEffect } from 'react';
+import { Loader2 } from "lucide-react"
+import { useNavigate } from 'react-router-dom';
 import styles from './Dashboard.module.css';
 import Searchbar from '../Searchbar/Searchbar';
 import Popup from '../Popup/Popup';
 import Header from '../Header/Header';
-import { Loader2 } from "lucide-react"
-import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 import { logout } from '../../utils/auth';
 import RecipeCard from './RecipeCard/RecipeCard';
 import TagFilter from './TagFilter/TagFilter';
-
 import { Recipe } from '../../types';
 
 export default function Dashboard() {
-    // ==========================================
-    // 1. STATES UND KONSTANTEN
-    // ==========================================
+    // --- State & Constants -------------------
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [search, setSearch] = useState<string>("");
     const [showPopup, setShowPopup] = useState<boolean>(false);
@@ -23,51 +20,38 @@ export default function Dashboard() {
     const [selected, setSelected] = useState<string[]>([]);
     const navigate = useNavigate();
 
-    // Festgelegte Filter Optionen für die Tag-Leiste
     const tags: string[] = ["high protein", "< 30min", "vegetarisch", "vegan", "Hauptspeise", "Dessert", "Frühstück", "Backen", "Beilage"];
 
-    // ==========================================
-    // 2. API-INTERAKTION & EFFECTS
-    // ==========================================
-    
-    // Holt alle Rezepte des Benutzers vom Server
+    // --- API Interaction ---------------------
     const fetchRecipes = async () => {   
         try {
             const response = await api.get("/recipes/");
             setRecipes(response.data);
         } catch (error) {
-            console.error("Fehler beim Laden der Rezepte:", error);
+            console.error("Fetch error:", error);
             navigate("/login")
         } finally {
             setIsLoading(false);
         }
     };
 
-    // Initialer Daten-Abruf beim Mounten der Komponente
     useEffect(() => { 
         fetchRecipes(); 
     }, []); 
 
-    // ==========================================
-    // 3. FILTER-LOGIK
-    // ==========================================
-
-    // Fügt einen Tag zur Auswahl hinzu oder entfernt ihn (Toggle Prinzip)
+    // --- Filter Logic ------------------------
     const toggleFilter = (filter: string) => {
         selected.includes(filter)
-            ? setSelected(selected.filter(f => f !== filter)) // Tag entfernen
-            : setSelected([...selected, filter]);             // Tag hinzufügen
+            ? setSelected(selected.filter(f => f !== filter))
+            : setSelected([...selected, filter]);
     };
 
-    // ==========================================
-    // 4. RENDERING
-    // ==========================================
+    // --- Rendering ---------------------------
     return (
         <div>
-            <Header handleLogout={logout}></Header>
+            <Header handleLogout={logout} />
             
             <div className='app'>
-                {/* Suche und Filter-Tags */}
                 <Searchbar 
                     search={search} 
                     setSearch={setSearch} 
@@ -80,28 +64,25 @@ export default function Dashboard() {
                     selected={selected} 
                 />
 
-                {/* Modal zum Hinzufügen neuer Rezepte */}
                 <Popup 
                     showPopup={showPopup} 
                     setShowPopup={setShowPopup} 
                     onRecipeAdded={fetchRecipes} 
                 />
                 
-                {/* Status-Anzeige: Laden oder "Nichts gefunden" */}
+                {/* Status-Feedback: Loading or Empty State */}
                 {isLoading 
-                    ? (<Loader2 className={styles.dashboard__loadingIcon}></Loader2>) 
-                    : (recipes.length === 0 
-                        ? <p className={styles.dashboard__nothingFound}>Keine Rezepte gefunden.</p> 
-                        : null)
+                    ? <Loader2 className={styles.dashboard__loadingIcon} />
+                    : (recipes.length === 0 && (
+                        <p className={styles.dashboard__nothingFound}>Keine Rezepte gefunden.</p>
+                      ))
                 }
 
-                {/* Rezept-Grid: Hier wird die clientseitige Filterung durchgeführt */}
+                {/* Recipe Grid: Client-side filtering by title and tags */}
                 <div className={styles.dashboard__grid}>
                     {recipes
                         .filter(item => 
-                            // Filterung nach Suchbegriff (Titel)
                             item.title.toLowerCase().includes(search.toLowerCase()) && 
-                            // Filterung nach Tags: Das Rezept muss ALLE gewählten Tags enthalten
                             selected.every(tag => item.content.tags.includes(tag))
                         )
                         .map(recipe => (

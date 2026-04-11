@@ -1,29 +1,20 @@
 import { useState } from "react";
 import { FileText } from 'lucide-react';
-import styles from './AddRecipeText.module.css';
 import { toast } from "react-toastify";
-import api from "../../../api/api";
 import axios from "axios";
+import styles from './AddRecipeText.module.css';
+import api from "../../../api/api";
 
-// ==========================================
-// 1. PROPS & INTERFACES
-// ==========================================
 interface AddRecipeTextProps {
   onRecipeAdded: () => Promise<void>;
 }
 
 export default function AddRecipeText({ onRecipeAdded }: AddRecipeTextProps) {
-  
-  // ==========================================
-  // 2. STATES
-  // ==========================================
   const [userInput, setUserInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadingText, setLoadingText] = useState<string>("KI arbeitet...");
 
-  // ==========================================
-  // 3. FORMULAR LOGIK (API-INTERAKTION)
-  // ==========================================
+  // --- Form Logic: AI Data Extraction ------
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -51,27 +42,18 @@ export default function AddRecipeText({ onRecipeAdded }: AddRecipeTextProps) {
     }, 3000);
 
     try {
-      // POST-Request (als JSON-Body gesendet)
       await api.post("/recipes/from-user-input", { user_input: userInput });
 
       toast.success("Rezept erstellt");
-      setUserInput(""); // Input nach Erfolg leeren
-      
+      setUserInput("");
       await onRecipeAdded();
     } catch (error) {
-      console.error("Fehler beim Erstellen des Rezepts:", error);
-      if (axios.isAxiosError(error)){
+      console.error("AI Creation Error:", error);
+      if (axios.isAxiosError(error)) {
         const status = error.response?.status;
-
-        if (status == 429) {
-          toast.error("Rate-limit erreicht");
-        }
-        else if (status === 404) {
-          toast.error("Kein Rezept gefunden");
-      }
-      else {
-        toast.error("Fehler aufgetreten");
-      }
+        if (status === 429) toast.error("Rate-limit erreicht");
+        else if (status === 404) toast.error("Kein Rezept gefunden");
+        else toast.error("Fehler aufgetreten");
       }
     } finally {
       clearInterval(intervalId);
@@ -80,9 +62,7 @@ export default function AddRecipeText({ onRecipeAdded }: AddRecipeTextProps) {
     }
   };
 
-  // ==========================================
-  // 4. RENDERING
-  // ==========================================
+  // --- Rendering ---------------------------
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -90,7 +70,6 @@ export default function AddRecipeText({ onRecipeAdded }: AddRecipeTextProps) {
         
         <div className={styles.addRecipe__inputWrapper}>
           <FileText className={styles.addRecipe__icon} size={20} />
-          
           <textarea
             placeholder="z.B. Pizzateig... 200g Mehl, 2 Eier... Den Teig verrühren und für 20 Min backen."
             value={userInput}

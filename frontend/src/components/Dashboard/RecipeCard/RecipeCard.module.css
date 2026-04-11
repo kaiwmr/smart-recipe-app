@@ -1,7 +1,4 @@
-/* =========================================
-   RECIPE-CARD STYLES
-   ========================================= */
-
+/* --- Card Container & Hover Effects ------ */
 .dashboard__card {
     background: white;
     border-radius: 1rem;
@@ -23,21 +20,22 @@
     color: #2c3e50;
 }
 
-.dashboard__cardContent {
-    padding: 0.5rem;
-    margin: 0;
-}
-
+/* --- Media & Thumbnail ------------------- */
 .dashboard__picture {
     border-radius: 1rem;
 }
 
-/* Mobile Anpassung Bild */
 @media (max-width: 764px) {
     .dashboard__picture {
         aspect-ratio: 1 / 1;
         object-fit: cover;
     }
+}
+
+/* --- Card Content & Details -------------- */
+.dashboard__cardContent {
+    padding: 0.5rem;
+    margin: 0;
 }
 
 .dashboard__cardContentDetailsWrapper {
@@ -48,7 +46,7 @@
     margin-bottom: 0.25rem;
 }
 
-/* Kochzeit-Badge */
+/* --- Badges: Time & Dietary -------------- */
 .dashboard__cookingTimeBox {
     display: inline-flex;
     align-items: center;      
@@ -65,7 +63,6 @@
     line-height: 1;           
 }
 
-/* Vegan/Veggie-Badge */
 .dashboard__veganBox {
     display: inline-flex;
     align-items: center;

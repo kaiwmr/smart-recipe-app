@@ -1,31 +1,22 @@
-import styles from './RecipeCard.module.css';
 import { useNavigate } from "react-router-dom";
 import { Clock, Leaf } from "lucide-react"
+import styles from './RecipeCard.module.css';
 import { Recipe } from '../../../types';
 
 const API_URL = import.meta.env.VITE_API_URL 
 
-// ==========================================
-// 1. PROPS & INTERFACES
-// ==========================================
 interface RecipeCardProps {
     recipe: Recipe;
 }
 
 export default function RecipeCard({ recipe }: RecipeCardProps) {
-    // ==========================================
-    // 2. LOGIK (NAVIGATION)
-    // ==========================================
     const navigate = useNavigate(); 
 
-    // ==========================================
-    // 3. RENDERING
-    // ==========================================
     return (
-        /* Klick auf die gesamte Karte navigiert zur Detailansicht des Rezepts */
-        <div className={styles.dashboard__card} onClick={() => navigate(`/recipe/${recipe.id}`)}> 
-            
-            {/* Rezeptbild */}
+        <div 
+            className={styles.dashboard__card} 
+            onClick={() => navigate(`/recipe/${recipe.id}`)}
+        > 
             <img 
                 className={styles.dashboard__picture} 
                 src={`${API_URL}${recipe.image}`}
@@ -38,7 +29,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
                 
                 <div className={styles.dashboard__cardContentDetailsWrapper}>
                     
-                    {/* Anzeige der Zubereitungszeit: Automatische Umrechnung in Stunden ab 60 Min */}
+                    {/* --- Time Badge: Formats minutes to hours if >= 60 --- */}
                     <div className={styles.dashboard__cookingTimeBox}>
                         <Clock size={14} />
                         <span>
@@ -48,9 +39,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
                         </span>
                     </div>
 
-                    {/* Diet-Badge (Vegan/Vegetarisch): 
-                        Wird nur gerendert, wenn einer der Begriffe in den Rezept Tags vorkommt 
-                    */}
+                    {/* --- Diet Badge: Rendered for vegan/vegetarian recipes --- */}
                     {recipe.content.tags.some(tag => ["vegan", "vegetarisch"].includes(tag)) && (
                         <div className={styles.dashboard__veganBox}>
                             <Leaf size={13} strokeWidth={2.5} />

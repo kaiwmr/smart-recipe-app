@@ -13,7 +13,6 @@ from pathlib import Path
 origins = settings.FRONTEND_URLS
 
 
-# Datenbank-Tabellen erstellen
 models.Base.metadata.create_all(bind=engine)
 
 # Sicherstellen, dass das Upload-Verzeichnis existiert, bevor StaticFiles initialisiert wird

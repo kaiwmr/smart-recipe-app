@@ -1,8 +1,4 @@
-/**
- * ==========================================
- * 1. NÄHRWERT-STRUKTUR
- * ==========================================
- */
+/** --- Core Nutrient Data ----------------- */
 export interface Nutrients {
     kcal: number;
     protein: number;
@@ -14,59 +10,41 @@ export interface Nutrients {
     salt: number;
 }
 
-/**
- * ==========================================
- * 2. ZUTATEN-STRUKTUR
- * ==========================================
- */
+/** --- Ingredient Structure --------------- */
 export interface Ingredient {
     name: string;
-    amount: number | null; // null erlaubt, falls keine Mengenangabe vorhanden
-    unit: string | null;   // null erlaubt, falls keine Einheit vorhanden
+    amount: number | null; 
+    unit: string | null;   
     
-    // Optionale Felder (gekennzeichnet durch ?), die von der KI kommen 
-    // und für die Nährwertberechnung im Backend genutzt werden
+    // AI-generated fields for backend nutrient calculation
     id_slug?: string;
     search_term?: string;
     est_weight_g?: number;
     per_100g?: Nutrients;
 }
 
-/**
- * ==========================================
- * 3. REZEPT-INHALT
- * ==========================================
- */
+/** --- Recipe Content & Metadata ---------- */
 export interface RecipeContent {
-    // string erlaubt, damit das Input-Feld beim Editieren komplett geleert werden kann
+    // string allowed to handle empty input states during editing
     servings: number | string; 
     ingredients: Ingredient[];
     steps: string[];
-    // cooking_time ebenfalls string | number für flexibles UI-Handling
     cooking_time: number | string;
     tags: string[];
     nutrients: Nutrients;
 }
 
-/**
- * ==========================================
- * 4. HAUPT OBJEKT
- * ==========================================
- */
+/** --- Main Recipe Entity ----------------- */
 export interface Recipe {
     id: number;
     title: string;
     content: RecipeContent;
-    url: string;    // Link zur Quelle (Website oder TikTok)
-    image: string;  // Base64-kodierter String des Bildes
+    url: string;    // Source link (Web/TikTok)
+    image: string;  // Base64 encoded string
     owner_id: number;
 }
 
-/**
- * ==========================================
- * 5. BENUTZER-STRUKTUR
- * ==========================================
- */
+/** --- User Entity ------------------------ */
 export interface User {
     id: number;
     email: string;

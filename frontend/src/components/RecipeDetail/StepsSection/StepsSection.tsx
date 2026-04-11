@@ -1,11 +1,7 @@
 import { Clock, X } from "lucide-react";
 import styles from "./StepsSection.module.css";
-
 import { Recipe } from "../../../types";
 
-// ==========================================
-// 1. PROPS & INTERFACES
-// ==========================================
 interface StepsSectionProps {
     isEditing: boolean;
     recipe: Recipe;
@@ -26,13 +22,10 @@ export default function StepsSection({
     addStep
 }: StepsSectionProps) {
 
-    // ==========================================
-    // 2. RENDERING
-    // ==========================================
     return(
         <div className={styles["detail__section--steps"]}>
             
-            {/* --- HEADER-ZEILE: Titel & Zubereitungszeit --- */}
+            {/* --- Header: Title & Cooking Time ------- */}
             <div className={styles.detail__ingredientsHeaderRow}>
                 <h3 className={styles.detail__ingredientsTitle}>Zubereitung</h3>
                     
@@ -40,7 +33,7 @@ export default function StepsSection({
                     <Clock size={16} className={styles.detail__timeIcon} />
                     
                     {isEditing ? (
-                        /* MODUS: BEARBEITEN (Eingabe in Minuten) */
+                        /* Edit Mode: Input in minutes */
                         <div className={styles.detail__timeEditMode}>
                             <input 
                                 type="number" 
@@ -52,7 +45,7 @@ export default function StepsSection({
                             <span className={styles.detail__timeText}>Minuten</span>
                         </div>
                     ) : (
-                        /* MODUS: ANSICHT (Automatisierte Umrechnung in Stunden ab 60 Min) */
+                        /* View Mode: Dynamic Time Formatting */
                         <span className={styles.detail__timeText}>
                             {Number(recipe.content.cooking_time) >= 60
                                     ? (<><strong> {Math.round(Number(recipe.content.cooking_time) / 30) / 2} </strong> Stunden</>)
@@ -62,15 +55,14 @@ export default function StepsSection({
                 </div>
             </div>
             
-            {/* --- HAUPTBEREICH: Liste der Schritte --- */}
+            {/* --- Content: Steps List ---------------- */}
             <div className={styles.detail__stepsContainer}>
                 {(isEditing ? editedRecipe.content.steps : recipe.content.steps).map((step, index) => (
                     <div key={index} className={styles.detail__stepRow}>
-                        {/* Nummerierung der Schritte */}
                         <span className={styles.detail__stepNumber}>{index + 1}</span>
                         
                         {isEditing ? (
-                            /* MODUS: BEARBEITEN (Textarea für längere Beschreibungen) */
+                            /* Edit Mode: Step Editor */
                             <div className={styles.detail__stepEditWrapper}>
                                 <textarea 
                                     value={step}
@@ -87,13 +79,12 @@ export default function StepsSection({
                                 </button>
                             </div>
                         ) : (
-                            /* MODUS: ANSICHT (Reiner Text) */
+                            /* View Mode: Static Text */
                             <p className={styles.detail__stepsItemText}>{step}</p>
                         )}
                     </div>
                 ))}
 
-                {/* Button zum Hinzufügen (nur im Editmodus sichtbar) */}
                 {isEditing && (
                     <button className={styles.detail__btnAddStep} onClick={addStep}>
                         + Schritt hinzufügen

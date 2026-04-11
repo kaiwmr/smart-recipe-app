@@ -1,6 +1,4 @@
-/* =========================================
-   1. GLOBAL STYLES & BODY
-   ========================================= */
+/* --- Global & Base ----------------------- */
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -8,27 +6,21 @@ body {
     color: #333;
 }
 
-/* Überschriften-Resets */
 h1, h2, h3 {
     margin: 0.25rem;
 }
 
-/* =========================================
-   2. HAUPT-APP CONTAINER
-   ========================================= */
+/* --- Layout ------------------------------ */
 .app {
     max-width: 90%;
     margin: 0 auto;
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;       /* Zentraler Abstand für alle Elemente */
+    gap: 0.75rem; 
 }
 
-/* =========================================
-   3. TOASTIFY
-   ========================================= */
-/* Toast Container: Abstand und horizontale Zentrierung */
+/* --- Toastify Customization -------------- */
 .Toastify__toast-container {
     padding: 1rem;           
     width: 100%;          
@@ -37,7 +29,6 @@ h1, h2, h3 {
     box-sizing: border-box;
 }
 
-/* Das eigentliche Toast */
 .app__toast {
     background: black;
     color: white;
@@ -53,9 +44,7 @@ h1, h2, h3 {
     width: auto;
 }
 
-/* =========================================
-   4. BUTTONS
-   ========================================= */
+/* --- Form Elements ----------------------- */
 button {
     all: unset;
     -webkit-appearance: none;

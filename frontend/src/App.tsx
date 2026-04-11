@@ -6,19 +6,13 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import './App.css';
 import { ToastContainer } from "react-toastify"
 
-/**
- * ==========================================
- * HAUPTKOMPONENTE: App
- * ==========================================
- * Routing der gesamten Anwendung definieren.
- */
+
+// HAUPTKOMPONENTE: App
 export default function App() {
 
   return (
     <div>
-      {/* KONFIGURATION DER BENACHRICHTIGUNGEN (Toastify)
-        Zentrale Steuerung für alle Erfolgs- und Fehlermeldungen in der App.
-      */}
+      
       <ToastContainer 
         position="bottom-center"
         autoClose={2500}         
@@ -30,9 +24,6 @@ export default function App() {
         toastClassName="app__toast"
       />
 
-      {/* ROUTING-LOGIK 
-        Hier werden die verschiedenen URLs der App definiert.
-      */}
       <Routes>
         
         {/* --- ÖFFENTLICHE ROUTE: Login --- */}
@@ -48,9 +39,7 @@ export default function App() {
           } 
         />
 
-        {/* --- GESCHÜTZTE ROUTE: Rezept-Details --- 
-          Der Parameter ':id' wird dynamisch aus der URL extrahiert (z.B. /recipe/42).
-        */}
+        {/* --- GESCHÜTZTE ROUTE: Rezept-Details --- */}
         <Route 
           path="/recipe/:id" 
           element={
@@ -60,9 +49,7 @@ export default function App() {
           } 
         />
 
-        {/* --- FALLBACK-ROUTE (404 Handling) --- 
-          Jede unbekannte URL leitet automatisch zum Dashboard weiter.
-        */}
+        {/* --- FALLBACK-ROUTE (404 Handling) --- */}
         <Route path="*" element={<Navigate to="/dashboard" />} />
 
       </Routes>

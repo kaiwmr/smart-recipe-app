@@ -1,20 +1,16 @@
-import styles from './ImageSection.module.css';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Edit2, Trash2, Save, X } from 'lucide-react'; 
-
+import styles from './ImageSection.module.css';
 import { Recipe } from '../../../types';
 
 const API_URL = import.meta.env.VITE_API_URL 
 
-// ==========================================
-// 1. PROPS & INTERFACES
-// ==========================================
 interface ImageSectionProps {
     recipe: Recipe;
-    toggleEditMode: (value: boolean) => void; // Schaltet zwischen Ansicht und Bearbeitung um
-    deleteRecipe: (value: number) => void;     // Funktion zum Löschen des Rezepts
-    isEditing: boolean;                       // Aktueller Modus-Status
-    handleSave: () => Promise<void>;          // Speichert Änderungen am Rezept
+    toggleEditMode: (value: boolean) => void;
+    deleteRecipe: (value: number) => void;
+    isEditing: boolean;
+    handleSave: () => Promise<void>;
 }
 
 export default function ImageSection({ 
@@ -24,33 +20,27 @@ export default function ImageSection({
     isEditing, 
     handleSave 
 }: ImageSectionProps) {
-    
-    // ==========================================
-    // 2. LOGIK (NAVIGATION)
-    // ==========================================
     const navigate = useNavigate(); 
 
-    // ==========================================
-    // 3. RENDERING (BILD & STEUERELEMENTE)
-    // ==========================================
     return (
         <div className={styles.detail__pictureWrapper}>
-            {/* Rezeptbild */}
             <img
                 className={styles.detail__picture}
                 src={`${API_URL}${recipe.image}`}
                 alt={recipe.title}
             />
             
-            {/* Zurück-Button zum Dashboard */}
-            <button className={styles.detail__btnBack} onClick={() => navigate("/dashboard")}>
+            <button 
+                className={styles.detail__btnBack} 
+                onClick={() => navigate("/dashboard")}
+                aria-label="Back to dashboard"
+            >
                 <ChevronLeft size={24} />
             </button>
 
-            {/* Aktion-Buttons: Wechseln je nachdem, ob isEditing true oder false ist */}
             <div className={styles.detail__actions}>
                 {!isEditing ? (
-                    // MODUS: ANSICHT (Default)
+                    /* View Mode Actions */
                     <>
                         <button 
                             className={styles.detail__btnEdit} 
@@ -68,7 +58,7 @@ export default function ImageSection({
                         </button>
                     </>
                 ) : (
-                    // MODUS: BEARBEITEN
+                    /* Edit Mode Actions */
                     <div className={styles.detail__editControls}>
                         <button 
                             className={styles.detail__btnSave} 

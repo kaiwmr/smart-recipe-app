@@ -1,6 +1,4 @@
-/* =========================================
-   1. INPUT WRAPPER
-   ========================================= */
+/* --- Input Container & Layout ------------ */
 .addRecipe__inputWrapper {
     display: flex;
     align-items: flex-start; 
@@ -11,19 +9,14 @@
     box-sizing: border-box;
     margin-bottom: 15px;
     background-color: white;
-   
 }
 
-/* Icon links neben Textarea */
 .addRecipe__icon {
     color: #6b7280;
     margin-right: 8px;
     margin-top: 2px; 
 }
 
-/* =========================================
-   2. TEXTAREA FELD
-   ========================================= */
 .addRecipe__textarea {
     border: none;
     outline: none;
@@ -38,9 +31,7 @@
     line-height: 1.4;
 }
 
-/* =========================================
-   3. SUBTITLE
-   ========================================= */
+/* --- Typography & Feedback --------------- */
 .addRecipe__subtitle {
     text-align: center;
     font-size: 0.75rem;
@@ -48,9 +39,7 @@
     margin-top: 10px;
 }
 
-/* =========================================
-   4. BUTTON ADD RECIPE
-   ========================================= */
+/* --- Action Buttons ---------------------- */
 .addRecipe__btnAdd {
     text-align: center;
     background-color: rgb(20, 20, 20);
@@ -64,7 +53,6 @@
     cursor: pointer;
 }
 
-/* Ladezustand Button */
 .addRecipe__btnAdd.loading {
     background-color: rgb(97, 97, 97);
     cursor: not-allowed;
