@@ -1,6 +1,6 @@
 <div align="center">
   <h1>🍲 BiteWise</h1>
-  <p><strong>An AI-powered pipeline for multimodal recipe extraction, normalization, and generation.</strong></p>
+  <p><strong>A pipeline to extract, normalize, and generate recipes from unstructured web and video sources.</strong></p>
 
   <a href="https://github.com/kaiwmr/smart-recipe-app/actions/workflows/tests.yml">
     <img src="https://github.com/kaiwmr/smart-recipe-app/actions/workflows/tests.yml/badge.svg" alt="CI/CD Tests">
@@ -18,13 +18,13 @@
     <img src="https://img.shields.io/badge/AI-OpenAI_Whisper-412991?style=flat-square&logo=openai" alt="OpenAI Whisper">
   </a>
   <a href="https://deepmind.google/technologies/gemini/">
-    <img src="https://img.shields.io/badge/AI-Google_Gemini-8E75B2?style=flat-square&logo=google" alt="Gemini 2.5 Flash">
+    <img src="https://img.shields.io/badge/AI-Google_Gemini-8E75B2?style=flat-square&logo=google" alt="Gemini 3 Flash">
   </a>
 </div>
 
 <br />
 
-> **BiteWise** solves the problem of unstructured culinary data. It automatically scrapes standard websites and TikTok videos, extracts spoken or written instructions, normalizes them into structured JSON using Large Language Models, and generates missing assets (like studio-quality images) on the fly.
+> **BiteWise** handles the conversion of unstructured culinary data into a clean format. It scrapes recipe websites and TikTok videos, transcribes audio, normalizes content into structured JSON using LLMs, and generates missing assets like high-quality images.
 
 <div align="center">
   <img src="docs/UI-preview.webp" alt="BiteWise UI Preview" width="800" />
@@ -32,115 +32,96 @@
 
 ---
 
-## ✨ Core Engineering Features
+## Key Features
 
-Unlike standard CRUD applications, BiteWise focuses on processing complex, unstructured data streams with a strong emphasis on security and resilience:
+The project focuses on parsing complex data streams while maintaining type-safety and API stability:
 
-- 🌐 **Omni-Channel Recipe Extraction:** Automatically scrapes and extracts recipe data from standard culinary websites (via `BeautifulSoup4`) as well as extracting audio streams from short-form video platforms like TikTok (via `yt-dlp`).
-- 🧠 **Speech-to-Text & AI Normalization:** Transcribes audio via **OpenAI Whisper** and utilizes LLMs with strict `pydantic` schemas and prompt engineering to normalize raw text into structured data (fraction-to-decimal conversion, ingredient categorization).
-- 🛡️ **Enterprise-Grade Security:** Implements JWT authentication stored in strict `HttpOnly` cookies to prevent XSS attacks. Features Role-Based Access Control (RBAC) to manage an exclusive, admin-only invite-code system.
-- 🏗️ **Resilience & Quota Protection:** Integrates a token-bucket rate limiter (`slowapi`) to protect expensive AI routes from abuse. Features smart, exponential backoff retries (`tenacity`) with fail-fast validation to gracefully handle external API timeouts and 5xx errors.
-- 🎨 **Generative Assets:** Implements **Gemini 2.5 Flash** to dynamically generate high-quality recipe images matching a specific target style (`style_reference.png`), ensuring UI consistency.
-- ⚙️ **Strict Configuration Management:** Uses `pydantic-settings` for robust, type-safe environment variable validation.
-- 🥗 **Algorithmic Nutrient Calculation:** Automatically aggregates macronutrients dynamically based on extracted ingredients and user-defined portion sizes.
+- **Recipe Extraction:** Scrapes data from standard culinary websites (`BeautifulSoup4`) and extracts audio from video platforms like TikTok (`yt-dlp`).
+- **Transcription & Normalization:** Uses **OpenAI Whisper** for STT and LLMs with strict `pydantic` schemas to parse raw text into structured data (unit conversion, ingredient categorization).
+- **Security:** JWT authentication using `HttpOnly` cookies to mitigate XSS risks. Includes Role-Based Access Control (RBAC) with an admin-only invite system.
+- **Rate Limiting & Retries:** Implements `slowapi` for rate limiting and `tenacity` for exponential backoff retries on external API calls.
+- **Asset Generation:** Uses **Gemini 2.5 Flash** to generate recipe images that follow a specific visual style reference.
+- **Nutrient Calculation:** Automatically aggregates macronutrients based on extracted ingredients and portion sizes.
 
-## 🏗 System Architecture
+## Architecture
 
-The project follows a decoupled Client-Server architecture, heavily modularized using FastAPI routers.
+The system uses a decoupled Client-Server architecture with modularized FastAPI routers.
 
 ```text
-[ Client (React 19 / TypeScript) ]  <-- REST / HttpOnly Cookies -->  [ API Gateway (FastAPI) ]
-                                                                        ├──> Middleware (Rate Limiter / CORS)
-                                                                        ├──> Auth Router (JWT & RBAC)
-                                                                        ├──> Recipe Router (CRUD & DB)
-                                                                        └──> AI Processing Pipeline
-                                                                                ├──> BeautifulSoup4 (Web Scraping)
-                                                                                ├──> yt-dlp (Video/Audio Fetching)
-                                                                                ├──> Whisper API (Transcription)
-                                                                                ├──> LLM Parsing (Normalization)
-                                                                                └──> Gemini API (Image Gen)
+[ Client (React 19 / TS) ]  <-- REST / HttpOnly Cookies -->  [ API Gateway (FastAPI) ]
+                                                              ├──> Middleware (Rate Limiter / CORS)
+                                                              ├──> Auth Router (JWT & RBAC)
+                                                              ├──> Recipe Router (CRUD & DB)
+                                                              └──> AI Processing Pipeline
+                                                                   ├──> BeautifulSoup4 (Scraping)
+                                                                   ├──> yt-dlp (Audio Fetching)
+                                                                   ├──> Whisper API (Transcription)
+                                                                   ├──> LLM Parsing (Normalization)
+                                                                   └──> Gemini API (Image Gen)
 ```
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Category | Technologies |
 | --- | --- |
 | **Backend** | Python 3.10+, FastAPI, SQLAlchemy 2.0, Pydantic V2, Pytest |
-| **Security & Resilience** | `slowapi` (Rate Limiting), `tenacity` (Retries), `jose` (JWT) |
-| **Frontend** | React 19, TypeScript, Vite, Axios (with Interceptors), CSS Modules |
-| **AI / Data** | OpenAI API (Whisper), Google Gemini API, `yt-dlp`, BeautifulSoup4 |
-| **DevOps** | GitHub Actions (CI), Uvicorn |
+| **Security** | `slowapi` (Rate Limiting), `tenacity` (Retries), `jose` (JWT) |
+| **Frontend** | React 19, TypeScript, Vite, Axios, CSS Modules |
+| **AI / Data** | OpenAI (Whisper), Google Gemini, `yt-dlp`, BeautifulSoup4 |
 
-## 🚀 Local Development Setup
+## Local Development
 
-To run this project locally, you will need **Python 3.10+**, **Node.js 18+**, and **FFmpeg** installed on your machine.
+Requires **Python 3.10+**, **Node.js 18+**, and **FFmpeg**.
 
-### 1. Clone & Environment Setup
-
+### 1. Clone & Setup
 ```bash
 git clone [https://github.com/kaiwmr/smart-recipe-app.git](https://github.com/kaiwmr/smart-recipe-app.git)
 cd smart-recipe-app
 ```
 
 ### 2. Backend (FastAPI)
-
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# Install dependencies (including FFmpeg requirements)
 pip install -r requirements.txt
-
-# Configure environment variables
 cp .env.example .env
-# ⚠️ EDIT .env: Add your API Keys, Secret Key, and DB string.
+# EDIT .env: Add your API Keys and Database string.
 ```
 
-**Admin Bootstrapping (First Run):**
-Since the app uses an invite-only system, you need to create the first admin user manually:
+**Bootstrapping the Admin:**
+The app is invite-only. To create the first admin:
 1. Temporarily set `is_admin = Column(Boolean, default=True)` in `backend/models.py`.
-2. Start the server and register an account via the Frontend or Swagger UI.
-3. Revert `default=True` back to `False` in `backend/models.py`.
-4. Generate invite codes for other users via the protected `/docs` (Swagger UI) endpoint.
+2. Register an account via the UI or Swagger.
+3. Revert the code change and use the Swagger UI (`/docs`) to generate invite codes.
 
 ```bash
-# Start the ASGI server
 uvicorn main:app --reload
 ```
-*API Documentation available at: `http://localhost:8000/docs` (Includes Cookie-based auth support)*
 
 ### 3. Frontend (React)
-
 ```bash
 cd frontend
 npm install
-
-# Configure environment variables
 cp .env.example .env
-
-# Start the development server
 npm run dev
 ```
 
-*Frontend available at: `http://localhost:5173`*
+## Testing
 
-## 🧪 Testing Pipeline
-
-The backend features a comprehensive test suite using `pytest`. The testing environment leverages isolated test databases (`conftest.py`), overrides dependencies, and uses mocked external API responses to ensure reliable execution in CI environments without burning API quotas.
+The backend includes a `pytest` suite using an isolated test database and mocked API responses to prevent unnecessary quota usage.
 
 ```bash
 cd backend
 pytest -v
 ```
 
-*Automated tests run on every push via GitHub Actions.*
+## Roadmap
 
-## 📈 Roadmap & Future Enhancements
-
-- [ ] **Alembic Database Migrations:** Integrating Alembic for seamless schema upgrades without data loss.
-- [ ] **Asynchronous Task Queues:** Implementing `Celery` + `Redis` to offload the heavy AI processing pipeline (Video scraping & Image generation) into background workers, preventing HTTP timeouts.
-- [ ] **Containerization:** Adding `Dockerfile` and `docker-compose.yml` for unified, system-agnostic deployments.
+- [ ] **Alembic Migrations:** Add database schema versioning.
+- [ ] **Background Tasks:** Integrate `Celery` + `Redis` for heavy processing (Video/Images).
+- [ ] **Containerization:** Add `Dockerfile` and `docker-compose` for deployment.
 
 ---
 
